@@ -20,3 +20,7 @@ To run this project locally, follow these steps:
 
 5. **Run the Development Server**:
     npm start
+
+
+## React's role in our project
+React will be a powerful tool in our project for building our interactive and responsive iHear app as well as use it for our UI/backend to handle user complaints. We chose React to a develop a modern, fast, and responsive UI in order to handle user feedback and interactions within our app.
