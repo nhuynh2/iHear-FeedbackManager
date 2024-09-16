@@ -7,3 +7,6 @@
   
   If done correctly, you should see a white browser screen with the text, Hello World! displayed. If you want to display anything else, you can edit the Hello World! text in the index.js file to anything you want. Save the file and the browser should update with your changed text. 
 
+## How Will React Be Used?
+  React will primarily be used as the user interface (UI) for the IHear app. React will allow us to devlop the UI for the entire app and allow for users to see and navigate the app. The UI will allow users to use the desired features and put in requests, type, etc. 
+
