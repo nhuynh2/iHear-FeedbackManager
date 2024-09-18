@@ -23,27 +23,18 @@ export default function HomeScreen() {
         <ThemedText type="subtitle">Step1: Install nodejs on your laptop</ThemedText>
         <ThemedText>
           Select <ThemedText type="defaultSemiBold">stable version</ThemedText> to ensure compability.
-          Then install{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'brew', android: 'brew' })}
-          </ThemedText>{' '}
-          to install other stuff.
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 2: Install brew</ThemedText>
         <ThemedText>
-          Tap the Explore tab (right bottom) to change to another tab.
+          Please see the website instruction for the correct version
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
+        <ThemedText type="subtitle">Step 3: Install Expo Go on your phone</ThemedText>
         <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
+          So the app can run on your phone
         </ThemedText>
       </ThemedView>
     </ParallaxScrollView>
