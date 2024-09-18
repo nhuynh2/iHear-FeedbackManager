@@ -26,13 +26,15 @@ In the output, you'll find options to open the app in a
    npm install
    ```
 
-2. Start the app
+2. Download nhuynh2 folder
+3. Open path: ..\nhuynh2\app\(tabs)
+4. Start the app
 
    ```bash
     npx expo start
    ```
 
-3. Scan QR code
+5. Scan QR code
 - Scan the QR code in terminal with Expo Go (Android) or the Camera app (iOS) to access the app demo.
 
 
