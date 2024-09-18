@@ -25,7 +25,7 @@
 1. It take a few seconds to load the app into the phone
 1. Finally, the app should run the phone
 
-## How it might be used in the group project
+## Project usage
 - The React Native allows us to create app on both Android and IOS (We have some member uses Android, while other use iPhone).
 - The Expo will be the framework we use for the project.
 - The Expo Go app (a part of Expo) will help us to hot-reload our code on the phone.
