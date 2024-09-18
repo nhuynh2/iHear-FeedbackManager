@@ -22,7 +22,11 @@
 1. Run the app with commands: npx expo start
 1. On the terminal screen, it will show a QR-Code
 1. Using phone to scan the QR-Code
-1. The app should be run on the phone
+1. It take a few seconds to load the app into the phone
+1. Finally, the app should run the phone
+
+## Proof
+- Here is a video to demonstrate how the code connects to the phone: https://drive.google.com/file/d/1C7GL5xBujc-0nEvxS52238zQbpJkjGtI/view?usp=share_link
 
 ## Error
 - If you encounter error with "npx expo start", referrence: https://www.youtube.com/watch?v=isS-85WMdV4&t=296s
