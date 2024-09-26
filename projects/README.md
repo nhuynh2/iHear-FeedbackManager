@@ -2,6 +2,5 @@
 
 ## What is inside?
 
-- iHear
-- Working app
-- Testing app
+- iHear - our primary app
+- Other apps to test or practice
