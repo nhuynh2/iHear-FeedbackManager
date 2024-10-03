@@ -133,8 +133,6 @@ const styles = StyleSheet.create({
     marginTop: "1%",
     marginBottom: "1%",
     flexDirection: "column",
-    //borderWidth: 1,
-    //borderColor: "blue",
   },
   title: {
     color: "green",
