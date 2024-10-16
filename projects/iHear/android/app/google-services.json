@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "676978792442",
+    "project_id": "ihear-bfe86",
+    "storage_bucket": "ihear-bfe86.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:676978792442:android:9c672ebe17a6060acb7643",
+        "android_client_info": {
+          "package_name": "com.anonymous.iHear"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "676978792442-qrkvnvg3b5cbbn4v1nmaeq66vvgo43f8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anonymous.iHear",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "676978792442-4qmk86iocr5v2uanbsahsun2rjtnq3jo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPlAyJBpevP_h3-XOw9fo12QU4CJMXiC0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "676978792442-4qmk86iocr5v2uanbsahsun2rjtnq3jo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "676978792442-d12maqj9c58o1g4nncr5qr1243utqhbb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.anonymous.iHear"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

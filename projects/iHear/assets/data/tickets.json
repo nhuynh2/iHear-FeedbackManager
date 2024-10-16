@@ -2,7 +2,7 @@
   {
     "id": "001",
     "image": "https://plus.unsplash.com/premium_photo-1680807869780-e0876a6f3cd5?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2xhc3Nyb29tfGVufDB8fDB8fHww",
-    "problem": "Broken door",
+    "problem": "Broken windows",
     "detail": "The door stucks and cannot be open",
     "location": "HSS-121",
     "status": "resolved"

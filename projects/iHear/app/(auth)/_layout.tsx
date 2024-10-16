@@ -1,11 +1,16 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Stack, Tabs } from "expo-router";
+import { useEffect, useState } from "react";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
+import auth, {
+  FirebaseAuthTypes,
+  onAuthStateChanged,
+} from "@react-native-firebase/auth";
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
-export default function TabLayout() {
+export default function AuthLayout() {
   const colorScheme = useColorScheme();
 
   return (
@@ -15,7 +20,7 @@ export default function TabLayout() {
         headerShown: false,
       }}>
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
@@ -24,9 +29,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="dashboard"
         options={{
-          title: 'Explore',
+          title: 'Dashboard',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
           ),
@@ -35,3 +40,11 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBarContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

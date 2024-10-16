@@ -22,7 +22,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.iHear"
+      "package": "com.anonymous.iHear",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
