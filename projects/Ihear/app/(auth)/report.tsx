@@ -28,11 +28,8 @@ const ReportScreen = () => {
   const [location, setLocation] = useState("Select Location");
   const [isLocationModalVisible, setIsLocationModalVisible] = useState(false);
 
-  // Star rating state
-  const [emergenceRating, setEmergenceRating] = useState(0); // 1-5 star rating for emergence level
-
-  const categoryItems = ["Plumbing", "Electrical", "HVAC", "Paint", "Flooring", "Appliance", "Landscaping", "Security", "Windows/Doors", "Safety", "Exterior", "Parking Lot/Garage", "Other"];
-  const locationItems = ["Hodges", "Hess", "Massey", "Reese", "Fred Brown", "Clement", "Student Union", "Rockytop", "TRECS", "Thompson-Bowling", "Neyland Stadium", "Min Kao", "Ayres", "G10 Parking"];
+  const categoryItems = ["Technology", "Health", "Education"];
+  const locationItems = ["New York", "Los Angeles", "Chicago"];
 
   // Function to choose a photo or take a photo
   const handleChoosePhoto = (index: number) => {
@@ -113,61 +110,12 @@ const ReportScreen = () => {
     });
   };
 
-  // Validation before submitting the form
-  const validateForm = () => {
-    if (!topic) {
-      Alert.alert("Validation Error", "Topic is required.");
-      return false;
-    }
-    if (topic.length > 60) {
-      Alert.alert("Validation Error", "Topic cannot exceed 60 characters.");
-      return false;
-    }
-    if (!description) {
-      Alert.alert("Validation Error", "Description is required.");
-      return false;
-    }
-    if (description.length > 500) {
-      Alert.alert(
-        "Validation Error",
-        "Description cannot exceed 500 characters."
-      );
-      return false;
-    }
-    if (category === "Select Category") {
-      Alert.alert("Validation Error", "Please select a category.");
-      return false;
-    }
-    if (location === "Select Location") {
-      Alert.alert("Validation Error", "Please select a location.");
-      return false;
-    }
-    const hasAtLeastOneImage = images.some((image) => image !== null);
-    if (!hasAtLeastOneImage) {
-      Alert.alert("Validation Error", "At least one photo is required.");
-      return false;
-    }
-    if (emergenceRating === 0) {
-      Alert.alert("Validation Error", "Please rate the emergence level.");
-      return false;
-    }
-    return true;
-  };
-
-  // Handle form submission
   const handleSubmit = () => {
-    if (validateForm()) {
-      // Submit the form (placeholder logic for now)
-      console.log("Form submitted successfully with the following data:");
-      console.log({
-        topic,
-        description,
-        images,
-        category,
-        location,
-        emergenceRating,
-      });
-    }
+    images.forEach((image) => {
+      if (image) {
+        console.log("Uploading compressed image:", image);
+      }
+    });
   };
 
   const renderCategoryItem = ({ item }) => (
@@ -194,36 +142,17 @@ const ReportScreen = () => {
     </TouchableOpacity>
   );
 
-  // Function to render stars
-  const renderStars = (): JSX.Element[] => {
-    let stars: JSX.Element[] = []; // Explicitly define the type as an array of JSX elements
-
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <TouchableOpacity key={i} onPress={() => setEmergenceRating(i)}>
-          <Text style={styles.star}>
-            {i <= emergenceRating ? "★" : "☆"}{" "}
-            {/* Filled star if rating >= i, else empty star */}
-          </Text>
-        </TouchableOpacity>
-      );
-    }
-
-    return stars;
-  };
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.header}>REPORT</Text>
+
       <TextInput
         style={styles.input}
         placeholder="Topic"
         value={topic}
         onChangeText={setTopic}
-        maxLength={60} // Limit the topic to 60 characters
       />
-      <Text style={styles.charCounter}>{topic.length}/60</Text>{" "}
-      {/* Display character counter */}
+
       {/* Category Dropdown */}
       <TouchableOpacity
         style={styles.dropdownButton}
@@ -231,6 +160,7 @@ const ReportScreen = () => {
       >
         <Text>{category}</Text>
       </TouchableOpacity>
+
       {/* Category Modal */}
       <Modal
         visible={isCategoryModalVisible}
@@ -251,6 +181,7 @@ const ReportScreen = () => {
           </View>
         </View>
       </Modal>
+
       {/* Location Dropdown */}
       <TouchableOpacity
         style={styles.dropdownButton}
@@ -258,6 +189,7 @@ const ReportScreen = () => {
       >
         <Text>{location}</Text>
       </TouchableOpacity>
+
       {/* Location Modal */}
       <Modal
         visible={isLocationModalVisible}
@@ -278,19 +210,15 @@ const ReportScreen = () => {
           </View>
         </View>
       </Modal>
+
       <TextInput
         style={styles.textArea}
         placeholder="Description"
         value={description}
         onChangeText={setDescription}
-        maxLength={500} // Limit the description to 500 characters
         multiline={true}
       />
-      <Text style={styles.charCounter}>{description.length}/500</Text>{" "}
-      {/* Display character counter */}
-      {/* Emergence Rating */}
-      <Text style={styles.emergenceLabel}>Emergence Level:</Text>
-      <View style={styles.starContainer}>{renderStars()}</View>
+
       <View style={styles.photoContainer}>
         {images.map((image, index) => (
           <TouchableOpacity
@@ -306,6 +234,7 @@ const ReportScreen = () => {
           </TouchableOpacity>
         ))}
       </View>
+
       <Button title="Submit" onPress={handleSubmit} />
     </ScrollView>
   );
@@ -328,12 +257,6 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     padding: 10,
     borderRadius: 5,
-    marginBottom: 10,
-  },
-  charCounter: {
-    textAlign: "right",
-    fontSize: 12,
-    color: "#999",
     marginBottom: 15,
   },
   dropdownButton: {
@@ -350,21 +273,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     height: 100,
-    marginBottom: 10,
-  },
-  starContainer: {
-    flexDirection: "row",
     marginBottom: 15,
-  },
-  star: {
-    fontSize: 30,
-    color: "#FFD700", // Gold color for the stars
-    marginHorizontal: 5,
-  },
-  emergenceLabel: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 5,
   },
   modalContainer: {
     flex: 1,
