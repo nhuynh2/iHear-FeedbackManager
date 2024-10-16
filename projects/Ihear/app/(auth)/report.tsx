@@ -12,6 +12,7 @@ import {
   FlatList,
   ScrollView,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { launchImageLibrary, launchCamera } from "react-native-image-picker";
 import ImageResizer from "react-native-image-resizer";
 
@@ -28,10 +29,42 @@ const ReportScreen = () => {
   const [location, setLocation] = useState("Select Location");
   const [isLocationModalVisible, setIsLocationModalVisible] = useState(false);
 
-  const categoryItems = ["Plumbing", "Electrical", "HVAC", "Paint", "Flooring", "Appliance", "Landscaping", "Security", "Windows/Doors", "Safety", "Exterior", "Parking Lot/Garage", "Other"];
-  const locationItems = ["Hodges", "Hess", "Massey", "Reese", "Fred Brown", "Clement", "Student Union", "Rockytop", "TRECS", "Thompson-Bowling", "Neyland Stadium", "Min Kao", "Ayres", "G10 Parking"];
+  // Emergence rating state
+  const [emergenceRating, setEmergenceRating] = useState(0); // 1 to 5 rating
 
-  // Function to choose a photo or take a photo
+  const categoryItems = [
+    "Plumbing",
+    "Electrical",
+    "HVAC",
+    "Paint",
+    "Flooring",
+    "Appliance",
+    "Landscaping",
+    "Security",
+    "Windows/Doors",
+    "Safety",
+    "Exterior",
+    "Parking Lot/Garage",
+    "Other",
+  ];
+
+  const locationItems = [
+    "Hodges",
+    "Hess",
+    "Massey",
+    "Reese",
+    "Fred Brown",
+    "Clement",
+    "Student Union",
+    "Rockytop",
+    "TRECS",
+    "Thompson-Bowling",
+    "Neyland Stadium",
+    "Min Kao",
+    "Ayres",
+    "G10 Parking",
+  ];
+
   const handleChoosePhoto = (index: number) => {
     Alert.alert(
       "Upload Photo",
@@ -142,108 +175,142 @@ const ReportScreen = () => {
     </TouchableOpacity>
   );
 
+  // Function to render 1-5 bubble rating system
+  const renderBubbles = () => {
+    let bubbles = [];
+    for (let i = 1; i <= 5; i++) {
+      bubbles.push(
+        <TouchableOpacity
+          key={i}
+          style={[
+            styles.bubble,
+            emergenceRating === i && styles.selectedBubble, // Highlight selected bubble
+          ]}
+          onPress={() => setEmergenceRating(i)}
+        >
+          <Text style={styles.bubbleText}>{i}</Text>
+        </TouchableOpacity>
+      );
+    }
+    return bubbles;
+  };
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>REPORT</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.header}>REPORT</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Topic"
-        value={topic}
-        onChangeText={setTopic}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Topic"
+          value={topic}
+          onChangeText={setTopic}
+        />
 
-      {/* Category Dropdown */}
-      <TouchableOpacity
-        style={styles.dropdownButton}
-        onPress={() => setIsCategoryModalVisible(true)}
-      >
-        <Text>{category}</Text>
-      </TouchableOpacity>
+        {/* Category Dropdown */}
+        <TouchableOpacity
+          style={styles.dropdownButton}
+          onPress={() => setIsCategoryModalVisible(true)}
+        >
+          <Text>{category}</Text>
+        </TouchableOpacity>
 
-      {/* Category Modal */}
-      <Modal
-        visible={isCategoryModalVisible}
-        transparent={true}
-        animationType="slide"
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <FlatList
-              data={categoryItems}
-              renderItem={renderCategoryItem}
-              keyExtractor={(item) => item}
-            />
-            <Button
-              title="Close"
-              onPress={() => setIsCategoryModalVisible(false)}
-            />
+        {/* Category Modal */}
+        <Modal
+          visible={isCategoryModalVisible}
+          transparent={true}
+          animationType="slide"
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <FlatList
+                data={categoryItems}
+                renderItem={renderCategoryItem}
+                keyExtractor={(item) => item}
+              />
+              <Button
+                title="Close"
+                onPress={() => setIsCategoryModalVisible(false)}
+              />
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
 
-      {/* Location Dropdown */}
-      <TouchableOpacity
-        style={styles.dropdownButton}
-        onPress={() => setIsLocationModalVisible(true)}
-      >
-        <Text>{location}</Text>
-      </TouchableOpacity>
+        {/* Location Dropdown */}
+        <TouchableOpacity
+          style={styles.dropdownButton}
+          onPress={() => setIsLocationModalVisible(true)}
+        >
+          <Text>{location}</Text>
+        </TouchableOpacity>
 
-      {/* Location Modal */}
-      <Modal
-        visible={isLocationModalVisible}
-        transparent={true}
-        animationType="slide"
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <FlatList
-              data={locationItems}
-              renderItem={renderLocationItem}
-              keyExtractor={(item) => item}
-            />
-            <Button
-              title="Close"
-              onPress={() => setIsLocationModalVisible(false)}
-            />
+        {/* Location Modal */}
+        <Modal
+          visible={isLocationModalVisible}
+          transparent={true}
+          animationType="slide"
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <FlatList
+                data={locationItems}
+                renderItem={renderLocationItem}
+                keyExtractor={(item) => item}
+              />
+              <Button
+                title="Close"
+                onPress={() => setIsLocationModalVisible(false)}
+              />
+            </View>
           </View>
+        </Modal>
+
+        <TextInput
+          style={styles.textArea}
+          placeholder="Description"
+          value={description}
+          onChangeText={setDescription}
+          multiline={true}
+        />
+
+        {/* Emergence Rating */}
+        <Text style={styles.emergenceLabel}>Emergence Level:</Text>
+        <View style={styles.bubbleContainer}>{renderBubbles()}</View>
+
+        <View style={styles.photoContainer}>
+          {images.map((image, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.photoBox}
+              onPress={() => handleChoosePhoto(index)}
+            >
+              {image ? (
+                <Image source={{ uri: image }} style={styles.photo} />
+              ) : (
+                <Text>Photo {index + 1}</Text>
+              )}
+            </TouchableOpacity>
+          ))}
         </View>
-      </Modal>
 
-      <TextInput
-        style={styles.textArea}
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
-        multiline={true}
-      />
-
-      <View style={styles.photoContainer}>
-        {images.map((image, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.photoBox}
-            onPress={() => handleChoosePhoto(index)}
-          >
-            {image ? (
-              <Image source={{ uri: image }} style={styles.photo} />
-            ) : (
-              <Text>Photo {index + 1}</Text>
-            )}
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      <Button title="Submit" onPress={handleSubmit} />
-    </ScrollView>
+        <Button title="Submit" onPress={handleSubmit} />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff",
+    paddingTop: 20,
+  },
   container: {
     padding: 20,
     backgroundColor: "#fff",
+  },
+  emergenceLabel: {
+    padding: 10,
   },
   header: {
     fontSize: 24,
@@ -293,6 +360,26 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ccc",
     width: "100%",
     alignItems: "center",
+  },
+  bubbleContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 15,
+  },
+  bubble: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#ccc",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  selectedBubble: {
+    backgroundColor: "#FFD700", // Highlight selected bubble with gold color
+  },
+  bubbleText: {
+    fontSize: 18,
+    color: "#fff", // Text color inside the bubble
   },
   photoContainer: {
     flexDirection: "row",
