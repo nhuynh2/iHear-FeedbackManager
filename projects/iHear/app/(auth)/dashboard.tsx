@@ -46,7 +46,7 @@ export default function Dashboard() {
         <Text style={styles.title}>{"DASHBOARD"}</Text>
         <Text style={styles.search}>{"Search"}</Text>
         <Text style={styles.sort}>{"Sort by: Location | Type | Newest\n"}</Text>
-        <SafeAreaView style={styles.listView}>
+        <View style={styles.listView}>
           <FlatList
             scrollEnabled={true}
             scrollToOverflowEnabled={true}
@@ -63,7 +63,7 @@ export default function Dashboard() {
             ItemSeparatorComponent={Separator}
             keyExtractor={(item) => item.id}
           />
-        </SafeAreaView>
+        </View>
       </View>
     </View>
   );
@@ -71,45 +71,46 @@ export default function Dashboard() {
 
 const styles = StyleSheet.create({
   tabContainer: {
-    flex: 1,
+    //flex: 1,
     height: "99%",
     width: "99%",
     flexDirection: "column",
     alignSelf: "center",
     alignItems: "center",
     marginTop: "15%",
-    borderWidth: 3,
-    borderColor: "red",
+    //borderWidth: 3,
+    //borderColor: "red",
     backgroundColor: "white",
   },
   viewContainer: {
-    flex: 1,
+    //flex: 1,
     height: "98%",
     width: "98%",
-    borderWidth: 3,
-    borderColor: "green",
+    //borderWidth: 3,
+    //borderColor: "green",
     //backgroundColor: "green",
   },
   listView: {
     flex: 1,
+    flexGrow :1,
     height: "80%",
     width: "100%",
     flexDirection: "column",
-    borderWidth: 3,
-    borderColor: "blue",
+    //borderWidth: 3,
+    //borderColor: "blue",
     //backgroundColor: "blue",
   },
   separator: {
-    height: "5%",
+    height: "1%",
     width: "100%",
-    backgroundColor: "pink",
+    //backgroundColor: "pink",
   },
   ticketView: {
     height: 0.15 * Dimensions.get("screen").height,
     width: "100%",
     flexDirection: "row",
-    borderWidth: 3,
-    borderColor: "purple",
+    borderWidth: 1,
+    borderColor: "orange",
     //backgroundColor: "purple",
   },
   img: {
@@ -124,8 +125,6 @@ const styles = StyleSheet.create({
     marginTop: "1%",
     marginBottom: "1%",
     flexDirection: "column",
-    borderWidth: 1,
-    borderColor: "orange",
   },
   veriTxtCon: {
     height: "80%",
