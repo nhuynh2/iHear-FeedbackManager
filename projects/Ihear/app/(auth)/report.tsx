@@ -28,8 +28,8 @@ const ReportScreen = () => {
   const [location, setLocation] = useState("Select Location");
   const [isLocationModalVisible, setIsLocationModalVisible] = useState(false);
 
-  const categoryItems = ["Technology", "Health", "Education"];
-  const locationItems = ["New York", "Los Angeles", "Chicago"];
+  const categoryItems = ["Plumbing", "Electrical", "HVAC", "Paint", "Flooring", "Appliance", "Landscaping", "Security", "Windows/Doors", "Safety", "Exterior", "Parking Lot/Garage", "Other"];
+  const locationItems = ["Hodges", "Hess", "Massey", "Reese", "Fred Brown", "Clement", "Student Union", "Rockytop", "TRECS", "Thompson-Bowling", "Neyland Stadium", "Min Kao", "Ayres", "G10 Parking"];
 
   // Function to choose a photo or take a photo
   const handleChoosePhoto = (index: number) => {
