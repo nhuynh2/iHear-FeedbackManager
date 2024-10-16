@@ -1,0 +1,27 @@
+{
+    "ticket": {
+      "id": "123456",
+      "topic": "Broken Air Conditioner",
+      "category": "Maintenance",
+      "location": "Office Building, Room 203",
+      "description": "The air conditioner in Room 203 is not working and needs to be repaired. It has been malfunctioning for the past two days, and the room is getting very hot.",
+      "status": "open",
+      "photos": [
+        {
+          "id": "1",
+          "url": "https://example.com/photo1.png",
+          "description": "Front view of the air conditioner"
+        },
+        {
+          "id": "2",
+          "url": "https://example.com/photo2.png",
+          "description": "Close-up of the broken part"
+        },
+        {
+          "id": "3",
+          "url": "https://example.com/photo3.png",
+          "description": "Entire room view"
+        }
+      ]
+    }
+  }
