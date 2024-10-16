@@ -1,0 +1,42 @@
+[
+  {
+    "id": "001",
+    "image": "https://plus.unsplash.com/premium_photo-1680807869780-e0876a6f3cd5?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2xhc3Nyb29tfGVufDB8fDB8fHww",
+    "problem": "Broken windows",
+    "detail": "The door stucks and cannot be open",
+    "location": "HSS-121",
+    "status": "resolved"
+  },
+  {
+    "id": "002",
+    "image": "https://res.cloudinary.com/highereducation/image/upload/w_740,h_416,c_fill,f_auto,fl_lossy,q_auto/v1/TheBestSchools.org/texas-am-kyle-field.jpg",
+    "problem": "The hot central air",
+    "detail": "It makes students feel suffocating and nasty",
+    "location": "MKB-622",
+    "status": "in-progress"
+  },
+  {
+    "id": "003",
+    "image": "https://media.istockphoto.com/id/136192949/photo/university-of-tennessee-hill.jpg?s=612x612&w=0&k=20&c=KF6ujCeGT1tIseDHm6dsQ5LeoiXnl5v3MhHj_wuQ5fA=",
+    "problem": "Weird smell",
+    "detail": "There is a weird smell coming from that location",
+    "location": "STR-201",
+    "status": "resolved"
+  },
+  {
+    "id": "004",
+    "image": "https://www.shutterstock.com/image-photo/modern-classroom-school-600nw-2492778895.jpg",
+    "problem": "Shaking elevator",
+    "detail": "It is dangerous so please fix it quickly",
+    "location": "HG-202",
+    "status": "not-fix"
+  },
+  {
+    "id": "005",
+    "image": "https://t3.ftcdn.net/jpg/00/83/92/82/360_F_83928200_mYGZqB0ozTtSS6J5EtW9834mjb5tLW6x.jpg",
+    "problem": "Bad food",
+    "detail": "The worst food that I have ever tasted",
+    "location": "Other",
+    "status": "referred"
+  }
+]
