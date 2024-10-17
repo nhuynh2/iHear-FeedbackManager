@@ -181,15 +181,12 @@ const ReportScreen = () => {
 
     console.log(reportData);
 
-    // You can now store the reportData object or save it to a file
-    // For example, you can save it using AsyncStorage or another storage solution
-
-    // Clear the fields after saving
     setTopic("");
-    setDescription("");
     setCategory("Select Category");
     setLocation("Select Location");
+    setDescription("");
     setEmergenceRating(0);
+    setImages([null, null, null]);
 
     Alert.alert("Success", "Report has been saved!");
   };
