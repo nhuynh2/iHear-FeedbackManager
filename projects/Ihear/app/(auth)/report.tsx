@@ -144,11 +144,54 @@ const ReportScreen = () => {
   };
 
   const handleSubmit = () => {
-    images.forEach((image) => {
-      if (image) {
-        console.log("Uploading compressed image:", image);
-      }
-    });
+    // Validate fields
+    if (!topic) {
+      Alert.alert("Error", "Please enter a topic.");
+      return;
+    }
+
+    if (category === "Select Category") {
+      Alert.alert("Error", "Please select a category.");
+      return;
+    }
+
+    if (location === "Select Location") {
+      Alert.alert("Error", "Please select a location.");
+      return;
+    }
+
+    if (!description) {
+      Alert.alert("Error", "Please enter a description.");
+      return;
+    }
+
+    if (emergenceRating === 0) {
+      Alert.alert("Error", "Please select an emergence level.");
+      return;
+    }
+
+    // Create an object with the input data
+    const reportData = {
+      topic: topic,
+      description: description,
+      category: category,
+      location: location,
+      emergenceRating: emergenceRating,
+    };
+
+    console.log(reportData);
+
+    // You can now store the reportData object or save it to a file
+    // For example, you can save it using AsyncStorage or another storage solution
+
+    // Clear the fields after saving
+    setTopic("");
+    setDescription("");
+    setCategory("Select Category");
+    setLocation("Select Location");
+    setEmergenceRating(0);
+
+    Alert.alert("Success", "Report has been saved!");
   };
 
   const renderCategoryItem = ({ item }) => (
