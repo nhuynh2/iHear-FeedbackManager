@@ -16,6 +16,7 @@ export default function Page() {
   return (
     <View style={styles.container}>
       <Text> Welcome {user?.email} </Text>
+      <Text> This screen is used to test sign-out</Text>
       <Button title="Sign out" onPress={() => auth().signOut()} />
     </View>
   );
