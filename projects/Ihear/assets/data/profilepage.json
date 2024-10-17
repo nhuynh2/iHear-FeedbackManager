@@ -1,0 +1,13 @@
+{
+    "profile": {
+      "avatar": "https://example.com/avatar.jpg",
+      "name": "John Deez Nuts",
+      "netID": "jdn1234ha",
+      "role": "Software Engineer sucks fml",
+      "contact": {
+        "email": "john.doenuts@example.com",
+        "phone": "+1 (555) 123-4567"
+      }
+    }
+  }
+  
