@@ -50,19 +50,19 @@
   - iHear/documents/report-tab.png
   - iHear/documents/detail-tab.png
 
-- Issue #20, #28, #33:
+- Issue #20, #28, #33, #34, #36:
 
   - iHear/projects/iHear/app/_layout.tsx
   - iHear/projects/iHear/app/index.tsx
   - iHear/projects/iHear/app/(auth)/signout.tsx
+  - iHear/projects/iHear/app/(auth)/_layout.tsx
 
 - Issue #32
 
   - iHear/projects/iHear/components/BoxButton.tsx
   
-- Issue #34
 
-  - iHear/projects/iHear/app/(auth)/_layout.tsx
+
 
 ## What I accomplished
 
