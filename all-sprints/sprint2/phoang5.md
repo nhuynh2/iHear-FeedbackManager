@@ -34,7 +34,6 @@
 - [#34](https://github.com/utk-cs340-fall24/iHear/issues/34): Front-end: Combine 5 tabs: dashboard, profile, report, detail, signout
 - [#36](https://github.com/utk-cs340-fall24/iHear/issues/34): System: Clean up some unnecessary files
 
-
 ## Files that I worked on
 
 - Issue #3:
