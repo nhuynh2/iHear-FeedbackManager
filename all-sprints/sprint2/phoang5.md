@@ -41,6 +41,8 @@
 
 ## Files that I worked on
 
+- Note: All of my work is in the branch "regular-auth"
+
 - Issue #3:
 
   - iHear/documents/iHear-1.png
