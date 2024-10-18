@@ -23,6 +23,11 @@
 
 - None
 
+## What problems you encountered
+
+- Task assignment: not really good, there are some have much heavier workload than the other
+- Merge conflict issue: we have a serious merge issue on the main, so we abandon it and work on a new branch for this Sprint-2
+
 ## What issue I worked on
 
 - [#3](https://github.com/utk-cs340-fall24/iHear/issues/3): Document: Design app logo
