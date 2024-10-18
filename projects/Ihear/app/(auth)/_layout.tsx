@@ -1,14 +1,14 @@
 import { Stack, Tabs } from "expo-router";
-import { useEffect, useState } from "react";
+import React from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import auth, {
   FirebaseAuthTypes,
   onAuthStateChanged,
 } from "@react-native-firebase/auth";
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { TabBarIcon } from "@/components/navigation/TabBarIcon";
+import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 export default function AuthLayout() {
   const colorScheme = useColorScheme();
@@ -16,24 +16,68 @@ export default function AuthLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: false,
-      }}>
+      }}
+    >
       <Tabs.Screen
-        name="home"
+        name="profilepage"
         options={{
-          title: 'Home',
+          title: "Profile",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <TabBarIcon
+              name={focused ? "home" : "home-outline"}
+              color={color}
+            />
           ),
         }}
       />
       <Tabs.Screen
+        name="report"
+        options={{
+          title: "Report",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "send" : "send-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
         name="dashboard"
         options={{
-          title: 'Dashboard',
+          title: "Dashboard",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon
+              name={focused ? "list" : "list-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="ticketdetails"
+        options={{
+          title: "Detail",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "information" : "information-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="signout"
+        options={{
+          title: "Sign Out",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "eye-off" : "eye-off-outline"}
+              color={color}
+            />
           ),
         }}
       />
