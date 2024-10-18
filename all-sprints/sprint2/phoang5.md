@@ -51,14 +51,14 @@
 
 - Issue #20, #28, #33, #34, #36:
 
-  - iHear/projects/iHear/app/_layout.tsx
-  - iHear/projects/iHear/app/index.tsx
-  - iHear/projects/iHear/app/(auth)/signout.tsx
-  - iHear/projects/iHear/app/(auth)/_layout.tsx
+  - iHear/projects/Ihear/app/_layout.tsx
+  - iHear/projects/Ihear/app/index.tsx
+  - iHear/projects/Ihear/app/(auth)/signout.tsx
+  - iHear/projects/Ihear/app/(auth)/_layout.tsx
 
 - Issue #32
 
-  - iHear/projects/iHear/components/BoxButton.tsx
+  - iHear/projects/Ihear/components/BoxButton.tsx
 
 ## What I accomplished
 
@@ -77,3 +77,5 @@
   - Code pair-reviewing through Discord.
   - Combine other front-end tabs into a completed app.
   - Run and ensure compability on both iOS and Android.
+  - I edit the tsconfig to ensure stable code.
+  - Finally, I delete and rename some files to organize our project.

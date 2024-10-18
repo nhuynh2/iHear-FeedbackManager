@@ -1,0 +1,424 @@
+FILE: Ihear/projects/Ihear/app/index.tsx
+
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400   1) import React from "react";
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400   2) import {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400   3)   Text,
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400   4)   View,
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400   5)   StyleSheet,
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400   6)   KeyboardAvoidingView,
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400   7)   TextInput,
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400   8)   Button,
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400   9)   ActivityIndicator,
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  10)   TouchableWithoutFeedback,
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  11)   Platform,
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  12)   Keyboard,
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  13)   Dimensions,
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  14)   Image,
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  15) } from "react-native";
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  16) import auth from "@react-native-firebase/auth";
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  17) import { FirebaseError } from "firebase/app";
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  18) import BoxButton from "@/components/BoxButton";
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  19) 
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  20) export default function Index() {
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  21)   const [email, setEmail] = React.useState("");
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  22)   const [password, setPassword] = React.useState("");
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  23)   const [loading, setLoading] = React.useState(false);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  24) 
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  25)   const signUp = async () => {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  26)     setLoading(true);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  27)     try {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  28)       await auth().createUserWithEmailAndPassword(email, password);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  29)       alert("Check your email");
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  30)     } catch (e: any) {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  31)       const err = e as FirebaseError;
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  32)       alert("Registration failed: " + err.message);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  33)     } finally {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  34)       setLoading(false);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  35)     }
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  36)   };
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  37) 
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  38)   const signIn = async () => {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  39)     setLoading(true);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  40)     try {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  41)       await auth().signInWithEmailAndPassword(email, password);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  42)       alert("Check your email");
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  43)     } catch (e: any) {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  44)       const err = e as FirebaseError;
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  45)       alert("Sign in failed: " + err.message);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  46)     } finally {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  47)       setLoading(false);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  48)     }
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  49)   };
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  50) 
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  51)   return (
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  52)     <KeyboardAvoidingView
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  53)       style={styles.container}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  54)       behavior={Platform.OS === "ios" ? "padding" : "height"}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  55)     >
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  56)       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  57)         <View style={styles.inner}>
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  58)           <Image
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  59)             source={require("../assets/images/icon.png")}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  60)             style={styles.img}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  61)           />
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  62)           <Text style={styles.title}>Welcome to iHear</Text>
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  63)           <TextInput
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  64)             placeholder="Email"
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  65)             style={styles.input}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  66)             value={email}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  67)             onChangeText={setEmail}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  68)             keyboardType="email-address"
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  69)             autoCapitalize="none"
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  70)           />
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  71)           <TextInput
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  72)             placeholder="Password"
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  73)             style={styles.input}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  74)             value={password}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  75)             onChangeText={setPassword}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  76)             secureTextEntry
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  77)           />
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  78)           <View style={styles.buttonContainer}>
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  79)             <BoxButton
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  80)               text="Sign In"
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  81)               textColor="white"
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  82)               textSize={22}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  83)               boxColor="#078a48"
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  84)               onPress={signIn}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  85)             />
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  86)             <BoxButton
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  87)               text="Sign Up"
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  88)               textColor="white"
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  89)               textSize={22}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  90)               boxColor="#0cb9f7"
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  91)               onPress={signUp}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  92)             />
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  93)           </View>
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  94)         </View>
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  95)       </TouchableWithoutFeedback>
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  96)     </KeyboardAvoidingView>
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  97)   );
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  98) }
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  99) 
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 100) const styles = StyleSheet.create({
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 101)   container: {
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 102)     flex: 1,
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 103)   },
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 104)   inner: {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 105)     flex: 1,
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 106)     justifyContent: "center",
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 107)     alignItems: "center",
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 108)     padding: "5%",
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 109)     backgroundColor: "#FFF5E1",
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 110)   },
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 111)   img: {
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 112)     height: 200,
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 113)     width: 200,
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 114)     marginTop: "1%",
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 115)     marginRight: "1%",
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 116)   },
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 117)   title: {
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 118)     fontSize: 35,
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 119)     fontWeight: "bold",
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 120)     color: "#FF8C00",
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 121)     marginBottom: 40,
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 122)   },
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 123)   input: {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 124)     fontSize: 20,
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 125)     width: "90%",
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 126)     padding: 15,
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 127)     marginBottom: 20,
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 128)     borderColor: "#FF8C00",
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 129)     borderWidth: 1,
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 130)     borderRadius: 10,
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 131)     backgroundColor: "#FFFFFF",
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 132)   },
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 133)   buttonContainer: {
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 134)     width: "90%",
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 135)     borderRadius: 10,
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 136)     flexDirection: "row",
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 137)     justifyContent: "center",
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 138)   },
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 139)   loadingIndicator: {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 140)     margin: "5%",
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 141)   },
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 142) });
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+FILE: Ihear/projects/Ihear/app/_layout.tsx
+
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  1) import { Stack, useRouter, useSegments } from "expo-router";
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  2) import { useEffect, useState } from "react";
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  3) import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  4) import auth, {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  5)   FirebaseAuthTypes,
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  6)   onAuthStateChanged,
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  7) } from "@react-native-firebase/auth";
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  8) 
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400  9) export default function RootLayout() {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 10)   const [initializing, setInitializing] = useState(true);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 11)   const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 12)   const router = useRouter();
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 13)   const segments = useSegments();
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 14) 
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 15)   const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 16)     console.log("onAuthStateChanged", user);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 17)     setUser(user);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 18)     if (initializing) setInitializing(false);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 19)   };
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 20) 
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 21)   useEffect(() => {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 22)     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 23)     return subscriber;
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 24)   }, []);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 25) 
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 26)   useEffect(() => {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 27)     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 28) 
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 29)     if (initializing) return;
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 30)     const inAuthGroup = segments[0] === "(auth)";
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 31) 
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 32)     if (user && !inAuthGroup) {
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 33)       router.push("/(auth)/dashboard");
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 34)     } else if (!user && inAuthGroup) {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 35)       router.replace("/");
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 36)     }
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 37)     return subscriber;
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 38)   }, [user, initializing]);
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 39) 
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 40)   if (initializing)
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 41)     return (
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 42)       <View style={styles.container}>
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 43)         <ActivityIndicator size="large" />
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 44)       </View>
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 45)     );
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 46) 
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 47)   return (
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 48)     <Stack>
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 49)       <Stack.Screen name="index" />
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 50)       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 51)     </Stack>
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 52)   );
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 53) }
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 54) 
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 55) const styles = StyleSheet.create({
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 56)   container: {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 57)     flex: 1,
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 58)     alignItems: "center",
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 59)     justifyContent: "center",
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 60)   },
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 61)   input: {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 62)     marginVertical: "1%",
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 63)     height: "15%",
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 64)     borderWidth: 1,
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 65)     borderRadius: 5,
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 66)     padding: "2%",
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 67)     backgroundColor: "white",
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 68)     fontSize: 20,
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 69)   },
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 70)   loadingIndicator: {
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 71)     margin: "5%",
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 72)   },
+22020f06 (Phu Hoang 2024-10-16 15:21:53 -0400 73) });
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+FILE: iHear/projects/Ihear/app/(auth)/signout.tsx
+
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400  1) import React from "react";
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400  2) import {
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400  3)   Text,
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400  4)   View,
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400  5)   StyleSheet,
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400  6)   KeyboardAvoidingView,
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400  7)   TextInput,
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400  8)   Button,
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400  9)   ActivityIndicator,
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 10) } from "react-native";
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 11) import auth from "@react-native-firebase/auth";
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 12) 
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 13) import data from "../../assets/data/ticketdetail.json";
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 14) 
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 15) export default function SignOut() {
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 16)   const user = auth().currentUser;
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 17) 
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 18)   return (
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 19)     <View style={styles.container}>
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 20)       <Text> Welcome {user?.email} </Text>
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 21)       <Button title="Sign out" onPress={() => auth().signOut()} />
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 22)     </View>
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 23)   );
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 24) }
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 25) 
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 26) const styles = StyleSheet.create({
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 27)   container: {
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 28)     marginHorizontal: "2%",
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 29)     flex: 1,
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 30)     justifyContent: "center",
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 31)   },
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 32)   input: {
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 33)     marginVertical: "1%",
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 34)     height: "15%",
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 35)     borderWidth: 1,
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 36)     borderRadius: 5,
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 37)     padding: "2%",
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 38)     backgroundColor: "white",
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 39)     fontSize: 20,
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 40)   },
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 41)   loadingIndicator: {
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 42)     margin: "5%",
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 43)   },
+6d6f0512 (Phu Hoang 2024-10-17 21:18:43 -0400 44) });
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+FILE: iHear/projects/Ihear/app/(auth)/_layout.tsx
+
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400  1) import { Stack, Tabs } from "expo-router";
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  2) import React from "react";
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400  3) import { View, StyleSheet, ActivityIndicator } from "react-native";
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400  4) import auth, {
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400  5)   FirebaseAuthTypes,
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400  6)   onAuthStateChanged,
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400  7) } from "@react-native-firebase/auth";
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400  8) 
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400  9) import { TabBarIcon } from "@/components/navigation/TabBarIcon";
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 10) import { Colors } from "@/constants/Colors";
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 11) import { useColorScheme } from "@/hooks/useColorScheme";
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 12) 
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 13) export default function AuthLayout() {
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 14)   const colorScheme = useColorScheme();
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 15) 
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 16)   return (
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 17)     <Tabs
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 18)       screenOptions={{
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 19)         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 20)         headerShown: false,
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 21)       }}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 22)     >
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 23)       <Tabs.Screen
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 24)         name="profilepage"
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 25)         options={{
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 26)           title: "Profile",
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 27)           tabBarIcon: ({ color, focused }) => (
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 28)             <TabBarIcon
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 29)               name={focused ? "home" : "home-outline"}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 30)               color={color}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 31)             />
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 32)           ),
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 33)         }}
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 34)       />
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 35)       <Tabs.Screen
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 36)         name="report"
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 37)         options={{
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 38)           title: "Report",
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 39)           tabBarIcon: ({ color, focused }) => (
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 40)             <TabBarIcon
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 41)               name={focused ? "send" : "send-outline"}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 42)               color={color}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 43)             />
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 44)           ),
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 45)         }}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 46)       />
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 47) 
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 48)       <Tabs.Screen
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 49)         name="dashboard"
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 50)         options={{
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 51)           title: "Dashboard",
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 52)           tabBarIcon: ({ color, focused }) => (
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 53)             <TabBarIcon
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 54)               name={focused ? "list" : "list-outline"}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 55)               color={color}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 56)             />
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 57)           ),
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 58)         }}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 59)       />
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 60)       <Tabs.Screen
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 61)         name="ticketdetails"
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 62)         options={{
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 63)           title: "Detail",
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 64)           tabBarIcon: ({ color, focused }) => (
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 65)             <TabBarIcon
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 66)               name={focused ? "information" : "information-outline"}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 67)               color={color}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 68)             />
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 69)           ),
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 70)         }}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 71)       />
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 72)       <Tabs.Screen
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 73)         name="signout"
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 74)         options={{
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 75)           title: "Sign Out",
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 76)           tabBarIcon: ({ color, focused }) => (
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 77)             <TabBarIcon
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 78)               name={focused ? "eye-off" : "eye-off-outline"}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 79)               color={color}
+ac2574b5 (Phu Hoang 2024-10-17 21:41:56 -0400 80)             />
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 81)           ),
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 82)         }}
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 83)       />
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 84)     </Tabs>
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 85)   );
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 86) }
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 87) 
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 88) const styles = StyleSheet.create({
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 89)   tabBarContainer: {
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 90)     flex: 1,
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 91)     alignItems: "center",
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 92)     justifyContent: "center",
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 93)   },
+00affd53 (Phu Hoang 2024-10-16 15:17:46 -0400 94) });
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+FILE: iHear/projects/Ihear/components/BoxButton.tsx
+
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400  1) interface BoxButton {
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400  2)   text: string;
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400  3)   textColor?: string;
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400  4)   textSize?: number;
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400  5)   boxColor?: string;
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400  6)   width?: number | string;
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400  7)   height?: number | string;
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400  8)   style: StyleSheet;
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400  9)   onPress?: () => {};
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 10) }
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 11) 
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 12) import React from "react";
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 13) import { TouchableOpacity, Text } from "react-native";
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 14) 
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 15) const BoxButton: React.FC<BoxButton> = ({
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 16)   text,
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 17)   textColor,
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 18)   textSize,
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 19)   boxColor,
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 20)   width,
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 21)   height,
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 22)   onPress,
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 23) }) => {
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 24)   return (
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 25)     <TouchableOpacity
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 26)       style={{
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 27)         backgroundColor: `${boxColor}`,
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 28)         width: width,
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 29)         height: height,
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 30)         justifyContent: "center",
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 31)         alignContent: "center",
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 32)         alignItems: "center",
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 33)         borderRadius: 8,
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 34)         margin: "1%",
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 35)       }}
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 36)       onPress={onPress}
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 37)     >
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 38)       <Text
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 39)         style={{
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 40)           fontSize: textSize,
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 41)           color: `${textColor}`,
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 42)           textAlign: "center",
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 43)           textAlignVertical: "center",
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 44)           padding: 8,
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 45)         }}
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 46)       >
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 47)         {text}
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 48)       </Text>
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 49)     </TouchableOpacity>
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 50)   );
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 51) };
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 52) 
+c9406c87 (Phu Hoang 2024-10-17 21:26:13 -0400 53) export default BoxButton;
