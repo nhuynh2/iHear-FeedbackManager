@@ -16,8 +16,8 @@
 - Front-end: Create a utility component BoxButton
 - Front-end: Create Sign-out tab
 - Front-end: Combine 5 tabs: dashboard, profile, report, detail, signout
-- Design 3 tabs: profilepage.tsx, report.tsx, ticketdetails.tsx
-- Team leading: app design, assigning tasks, code pair review, combine code, testing compability.
+- System: Clean up some unnecessary files
+- Team leading: assigning tasks, code pair review, testing compability, edit tsconfig, clean up trashes.
 
 ## What I did not complete
 
@@ -29,9 +29,11 @@
 - [#35](https://github.com/utk-cs340-fall24/iHear/issues/35): Document: Design 3 front-end tabs: profile, report, and detail
 - [#20](https://github.com/utk-cs340-fall24/iHear/issues/20): Back-end: Sign-in, Sign-up, and Sign-out
 - [#28](https://github.com/utk-cs340-fall24/iHear/issues/28): Front-end: Create Index tab
-- [#32](https://github.com/utk-cs340-fall24/iHear/issues/32): Front-end: Create a utility component BoxButton
 - [#33](https://github.com/utk-cs340-fall24/iHear/issues/33): Front-end: Create Sign-out tab
-- [#34](https://github.com/utk-cs340-fall24/iHear/issues/34): Front-end: Front-end: Combine 5 tabs: dashboard, profile, report, detail, signout
+- [#32](https://github.com/utk-cs340-fall24/iHear/issues/32): Front-end: Create a utility component BoxButton
+- [#34](https://github.com/utk-cs340-fall24/iHear/issues/34): Front-end: Combine 5 tabs: dashboard, profile, report, detail, signout
+- [#36](https://github.com/utk-cs340-fall24/iHear/issues/34): System: Clean up some unnecessary files
+
 
 ## Files that I worked on
 
@@ -48,12 +50,16 @@
   - iHear/documents/report-tab.png
   - iHear/documents/detail-tab.png
 
-- Issue #20, #28, #32, #33:
+- Issue #20, #28, #33:
 
   - iHear/projects/iHear/app/_layout.tsx
   - iHear/projects/iHear/app/index.tsx
   - iHear/projects/iHear/app/(auth)/signout.tsx
 
+- Issue #32
+
+  - iHear/projects/iHear/components/BoxButton.tsx
+  
 - Issue #34
 
   - iHear/projects/iHear/app/(auth)/_layout.tsx
