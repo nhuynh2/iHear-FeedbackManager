@@ -60,9 +60,6 @@
 - Issue #32
 
   - iHear/projects/iHear/components/BoxButton.tsx
-  
-
-
 
 ## What I accomplished
 
