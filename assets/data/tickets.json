@@ -38,5 +38,45 @@
     "detail": "The worst food that I have ever tasted",
     "location": "Other",
     "status": "referred"
+  },
+  {
+    "id": "006",
+    "image": "https://www.shutterstock.com/image-photo/modern-classroom-school-600nw-2492778895.jpg",
+    "problem": "Shaking elevator",
+    "detail": "It is dangerous so please fix it quickly",
+    "location": "HG-202",
+    "status": "not-fix"
+  },
+  {
+    "id": "007",
+    "image": "https://t3.ftcdn.net/jpg/00/83/92/82/360_F_83928200_mYGZqB0ozTtSS6J5EtW9834mjb5tLW6x.jpg",
+    "problem": "Bad food",
+    "detail": "The worst food that I have ever tasted",
+    "location": "Other",
+    "status": "referred"
+  },
+  {
+    "id": "008",
+    "image": "https://www.shutterstock.com/image-photo/modern-classroom-school-600nw-2492778895.jpg",
+    "problem": "Shaking elevator",
+    "detail": "It is dangerous so please fix it quickly",
+    "location": "HG-202",
+    "status": "not-fix"
+  },
+  {
+    "id": "009",
+    "image": "https://t3.ftcdn.net/jpg/00/83/92/82/360_F_83928200_mYGZqB0ozTtSS6J5EtW9834mjb5tLW6x.jpg",
+    "problem": "Bad food",
+    "detail": "The worst food that I have ever tasted",
+    "location": "Other",
+    "status": "referred"
+  },
+  {
+    "id": "010",
+    "image": "https://www.shutterstock.com/image-photo/modern-classroom-school-600nw-2492778895.jpg",
+    "problem": "Shaking elevator",
+    "detail": "It is dangerous so please fix it quickly",
+    "location": "HG-202",
+    "status": "not-fix"
   }
 ]

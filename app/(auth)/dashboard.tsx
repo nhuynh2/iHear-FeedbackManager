@@ -7,9 +7,18 @@ import {
   Text,
   StyleSheet,
   Dimensions,
+  TouchableOpacity,
+  Alert,
 } from "react-native";
 
 import data from "../../assets/data/tickets.json";
+
+const HEIGHT = Dimensions.get("screen").height;
+const WIDTH = Dimensions.get("screen").width;
+
+const onPressHandle = () => {
+  Alert.alert("Clicked!");
+};
 
 type ItemProps = {
   image: string;
@@ -20,113 +29,81 @@ type ItemProps = {
 };
 
 const Item = ({ image, problem, detail, location, status }: ItemProps) => (
-  <View style={styles.ticketView}>
-    <Image style={styles.img} source={{ uri: image }}></Image>
-    <View style={styles.txtCon}>
-      <View style={styles.veriTxtCon}>
+  <TouchableOpacity
+    style={styles.ticketView}
+    delayPressIn={50}
+    activeOpacity={0.4}
+    onPress={onPressHandle}
+  >
+    <Image style={styles.image} source={{ uri: image }}></Image>
+    <View style={styles.textView}>
+      <View style={styles.veriTxtView}>
         <Text style={styles.problem}>{problem}</Text>
         <Text style={styles.detail}>{detail}</Text>
       </View>
-      <View style={styles.horiTxtCon}>
+      <View style={styles.horiTxtView}>
         <Text style={styles.location}>{location}</Text>
         <Text style={styles.status}>{status}</Text>
       </View>
     </View>
-  </View>
+  </TouchableOpacity>
 );
-
-const Separator = () => {
-  return <View style={styles.separator} />;
-};
 
 export default function Dashboard() {
   return (
-    <View style={styles.tabContainer}>
-      <View style={styles.viewContainer}>
-        <Text style={styles.title}>{"DASHBOARD"}</Text>
-        <Text style={styles.search}>{"Search"}</Text>
-        <Text style={styles.sort}>{"Sort by: Location | Type | Newest\n"}</Text>
-        <View style={styles.listView}>
-          <FlatList
-            scrollEnabled={true}
-            scrollToOverflowEnabled={true}
-            data={data}
-            renderItem={({ item }) => (
-              <Item
-                image={item.image}
-                problem={item.problem}
-                detail={item.detail}
-                location={item.location}
-                status={item.status}
-              />
-            )}
-            ItemSeparatorComponent={Separator}
-            keyExtractor={(item) => item.id}
+    <View style={styles.screenView}>
+      <Text style={styles.title}>{"DASHBOARD"}</Text>
+      <Text style={styles.search}>{"Search"}</Text>
+      <Text style={styles.sort}>{"Sort by: Location | Type | Newest\n"}</Text>
+      <FlatList
+        scrollEnabled={true}
+        scrollToOverflowEnabled={true}
+        removeClippedSubviews={true}
+        data={data}
+        renderItem={({ item }) => (
+          <Item
+            image={item.image}
+            problem={item.problem}
+            detail={item.detail}
+            location={item.location}
+            status={item.status}
           />
-        </View>
-      </View>
+        )}
+        keyExtractor={(item) => item.id}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  tabContainer: {
-    //flex: 1,
-    height: "99%",
-    width: "99%",
+  screenView: {
+    flex: 1,
     flexDirection: "column",
     alignSelf: "center",
     alignItems: "center",
     marginTop: "15%",
-    //borderWidth: 3,
-    //borderColor: "red",
     backgroundColor: "white",
   },
-  viewContainer: {
-    //flex: 1,
-    height: "98%",
-    width: "98%",
-    //borderWidth: 3,
-    //borderColor: "green",
-    //backgroundColor: "green",
-  },
-  listView: {
-    flex: 1,
-    flexGrow :1,
-    height: "80%",
-    width: "100%",
-    flexDirection: "column",
-    //borderWidth: 3,
-    //borderColor: "blue",
-    //backgroundColor: "blue",
-  },
-  separator: {
-    height: "1%",
-    width: "100%",
-    //backgroundColor: "pink",
-  },
   ticketView: {
-    height: 0.15 * Dimensions.get("screen").height,
-    width: "100%",
+    height: 0.15 * HEIGHT,
     flexDirection: "row",
     borderWidth: 1,
     borderColor: "orange",
-    //backgroundColor: "purple",
   },
-  img: {
+  image: {
     height: "94%",
     width: "31%",
     marginTop: "1%",
     marginRight: "1%",
   },
-  txtCon: {
+  textView: {
     height: "94%",
     width: "68%",
     marginTop: "1%",
     marginBottom: "1%",
     flexDirection: "column",
   },
-  veriTxtCon: {
+  veriTxtView: {
     height: "80%",
     width: "100%",
     marginTop: "1%",
@@ -162,7 +139,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     marginLeft: "1%",
   },
-  horiTxtCon: {
+  horiTxtView: {
     height: "15%",
     width: "100%",
     flexDirection: "row",
