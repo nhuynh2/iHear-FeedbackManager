@@ -15,9 +15,39 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { launchImageLibrary, launchCamera } from "react-native-image-picker";
 import ImageResizer from "react-native-image-resizer";
+import firebaseConfig from "../../firebase-config";
+import { initializeApp } from "firebase/app";
+import { collection, addDoc, getFirestore } from "firebase/firestore";
+
+const FIREBASE_CONFIG = initializeApp(firebaseConfig);
+const FIRESTORE = getFirestore(FIREBASE_CONFIG);
+const OBJ_TYPE = "tickets";
+const ID_LENGTH = 10;
+
+const postData = async (objType: string, obj: object) => {
+  try {
+    const docRef = await addDoc(collection(FIRESTORE, objType), obj);
+    console.log("Document uploaded with ID: ", docRef.id);
+    return true;
+  } catch (error) {
+    console.error("Error uploading document: ", error);
+    return false;
+  }
+};
+
+const genID = () => {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < ID_LENGTH; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters[randomIndex];
+  }
+  return result;
+};
 
 const ReportScreen = () => {
-  const [topic, setTopic] = useState("");
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState<(string | null)[]>([null, null, null]);
 
@@ -145,8 +175,8 @@ const ReportScreen = () => {
 
   const handleSubmit = () => {
     // Validate fields
-    if (!topic) {
-      Alert.alert("Error", "Please enter a topic.");
+    if (!title) {
+      Alert.alert("Error", "Please enter a title.");
       return;
     }
 
@@ -171,17 +201,20 @@ const ReportScreen = () => {
     }
 
     // Create an object with the input data
-    const reportData = {
-      topic: topic,
+    const ticket = {
+      ID: genID(),
+      title: title,
       description: description,
       category: category,
       location: location,
       emergenceRating: emergenceRating,
+      image: ["file1", "file2", "file3"],
     };
+    console.log(ticket);
 
-    console.log(reportData);
+    postData(OBJ_TYPE, ticket);
 
-    setTopic("");
+    setTitle("");
     setCategory("Select Category");
     setLocation("Select Location");
     setDescription("");
@@ -242,9 +275,9 @@ const ReportScreen = () => {
 
         <TextInput
           style={styles.input}
-          placeholder="Topic"
-          value={topic}
-          onChangeText={setTopic}
+          placeholder="Title"
+          value={title}
+          onChangeText={setTitle}
         />
 
         {/* Category Dropdown */}
