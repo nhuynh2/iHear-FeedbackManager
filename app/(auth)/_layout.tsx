@@ -70,18 +70,6 @@ export default function AuthLayout() {
         }}
       />
       <Tabs.Screen
-        name="post"
-        options={{
-          title: "Post",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "arrow-up" : "arrow-up-outline"}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="signout"
         options={{
           title: "Sign Out",

@@ -210,7 +210,6 @@ const ReportScreen = () => {
       emergenceRating: emergenceRating,
       image: ["file1", "file2", "file3"],
     };
-    console.log(ticket);
 
     postData(OBJ_TYPE, ticket);
 
