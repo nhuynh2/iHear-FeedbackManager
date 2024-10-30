@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "HelloWorld",
-    "slug": "HelloWorld",
+    "name": "iHear",
+    "slug": "iHear",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
