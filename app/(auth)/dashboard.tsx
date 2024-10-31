@@ -10,8 +10,8 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-
 import data from "../../assets/data/tickets.json";
+import AddTicketButton from "../../components/AddTicketButton.tsx"
 
 const HEIGHT = Dimensions.get("screen").height;
 const WIDTH = Dimensions.get("screen").width;
@@ -71,6 +71,7 @@ export default function Dashboard() {
         )}
         keyExtractor={(item) => item.id}
       />
+      <AddTicketButton />
     </View>
   );
 }
