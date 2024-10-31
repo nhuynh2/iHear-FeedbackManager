@@ -1,30 +1,47 @@
-import { Stack, Tabs } from "expo-router";
 import React from "react";
-import { View, StyleSheet, ActivityIndicator } from "react-native";
-import auth, {
-  FirebaseAuthTypes,
-  onAuthStateChanged,
-} from "@react-native-firebase/auth";
-
+import { StyleSheet, TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { Drawer } from "expo-router/drawer";
+import { useNavigation, DrawerActions } from "@react-navigation/native";
 
 export default function AuthLayout() {
   const colorScheme = useColorScheme();
+  const navigation = useNavigation();
 
   return (
-    <Tabs
+    /* This is the hamburger menu symbol */
+    <Drawer
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        headerShown: false,
+        drawerActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        headerShown: true,
+        headerLeft: () => (
+          <TouchableOpacity
+            onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+          >
+            <Ionicons
+              name="menu"
+              size={24}
+              color={Colors[colorScheme ?? "light"].tint}
+            />
+          </TouchableOpacity>
+        ),
       }}
     >
-      <Tabs.Screen
+      {/* Changed the Tabs to Drawer Compartments*/}
+      <Drawer.Screen 
         name="profilepage"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color, focused }) => (
+          drawerIcon: ({
+            color,
+            focused,
+          }: {
+            color: string;
+            focused: boolean;
+          }) => (
             <TabBarIcon
               name={focused ? "home" : "home-outline"}
               color={color}
@@ -32,11 +49,17 @@ export default function AuthLayout() {
           ),
         }}
       />
-      <Tabs.Screen
+      <Drawer.Screen
         name="report"
         options={{
           title: "Report",
-          tabBarIcon: ({ color, focused }) => (
+          drawerIcon: ({
+            color,
+            focused,
+          }: {
+            color: string;
+            focused: boolean;
+          }) => (
             <TabBarIcon
               name={focused ? "send" : "send-outline"}
               color={color}
@@ -45,11 +68,17 @@ export default function AuthLayout() {
         }}
       />
 
-      <Tabs.Screen
+      <Drawer.Screen
         name="dashboard"
         options={{
           title: "Dashboard",
-          tabBarIcon: ({ color, focused }) => (
+          drawerIcon: ({
+            color,
+            focused,
+          }: {
+            color: string;
+            focused: boolean;
+          }) => (
             <TabBarIcon
               name={focused ? "list" : "list-outline"}
               color={color}
@@ -57,11 +86,17 @@ export default function AuthLayout() {
           ),
         }}
       />
-      <Tabs.Screen
+      <Drawer.Screen
         name="ticketdetails"
         options={{
           title: "Detail",
-          tabBarIcon: ({ color, focused }) => (
+          drawerIcon: ({
+            color,
+            focused,
+          }: {
+            color: string;
+            focused: boolean;
+          }) => (
             <TabBarIcon
               name={focused ? "information" : "information-outline"}
               color={color}
@@ -69,11 +104,17 @@ export default function AuthLayout() {
           ),
         }}
       />
-      <Tabs.Screen
+      <Drawer.Screen
         name="signout"
         options={{
           title: "Sign Out",
-          tabBarIcon: ({ color, focused }) => (
+          drawerIcon: ({
+            color,
+            focused,
+          }: {
+            color: string;
+            focused: boolean;
+          }) => (
             <TabBarIcon
               name={focused ? "eye-off" : "eye-off-outline"}
               color={color}
@@ -81,7 +122,7 @@ export default function AuthLayout() {
           ),
         }}
       />
-    </Tabs>
+    </Drawer>
   );
 }
 
