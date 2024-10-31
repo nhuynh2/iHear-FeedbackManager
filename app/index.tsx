@@ -55,14 +55,8 @@ export default function Index() {
       try {
         const userCredential = await auth().signInAnonymously();
         alert("Continue anonymously");
-        console.log('User signed in anonymously:', userCredential.user.uid);
         return userCredential.user;
       } catch (error) {
-        if (error.code === 'auth/operation-not-allowed') {
-          console.log('Anonymous sign-in is not enabled in your Firebase project.');
-        } else {
-          console.error('Anonymous sign-in error:', error);
-        }
         throw error;
       } finally {
           setLoading(false);
