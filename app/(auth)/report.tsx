@@ -24,6 +24,17 @@ const FIRESTORE = getFirestore(FIREBASE_CONFIG);
 const OBJ_TYPE = "tickets";
 const ID_LENGTH = 10;
 
+// Mock data for campus areas and buildings
+const campusAreas = {
+  "Residential": ["Clement", "Fred Brown", "Reese", "Massey"],
+  "Parking": ["G10", "11th Street", "White Ave"],
+  "The Hill": ["Ayres", "Perkins", "SERF"],
+  "Recreation/Sports": ["Neyland Stadium","TRECS", "Thompson-Bowling"],
+  "Other": ["Hodges Library", "Student Union"]
+};
+
+const campusAreaNames = Object.keys(campusAreas); // Extract area names
+
 const postData = async (objType: string, obj: object) => {
   try {
     const docRef = await addDoc(collection(FIRESTORE, objType), obj);
@@ -51,13 +62,15 @@ const ReportScreen = () => {
   const [description, setDescription] = useState("");
   const [images, setImages] = useState<(string | null)[]>([null, null, null]);
 
+  // Area and building state and modal visibility
+  const [area, setArea] = useState("Select Area");
+  const [building, setBuilding] = useState("Select Building");
+  const [isAreaModalVisible, setIsAreaModalVisible] = useState(false);
+  const [isBuildingModalVisible, setIsBuildingModalVisible] = useState(false);
+
   // Category state and modal visibility
   const [category, setCategory] = useState("Select Category");
   const [isCategoryModalVisible, setIsCategoryModalVisible] = useState(false);
-
-  // Location state and modal visibility
-  const [location, setLocation] = useState("Select Location");
-  const [isLocationModalVisible, setIsLocationModalVisible] = useState(false);
 
   // Emergence rating state
   const [emergenceRating, setEmergenceRating] = useState(0); // 1 to 5 rating
@@ -76,23 +89,6 @@ const ReportScreen = () => {
     "Exterior",
     "Parking Lot/Garage",
     "Other",
-  ];
-
-  const locationItems = [
-    "Hodges",
-    "Hess",
-    "Massey",
-    "Reese",
-    "Fred Brown",
-    "Clement",
-    "Student Union",
-    "Rockytop",
-    "TRECS",
-    "Thompson-Bowling",
-    "Neyland Stadium",
-    "Min Kao",
-    "Ayres",
-    "G10 Parking",
   ];
 
   const handleChoosePhoto = (index: number) => {
@@ -185,8 +181,13 @@ const ReportScreen = () => {
       return;
     }
 
-    if (location === "Select Location") {
-      Alert.alert("Error", "Please select a location.");
+    if (area === "Select Area") {
+      Alert.alert("Error", "Please select an area.");
+      return;
+    }
+
+    if (building === "Select Building") {
+      Alert.alert("Error", "Please select a building.");
       return;
     }
 
@@ -200,22 +201,31 @@ const ReportScreen = () => {
       return;
     }
 
+    // Check if there is at least one photo uploaded
+    const hasPhoto = images.some((image) => image !== null);
+    if (!hasPhoto) {
+      Alert.alert("Error", "Please upload at least one photo.");
+      return;
+    }
+
     // Create an object with the input data
     const ticket = {
       ID: genID(),
       title: title,
       description: description,
       category: category,
-      location: location,
+      area: area,
+      building: building,
       emergenceRating: emergenceRating,
-      image: ["file1", "file2", "file3"],
+      image: images.filter((img) => img !== null),
     };
 
     postData(OBJ_TYPE, ticket);
 
     setTitle("");
     setCategory("Select Category");
-    setLocation("Select Location");
+    setArea("Select Area");
+    setBuilding("Select Building");
     setDescription("");
     setEmergenceRating(0);
     setImages([null, null, null]);
@@ -235,12 +245,25 @@ const ReportScreen = () => {
     </TouchableOpacity>
   );
 
-  const renderLocationItem = ({ item }) => (
+  const renderAreaItem = ({ item }) => (
     <TouchableOpacity
       style={styles.modalItem}
       onPress={() => {
-        setLocation(item);
-        setIsLocationModalVisible(false);
+        setArea(item);
+        setBuilding("Select Building"); // Reset building when area changes
+        setIsAreaModalVisible(false);
+      }}
+    >
+      <Text>{item}</Text>
+    </TouchableOpacity>
+  );
+
+  const renderBuildingItem = ({ item }) => (
+    <TouchableOpacity
+      style={styles.modalItem}
+      onPress={() => {
+        setBuilding(item);
+        setIsBuildingModalVisible(false);
       }}
     >
       <Text>{item}</Text>
@@ -308,30 +331,63 @@ const ReportScreen = () => {
           </View>
         </Modal>
 
-        {/* Location Dropdown */}
+        {/* Area Dropdown */}
         <TouchableOpacity
           style={styles.dropdownButton}
-          onPress={() => setIsLocationModalVisible(true)}
+          onPress={() => setIsAreaModalVisible(true)}
         >
-          <Text>{location}</Text>
+          <Text>{area}</Text>
         </TouchableOpacity>
 
-        {/* Location Modal */}
         <Modal
-          visible={isLocationModalVisible}
+          visible={isAreaModalVisible}
           transparent={true}
           animationType="slide"
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <FlatList
-                data={locationItems}
-                renderItem={renderLocationItem}
+                data={campusAreaNames}
+                renderItem={renderAreaItem}
                 keyExtractor={(item) => item}
               />
               <Button
                 title="Close"
-                onPress={() => setIsLocationModalVisible(false)}
+                onPress={() => setIsAreaModalVisible(false)}
+              />
+            </View>
+          </View>
+        </Modal>
+
+        {/* Building Dropdown */}
+        <TouchableOpacity
+          style={styles.dropdownButton}
+          onPress={() => {
+            if (area !== "Select Area") {
+              setIsBuildingModalVisible(true);
+            } else {
+              Alert.alert("Select Area", "Please select an area first.");
+            }
+          }}
+        >
+          <Text>{building}</Text>
+        </TouchableOpacity>
+
+        <Modal
+          visible={isBuildingModalVisible}
+          transparent={true}
+          animationType="slide"
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <FlatList
+                data={campusAreas[area] || []} // Filter buildings by selected area
+                renderItem={renderBuildingItem}
+                keyExtractor={(item) => item}
+              />
+              <Button
+                title="Close"
+                onPress={() => setIsBuildingModalVisible(false)}
               />
             </View>
           </View>
@@ -385,7 +441,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   header: {
-    fontSize: 24,
+    fontSize: 35,
     fontWeight: "bold",
     textAlign: "center",
     color: "red",
