@@ -1,12 +1,12 @@
 {
     "profile": {
-      "avatar": "https://news.ubc.ca/wp-content/uploads/2023/08/AdobeStock_559145847.jpeg",
-      "name": "Mule Goopie",
-      "netID": "mgoop",
-      "role": "designer of this beautiful page hahaha",
+      "avatar": "https://example.com/avatar.jpg",
+      "name": "John Deez Nuts",
+      "netID": "jdn1234ha",
+      "role": "Software Engineer sucks fml",
       "contact": {
-        "email": "mgoop@vols.utk.edu",
-        "phone": "901-123-4567"
+        "email": "john.doenuts@example.com",
+        "phone": "+1 (555) 123-4567"
       }
     }
   }
