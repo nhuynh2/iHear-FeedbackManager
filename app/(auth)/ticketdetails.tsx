@@ -164,17 +164,15 @@ const TicketDetailScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 40,
-        padding: 20,
+        padding: 15,
         backgroundColor: 'white',
     },
     title: {
-        padding: 30,
-        fontSize: 24,
+        fontSize: 30,
         fontWeight: 'bold',
         color: 'red',
         textAlign: 'center',
-        marginBottom: 10,
+        marginBottom: 20,
 
     },
     detailContainer: {
