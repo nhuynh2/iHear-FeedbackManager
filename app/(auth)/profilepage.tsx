@@ -71,24 +71,24 @@ const ProfilePage: React.FC = () => {
 const styles = StyleSheet.create({
   scrollViewContainer: {
     flexGrow: 1,
-    justifyContent: 'flex-start',
+    justifyContent: "flex-start",
     paddingBottom: 20,
   },
   profilePage: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    alignItems: "center",
+    justifyContent: "flex-start",
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   profileHeader: {
-    fontSize: 32,
-    color: '#0000FF',
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#0000FF",
     marginBottom: 20,
-    marginTop: 20,
   },
   avatarSection: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
     paddingTop: 10,
   },
@@ -96,25 +96,25 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderWidth: 2,
-    borderColor: 'black',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderColor: "black",
+    justifyContent: "center",
+    alignItems: "center",
   },
   infoSection: {
-    width: '100%', // Ensure the inputs take the full width
+    width: "100%", // Ensure the inputs take the full width
     marginTop: 20, // Space above the info section
   },
   label: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 10, // Space above each label
   },
   input: {
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderRadius: 5,
     padding: 10,
     marginVertical: 10, // Space between each input field
-    width: '100%', // Full width of the container
+    width: "100%", // Full width of the container
     maxWidth: 400, // Limit the width
   },
 });

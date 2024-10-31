@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
@@ -18,15 +18,17 @@ export default function AuthLayout() {
         drawerActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: true,
         headerLeft: () => (
-          <TouchableOpacity
-            onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-          >
-            <Ionicons
-              name="menu"
-              size={24}
-              color={Colors[colorScheme ?? "light"].tint}
-            />
-          </TouchableOpacity>
+          <View style={{ paddingLeft: 15}}>
+            <TouchableOpacity
+              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+            >
+              <Ionicons
+                name="menu"
+                size={24}
+                color={Colors[colorScheme ?? "light"].tint}
+              />
+            </TouchableOpacity>
+          </View>
         ),
       }}
     >

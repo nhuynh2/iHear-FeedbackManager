@@ -375,17 +375,17 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: 20,
   },
   container: {
-    padding: 20,
+    marginLeft: 20,
+    marginRight: 20,
     backgroundColor: "#fff",
   },
   emergenceLabel: {
     padding: 10,
   },
   header: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: "bold",
     textAlign: "center",
     color: "red",
