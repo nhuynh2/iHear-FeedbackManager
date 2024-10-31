@@ -14,22 +14,27 @@ import data from "../../assets/data/tickets.json";
 import AddTicketButton from "../../components/AddTicketButton.tsx";
 import { useRouter } from 'expo-router';
 import { ROUTES } from "../../components/navigation/routes";
+import Animated, {
+    useAnimatedRef,
+    useAnimatedStyle,
+    useScrollViewOffset,
+    withTiming,
+    } from 'react-native-reanimated';
 
 const HEIGHT = Dimensions.get("screen").height;
 const WIDTH = Dimensions.get("screen").width;
 
 const Dashboard = () => {
   const router = useRouter(); // Move useRouter hook here
-
-  // Define the onPressHandle function inside the Dashboard component
+    const scrollRef = useAnimatedRef<Animated.ScrollView>();
+    const scrollHandler = useScrollViewOffset(scrollRef);
+    const buttonStyle = useAnimatedStyle(() => {
+        return {
+            opacity: scrollHandler.value < 60 ? withTiming(1) : withTiming(0),
+            }
+        });
   const onPressHandle = (status) => {
-    if (status === 'in-progress') {
-      console.log("Issue status is: ", status);
       router.push(ROUTES.TICKET_DETAILS); // Navigate to the Ticket Details page
-    } else {
-      console.log("Issue status is: ", status);
-      Alert.alert("Issue has been resolved.");
-    }
   };
 
   type ItemProps = {
@@ -67,6 +72,7 @@ const Dashboard = () => {
       <Text style={styles.search}>{"Search"}</Text>
       <Text style={styles.sort}>{"Sort by: Location | Type | Newest\n"}</Text>
       <FlatList
+        ref={scrollRef}
         scrollEnabled={true}
         scrollToOverflowEnabled={true}
         removeClippedSubviews={true}
@@ -82,7 +88,9 @@ const Dashboard = () => {
         )}
         keyExtractor={(item) => item.id}
       />
-      <AddTicketButton />
+      <Animated.View style ={[buttonStyle, { position: 'absolute', right: 10, bottom: 10 } ]}>
+          <AddTicketButton />
+      </Animated.View>
     </View>
   );
 };

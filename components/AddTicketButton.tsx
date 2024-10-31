@@ -25,13 +25,14 @@ const styles = StyleSheet.create({
   button: {
     position: 'absolute',
     bottom: 20,
-    right: 20,
+    right: 10,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#6200ee',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 30,
+    zIndex: 10
   },
   iconContainer: {
     marginRight: 5,
