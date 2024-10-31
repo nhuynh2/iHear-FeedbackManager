@@ -18,7 +18,7 @@ export default function AuthLayout() {
         drawerActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: true,
         headerLeft: () => (
-          <View style={{ paddingLeft: 15}}>
+          <View style={{ paddingLeft: 15 }}>
             <TouchableOpacity
               onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
             >
@@ -33,7 +33,7 @@ export default function AuthLayout() {
       }}
     >
       {/* Changed the Tabs to Drawer Compartments*/}
-      <Drawer.Screen 
+      <Drawer.Screen
         name="profilepage"
         options={{
           title: "Profile",
@@ -43,12 +43,7 @@ export default function AuthLayout() {
           }: {
             color: string;
             focused: boolean;
-          }) => (
-            <TabBarIcon
-              name={focused ? "home" : "home-outline"}
-              color={color}
-            />
-          ),
+          }) => <Ionicons name={"person"} size={24} color={color} />,
         }}
       />
       <Drawer.Screen
@@ -61,12 +56,7 @@ export default function AuthLayout() {
           }: {
             color: string;
             focused: boolean;
-          }) => (
-            <TabBarIcon
-              name={focused ? "send" : "send-outline"}
-              color={color}
-            />
-          ),
+          }) => <Ionicons name={"warning"} size={24} color={color} />,
         }}
       />
 
@@ -80,12 +70,7 @@ export default function AuthLayout() {
           }: {
             color: string;
             focused: boolean;
-          }) => (
-            <TabBarIcon
-              name={focused ? "list" : "list-outline"}
-              color={color}
-            />
-          ),
+          }) => <Ionicons name={"home"} size={24} color={color} />,
         }}
       />
       <Drawer.Screen
@@ -99,10 +84,7 @@ export default function AuthLayout() {
             color: string;
             focused: boolean;
           }) => (
-            <TabBarIcon
-              name={focused ? "information" : "information-outline"}
-              color={color}
-            />
+            <Ionicons name={"information-circle"} size={24} color={color} />
           ),
         }}
       />
@@ -117,10 +99,7 @@ export default function AuthLayout() {
             color: string;
             focused: boolean;
           }) => (
-            <TabBarIcon
-              name={focused ? "eye-off" : "eye-off-outline"}
-              color={color}
-            />
+            <Ionicons name={"walk"} size={24} color={color} />
           ),
         }}
       />
