@@ -54,10 +54,9 @@ export default function Index() {
         setLoading(true);
       try {
         const userCredential = await auth().signInAnonymously();
-        alert("Continue anonymously");
         return userCredential.user;
       } catch (error) {
-        throw error;
+        alert("Authentication failed")
       } finally {
           setLoading(false);
       }
