@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput, Image } from 'react-native';
 import data from "../../assets/data/profilepage.json";
 
 const ProfilePage: React.FC = () => {
@@ -10,11 +10,15 @@ const ProfilePage: React.FC = () => {
         <Text style={styles.profileHeader}>PROFILE</Text>
 
         {/* Avatar Section */}
-        <View style={styles.avatarSection}>
-          <View style={styles.avatarPlaceholder}>
-            <Text>Avatar Photo</Text>
-          </View>
-        </View>
+<View style={styles.avatarSection}>
+  <View style={styles.avatarPlaceholder}>
+    <Image
+      source={{ uri: data.profile.avatar }} // Accessing the avatar URL from JSON
+      style={styles.avatarImage} // Add styles for the image
+      resizeMode="cover" // Ensures the image covers the space properly
+    />
+  </View>
+</View>
 
         {/* Info Section */}
         <View style={styles.infoSection}>
@@ -79,13 +83,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: '#ffc043',
   },
   profileHeader: {
-    fontSize: 32,
-    color: '#0000FF',
+    fontSize: 34,
+    color: 'black',
     marginBottom: 20,
     marginTop: 20,
+    fontFamily: 'Roboto', // Change this to desired font
+    fontWeight: 'bold', // Optionally set the font weight
   },
   avatarSection: {
     alignItems: 'center',
@@ -99,6 +105,12 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
+    borderRadius: 100, // Makes the box circular
+  },
+  avatarImage: {
+    width: '100%', // image width
+    height: '100%', // image height 
   },
   infoSection: {
     width: '100%', // Ensure the inputs take the full width
