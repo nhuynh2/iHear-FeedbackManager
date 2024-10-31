@@ -11,45 +11,56 @@ import {
   Alert,
 } from "react-native";
 import data from "../../assets/data/tickets.json";
-import AddTicketButton from "../../components/AddTicketButton.tsx"
+import AddTicketButton from "../../components/AddTicketButton.tsx";
+import { useRouter } from 'expo-router';
+import { ROUTES } from "../../components/navigation/routes";
 
 const HEIGHT = Dimensions.get("screen").height;
 const WIDTH = Dimensions.get("screen").width;
 
-const onPressHandle = () => {
-  Alert.alert("Clicked!");
-};
+const Dashboard = () => {
+  const router = useRouter(); // Move useRouter hook here
 
-type ItemProps = {
-  image: string;
-  problem: string;
-  detail: string;
-  location: string;
-  status: string;
-};
+  // Define the onPressHandle function inside the Dashboard component
+  const onPressHandle = (status) => {
+    if (status === 'in-progress') {
+      console.log("Issue status is: ", status);
+      router.push(ROUTES.TICKET_DETAILS); // Navigate to the Ticket Details page
+    } else {
+      console.log("Issue status is: ", status);
+      Alert.alert("Issue has been resolved.");
+    }
+  };
 
-const Item = ({ image, problem, detail, location, status }: ItemProps) => (
-  <TouchableOpacity
-    style={styles.ticketView}
-    delayPressIn={50}
-    activeOpacity={0.4}
-    onPress={onPressHandle}
-  >
-    <Image style={styles.image} source={{ uri: image }}></Image>
-    <View style={styles.textView}>
-      <View style={styles.veriTxtView}>
-        <Text style={styles.problem}>{problem}</Text>
-        <Text style={styles.detail}>{detail}</Text>
+  type ItemProps = {
+    image: string;
+    problem: string;
+    detail: string;
+    location: string;
+    status: string;
+  };
+
+  const Item = ({ image, problem, detail, location, status }: ItemProps) => (
+    <TouchableOpacity
+      style={styles.ticketView}
+      delayPressIn={50}
+      activeOpacity={0.4}
+      onPress={() => onPressHandle(status)} // Use the onPressHandle function here
+    >
+      <Image style={styles.image} source={{ uri: image }} />
+      <View style={styles.textView}>
+        <View style={styles.veriTxtView}>
+          <Text style={styles.problem}>{problem}</Text>
+          <Text style={styles.detail}>{detail}</Text>
+        </View>
+        <View style={styles.horiTxtView}>
+          <Text style={styles.location}>{location}</Text>
+          <Text style={styles.status}>{status}</Text>
+        </View>
       </View>
-      <View style={styles.horiTxtView}>
-        <Text style={styles.location}>{location}</Text>
-        <Text style={styles.status}>{status}</Text>
-      </View>
-    </View>
-  </TouchableOpacity>
-);
+    </TouchableOpacity>
+  );
 
-export default function Dashboard() {
   return (
     <View style={styles.screenView}>
       <Text style={styles.title}>{"DASHBOARD"}</Text>
@@ -74,7 +85,7 @@ export default function Dashboard() {
       <AddTicketButton />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   screenView: {
@@ -161,3 +172,5 @@ const styles = StyleSheet.create({
     marginRight: "1%",
   },
 });
+
+export default Dashboard;

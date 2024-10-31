@@ -4,4 +4,5 @@ export const ROUTES = {
   PROFILE_PAGE: '/(auth)/profilepage',
   DASHBOARD: '/(auth)/dashboard',
   REPORT: '/(auth)/report',
+  TICKET_DETAILS: '/(auth)/ticketdetails'
 };
