@@ -8,10 +8,12 @@ import {
   Button,
   ActivityIndicator,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   Platform,
   Keyboard,
   Dimensions,
   Image,
+  Modal,
 } from "react-native";
 import auth from "@react-native-firebase/auth";
 import { FirebaseError } from "firebase/app";
@@ -47,6 +49,18 @@ export default function Index() {
       setLoading(false);
     }
   };
+
+    const handleAnonymousSignIn = async () => {
+        setLoading(true);
+      try {
+        const userCredential = await auth().signInAnonymously();
+        return userCredential.user;
+      } catch (error) {
+        alert("Authentication failed")
+      } finally {
+          setLoading(false);
+      }
+    };
 
   return (
     <KeyboardAvoidingView
@@ -90,12 +104,18 @@ export default function Index() {
               boxColor="#0cb9f7"
               onPress={signUp}
             />
+            <TouchableOpacity style={styles.button} onPress={handleAnonymousSignIn}>
+                  <Text style={styles.buttonText}>Anonymous</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 }
+
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -109,8 +129,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF5E1",
   },
   img: {
-    height: 200,
-    width: 200,
+    height: 150,
+    width: 150,
     marginTop: "1%",
     marginRight: "1%",
   },
@@ -139,4 +159,17 @@ const styles = StyleSheet.create({
   loadingIndicator: {
     margin: "5%",
   },
+  button: {
+      backgroundColor: '#2196F3',
+      padding: 8,
+      borderRadius: 5,
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: "1%",
+    },
+    buttonText: {
+      color: '#FFFFFF',
+      fontSize: 22,
+      textAlign: 'center',
+    },
 });
