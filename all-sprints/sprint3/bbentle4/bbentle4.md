@@ -58,6 +58,10 @@ Then you can see I tried a couple different methods of gitblame and got differen
 - Note: Only my work from issue 49 is on the main branch due to not achieving the acceptance criteria. I've listed the respective branches.  
 - main: Issue 49
     - _layout.tsx
+    - app/(auth)/dashboard.tsx
+    - app/(auth)/profilepage.tsx
+    - app/(auth)/report.tsx
+    - app/(auth)/ticketdetails.tsx
 - issue-41: Issue 41
     - app/(auth)/report.tsx
 - issue-40: Issue 40
