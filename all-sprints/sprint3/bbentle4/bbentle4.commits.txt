@@ -1,1 +1,5 @@
-BRANCH: main
+Once again, git blame is NOT working. I've tried everything. I'll even include that in my issues I ran into in my README.
+Here are instead my pull requests which will show all the changes I've made:
+[Issue 40](https://github.com/utk-cs340-fall24/iHear/pull/63/files)
+[Issue 41](https://github.com/utk-cs340-fall24/iHear/pull/64/files)
+[Issue 49](https://github.com/utk-cs340-fall24/iHear/pull/60/files)
