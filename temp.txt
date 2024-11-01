@@ -1,0 +1,35 @@
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  1) import { Platform } from "react-native";
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  2) import { useEffect, useState } from "react";
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  3) import iosData from "./GoogleService-Info.json";
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  4) import androidData from "./google-services.json";
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  5) 
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  6) let firebaseConfig = {
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  7)   apiKey: "apiKey",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  8)   authDomain: "authDomain",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  9)   projectId: "projectId",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 10)   storageBucket: "storageBucket",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 11)   messagingSenderId: "messagingSenderId",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 12)   appId: "appId",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 13) };
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 14) 
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 15) if (Platform.OS == "ios") {
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 16)   firebaseConfig = {
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 17)     apiKey: iosData.API_KEY,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 18)     authDomain: "YOUR_AUTH_DOMAIN",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 19)     projectId: iosData.PROJECT_ID,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 20)     storageBucket: iosData.STORAGE_BUCKET,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 21)     messagingSenderId: iosData.GCM_SENDER_ID,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 22)     appId: iosData.GOOGLE_APP_ID,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 23)   };
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 24) } else if (Platform.OS == "android") {
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 25)   firebaseConfig = {
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 26)     apiKey: androidData.client[0].api_key[0].current_key,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 27)     authDomain: "YOUR_AUTH_DOMAIN",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 28)     projectId: androidData.project_info.project_id,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 29)     storageBucket: androidData.project_info.storage_bucket,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 30)     messagingSenderId: androidData.project_info.project_number,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 31)     appId: androidData.client[0].client_info.mobilesdk_app_id,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 32)   };
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 33) }
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 34) 
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 35) export default firebaseConfig;

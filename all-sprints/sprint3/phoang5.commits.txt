@@ -1,0 +1,179 @@
+Because I reconstructed the repository, so there are some overlapping on the date (after 10/17/2024) of last sprint.
+
+FILE: ./documents/Github-workflow.docx:
+
+It is a documents words so I do not include it here
+--------------------------------------------------------------------------------------------------------------------------------------------
+FILE: ./app/(auth)/dashboard.tsx
+
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  10)   TouchableOpacity,
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  11)   Alert,
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  16) const HEIGHT = Dimensions.get("screen").height;
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  17) const WIDTH = Dimensions.get("screen").width;
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  18) 
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  19) const onPressHandle = () => {
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  20)   Alert.alert("Clicked!");
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  21) };
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  22) 
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  32)   <TouchableOpacity
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  33)     style={styles.ticketView}
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  34)     delayPressIn={50}
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  35)     activeOpacity={0.4}
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  36)     onPress={onPressHandle}
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  37)   >
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  38)     <Image style={styles.image} source={{ uri: image }}></Image>
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  39)     <View style={styles.textView}>
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  40)       <View style={styles.veriTxtView}>
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  44)       <View style={styles.horiTxtView}>
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  49)   </TouchableOpacity>
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  54)     <View style={styles.screenView}>
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  55)       <Text style={styles.title}>{"DASHBOARD"}</Text>
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  56)       <Text style={styles.search}>{"Search"}</Text>
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  57)       <Text style={styles.sort}>{"Sort by: Location | Type | Newest\n"}</Text>
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  58)       <FlatList
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  59)         scrollEnabled={true}
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  60)         scrollToOverflowEnabled={true}
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  61)         removeClippedSubviews={true}
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  62)         data={data}
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  63)         renderItem={({ item }) => (
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  64)           <Item
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  65)             image={item.image}
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  66)             problem={item.problem}
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  67)             detail={item.detail}
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  68)             location={item.location}
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  69)             status={item.status}
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  71)         )}
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  72)         keyExtractor={(item) => item.id}
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  73)       />
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  79)   screenView: {
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  80)     flex: 1,
+ad1065bd app/(auth)/dashboard.tsx                (bbentley4 2024-10-31 03:14:17 -0400  85)     paddingHorizontal: 15,
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  93)   image: {
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400  99)   textView: {
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400 106)   veriTxtView: {
+ad1065bd app/(auth)/dashboard.tsx                (bbentley4 2024-10-31 03:14:17 -0400 115)     fontSize: 30,
+ad1065bd app/(auth)/dashboard.tsx                (bbentley4 2024-10-31 03:14:17 -0400 118)     marginBottom: 20,
+ad1065bd app/(auth)/dashboard.tsx                (bbentley4 2024-10-31 03:14:17 -0400 119)     marginTop: 20, 
+6daad871 app/(auth)/dashboard.tsx                (Phu Hoang 2024-10-30 17:28:57 -0400 144)   horiTxtView: {
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+FILE: ./GoogleService-Info.json
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  1) {
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  2)   "REVERSED_CLIENT_ID": "com.googleusercontent.apps.676978792442-d12maqj9c58o1g4nncr5qr1243utqhbb",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  3)   "API_KEY": "AIzaSyAEzHatRoPFnlIJovjcRtI5GUMOmC_reFk",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  4)   "IS_SIGNIN_ENABLED": true,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  5)   "IS_GCM_ENABLED": true,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  6)   "GOOGLE_APP_ID": "1:676978792442:ios:9edd75c09d8fc308cb7643",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  7)   "GCM_SENDER_ID": "676978792442",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  8)   "ANDROID_CLIENT_ID": "676978792442-qrkvnvg3b5cbbn4v1nmaeq66vvgo43f8.apps.googleusercontent.com",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  9)   "BUNDLE_ID": "com.anonymous.iHear",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 10)   "IS_APPINVITE_ENABLED": true,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 11)   "IS_ANALYTICS_ENABLED": false,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 12)   "PROJECT_ID": "ihear-bfe86",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 13)   "PLIST_VERSION": "1",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 14)   "STORAGE_BUCKET": "ihear-bfe86.appspot.com",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 15)   "IS_ADS_ENABLED": false,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 16)   "CLIENT_ID": "676978792442-d12maqj9c58o1g4nncr5qr1243utqhbb.apps.googleusercontent.com"
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 17) }
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+FILE: ./app/(auth)/report.tsx
+
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  18) import firebaseConfig from "../../firebase-config";
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  19) import { initializeApp } from "firebase/app";
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  20) import { collection, addDoc, getFirestore } from "firebase/firestore";
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  21) 
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  22) const FIREBASE_CONFIG = initializeApp(firebaseConfig);
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  23) const FIRESTORE = getFirestore(FIREBASE_CONFIG);
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  24) const OBJ_TYPE = "tickets";
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  25) const ID_LENGTH = 10;
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  26) 
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  27) const postData = async (objType: string, obj: object) => {
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  28)   try {
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  29)     const docRef = await addDoc(collection(FIRESTORE, objType), obj);
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  30)     console.log("Document uploaded with ID: ", docRef.id);
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  31)     return true;
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  32)   } catch (error) {
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  33)     console.error("Error uploading document: ", error);
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  34)     return false;
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  35)   }
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  36) };
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  37) 
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  38) const genID = () => {
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  39)   const characters =
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  40)     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  41)   let result = "";
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  42)   for (let i = 0; i < ID_LENGTH; i++) {
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  43)     const randomIndex = Math.floor(Math.random() * characters.length);
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  44)     result += characters[randomIndex];
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  45)   }
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  46)   return result;
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  47) };
+^fc50a7a projects/Ihear/app/(auth)/report.tsx (Phu Hoang 2024-10-17 23:46:46 -0400  48) 
+^fc50a7a projects/Ihear/app/(auth)/report.tsx (Phu Hoang 2024-10-17 23:46:46 -0400  49) const ReportScreen = () => {
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400  50)   const [title, setTitle] = useState("");
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400 178)     if (!title) {
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400 179)       Alert.alert("Error", "Please enter a title.");
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400 204)     const ticket = {
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400 205)       ID: genID(),
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400 206)       title: title,
+^fc50a7a projects/Ihear/app/(auth)/report.tsx (Phu Hoang 2024-10-17 23:46:46 -0400 207)       description: description,
+^fc50a7a projects/Ihear/app/(auth)/report.tsx (Phu Hoang 2024-10-17 23:46:46 -0400 208)       category: category,
+^fc50a7a projects/Ihear/app/(auth)/report.tsx (Phu Hoang 2024-10-17 23:46:46 -0400 209)       location: location,
+^fc50a7a projects/Ihear/app/(auth)/report.tsx (Phu Hoang 2024-10-17 23:46:46 -0400 210)       emergenceRating: emergenceRating,
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400 211)       image: ["file1", "file2", "file3"],
+^fc50a7a projects/Ihear/app/(auth)/report.tsx (Phu Hoang 2024-10-17 23:46:46 -0400 212)     };
+^fc50a7a projects/Ihear/app/(auth)/report.tsx (Phu Hoang 2024-10-17 23:46:46 -0400 213) 
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400 214)     postData(OBJ_TYPE, ticket);
+^fc50a7a projects/Ihear/app/(auth)/report.tsx (Phu Hoang 2024-10-17 23:46:46 -0400 215) 
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400 216)     setTitle("");
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400 277)           placeholder="Title"
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400 278)           value={title}
+5670f868 app/(auth)/report.tsx                (Phu Hoang 2024-10-30 14:32:12 -0400 279)           onChangeText={setTitle}
+ad1065bd app/(auth)/report.tsx                (bbentley4 2024-10-31 03:14:17 -0400 380)     marginLeft: 20,
+ad1065bd app/(auth)/report.tsx                (bbentley4 2024-10-31 03:14:17 -0400 381)     marginRight: 20,
+ad1065bd app/(auth)/report.tsx                (bbentley4 2024-10-31 03:14:17 -0400 388)     fontSize: 30,
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+FILE: ./firebase-config.ts
+
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  1) import { Platform } from "react-native";
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  2) import { useEffect, useState } from "react";
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  3) import iosData from "./GoogleService-Info.json";
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  4) import androidData from "./google-services.json";
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  5) 
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  6) let firebaseConfig = {
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  7)   apiKey: "apiKey",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  8)   authDomain: "authDomain",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400  9)   projectId: "projectId",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 10)   storageBucket: "storageBucket",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 11)   messagingSenderId: "messagingSenderId",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 12)   appId: "appId",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 13) };
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 14) 
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 15) if (Platform.OS == "ios") {
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 16)   firebaseConfig = {
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 17)     apiKey: iosData.API_KEY,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 18)     authDomain: "YOUR_AUTH_DOMAIN",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 19)     projectId: iosData.PROJECT_ID,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 20)     storageBucket: iosData.STORAGE_BUCKET,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 21)     messagingSenderId: iosData.GCM_SENDER_ID,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 22)     appId: iosData.GOOGLE_APP_ID,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 23)   };
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 24) } else if (Platform.OS == "android") {
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 25)   firebaseConfig = {
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 26)     apiKey: androidData.client[0].api_key[0].current_key,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 27)     authDomain: "YOUR_AUTH_DOMAIN",
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 28)     projectId: androidData.project_info.project_id,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 29)     storageBucket: androidData.project_info.storage_bucket,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 30)     messagingSenderId: androidData.project_info.project_number,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 31)     appId: androidData.client[0].client_info.mobilesdk_app_id,
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 32)   };
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 33) }
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 34) 
+5670f868 (Phu Hoang 2024-10-30 14:32:12 -0400 35) export default firebaseConfig;
+--------------------------------------------------------------------------------------------------------------------------------------------
