@@ -1,44 +1,28 @@
-import React from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  KeyboardAvoidingView,
-  TextInput,
-  Button,
-  ActivityIndicator,
-} from "react-native";
-import auth from "@react-native-firebase/auth";
-
-import data from "../../assets/data/ticketdetail.json";
+import React, { useEffect } from "react";
+import { View, ActivityIndicator } from "react-native";
+import auth from "@react-native-firebase/auth"; // Use Firebase Auth, adjust if you're using another method
+import { useNavigation, StackActions } from "@react-navigation/native";
 
 export default function SignOut() {
-  const user = auth().currentUser;
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const signOutUser = async () => {
+      try {
+        await auth().signOut();
+        // Use reset to navigate to the index screen and clear the stack
+        navigation.dispatch(StackActions.replace("index"));
+      } catch {
+        alert("Error signing out:");
+      }
+    };
+
+    signOutUser();
+  }, [navigation]);
 
   return (
-    <View style={styles.container}>
-      <Text> Welcome {user?.email} </Text>
-      <Button title="Sign out" onPress={() => auth().signOut()} />
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <ActivityIndicator size="large" color="#0000ff" />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: "2%",
-    flex: 1,
-    justifyContent: "center",
-  },
-  input: {
-    marginVertical: "1%",
-    height: "15%",
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: "2%",
-    backgroundColor: "white",
-    fontSize: 20,
-  },
-  loadingIndicator: {
-    margin: "5%",
-  },
-});

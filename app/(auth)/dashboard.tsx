@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignSelf: "center",
     alignItems: "center",
-    marginTop: "15%",
     backgroundColor: "white",
+    paddingHorizontal: 15,
   },
   ticketView: {
     height: 0.15 * HEIGHT,
@@ -112,9 +112,11 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "green",
-    fontSize: 35,
+    fontSize: 30,
     fontWeight: "bold",
     alignSelf: "center",
+    marginBottom: 20,
+    marginTop: 20, 
   },
   search: {
     color: "red",

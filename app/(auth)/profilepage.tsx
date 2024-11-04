@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   profileHeader: {
-    fontSize: 24,
+    fontSize: 30,
     color: "#0000FF",
     marginBottom: 20,
     marginTop: 20,

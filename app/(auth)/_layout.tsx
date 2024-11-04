@@ -1,87 +1,114 @@
-import { Stack, Tabs } from "expo-router";
-import React from "react";
-import { View, StyleSheet, ActivityIndicator } from "react-native";
-import auth, {
-  FirebaseAuthTypes,
-  onAuthStateChanged,
-} from "@react-native-firebase/auth";
-
+import React, { useCallback, useEffect } from "react";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { Drawer } from "expo-router/drawer";
+import {
+  useNavigation,
+  DrawerActions,
+  useFocusEffect,
+} from "@react-navigation/native";
+import auth from "@react-native-firebase/auth";
 
 export default function AuthLayout() {
   const colorScheme = useColorScheme();
+  const navigation = useNavigation();
 
   return (
-    <Tabs
+    // This is the menu symbol
+    <Drawer
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        headerShown: false,
+        drawerActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        headerShown: true,
+        headerLeft: () => {
+          return (
+            <View style={{ paddingLeft: 15 }}>
+              <TouchableOpacity
+                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+              >
+                <Ionicons
+                  name="menu"
+                  size={24}
+                  color={Colors[colorScheme ?? "light"].tint}
+                />
+              </TouchableOpacity>
+            </View>
+          );
+        },
       }}
     >
-      <Tabs.Screen
+      {/* Changed the Tabs to Drawer Compartments*/}
+      <Drawer.Screen
         name="profilepage"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "home" : "home-outline"}
-              color={color}
-            />
-          ),
+          drawerIcon: ({
+            color,
+            focused,
+          }: {
+            color: string;
+            focused: boolean;
+          }) => <Ionicons name={"person"} size={24} color={color} />,
         }}
       />
-      <Tabs.Screen
+      <Drawer.Screen
         name="report"
         options={{
           title: "Report",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "send" : "send-outline"}
-              color={color}
-            />
-          ),
+          drawerIcon: ({
+            color,
+            focused,
+          }: {
+            color: string;
+            focused: boolean;
+          }) => <Ionicons name={"warning"} size={24} color={color} />,
         }}
       />
 
-      <Tabs.Screen
+      <Drawer.Screen
         name="dashboard"
         options={{
           title: "Dashboard",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "list" : "list-outline"}
-              color={color}
-            />
-          ),
+          drawerIcon: ({
+            color,
+            focused,
+          }: {
+            color: string;
+            focused: boolean;
+          }) => <Ionicons name={"home"} size={24} color={color} />,
         }}
       />
-      <Tabs.Screen
+      <Drawer.Screen
         name="ticketdetails"
         options={{
           title: "Detail",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "information" : "information-outline"}
-              color={color}
-            />
+          drawerIcon: ({
+            color,
+            focused,
+          }: {
+            color: string;
+            focused: boolean;
+          }) => (
+            <Ionicons name={"information-circle"} size={24} color={color} />
           ),
         }}
       />
-      <Tabs.Screen
+      <Drawer.Screen
         name="signout"
         options={{
           title: "Sign Out",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "eye-off" : "eye-off-outline"}
-              color={color}
-            />
-          ),
+          drawerIcon: ({
+            color,
+            focused,
+          }: {
+            color: string;
+            focused: boolean;
+          }) => <Ionicons name={"walk"} size={24} color={color} />,
         }}
       />
-    </Tabs>
+    </Drawer>
   );
 }
 

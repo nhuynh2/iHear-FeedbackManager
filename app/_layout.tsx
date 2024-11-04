@@ -13,7 +13,7 @@ export default function RootLayout() {
   const segments = useSegments();
 
   const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
-    console.log("onAuthStateChanged", user);
+    //console.log("onAuthStateChanged", user);
     setUser(user);
     if (initializing) setInitializing(false);
   };
@@ -46,7 +46,7 @@ export default function RootLayout() {
 
   return (
     <Stack>
-      <Stack.Screen name="index" />
+      <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
     </Stack>
   );
