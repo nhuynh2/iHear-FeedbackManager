@@ -22,7 +22,6 @@ import { collection, addDoc, getFirestore } from "firebase/firestore";
 const FIREBASE_CONFIG = initializeApp(firebaseConfig);
 const FIRESTORE = getFirestore(FIREBASE_CONFIG);
 const OBJ_TYPE = "tickets";
-const ID_LENGTH = 10;
 
 const postData = async (objType: string, obj: object) => {
   try {
@@ -33,17 +32,6 @@ const postData = async (objType: string, obj: object) => {
     console.error("Error uploading document: ", error);
     return false;
   }
-};
-
-const genID = () => {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-  for (let i = 0; i < ID_LENGTH; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    result += characters[randomIndex];
-  }
-  return result;
 };
 
 const ReportScreen = () => {
@@ -202,13 +190,16 @@ const ReportScreen = () => {
 
     // Create an object with the input data
     const ticket = {
-      ID: genID(),
       title: title,
-      description: description,
       category: category,
+      priority: priority,
       location: location,
-      emergenceRating: emergenceRating,
-      image: ["file1", "file2", "file3"],
+      detail: detail,
+      image: [],
+      status: "open",
+      user_id: user_id,
+      staff_ids: [],
+      manager_ids: [],
     };
 
     postData(OBJ_TYPE, ticket);
