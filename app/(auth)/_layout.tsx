@@ -1,35 +1,42 @@
-import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import React, { useCallback, useEffect } from "react";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Drawer } from "expo-router/drawer";
-import { useNavigation, DrawerActions } from "@react-navigation/native";
+import {
+  useNavigation,
+  DrawerActions,
+  useFocusEffect,
+} from "@react-navigation/native";
+import auth from "@react-native-firebase/auth";
 
 export default function AuthLayout() {
   const colorScheme = useColorScheme();
   const navigation = useNavigation();
 
   return (
-    /* This is the hamburger menu symbol */
+    // This is the menu symbol
     <Drawer
       screenOptions={{
         drawerActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: true,
-        headerLeft: () => (
-          <View style={{ paddingLeft: 15 }}>
-            <TouchableOpacity
-              onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-            >
-              <Ionicons
-                name="menu"
-                size={24}
-                color={Colors[colorScheme ?? "light"].tint}
-              />
-            </TouchableOpacity>
-          </View>
-        ),
+        headerLeft: () => {
+          return (
+            <View style={{ paddingLeft: 15 }}>
+              <TouchableOpacity
+                onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+              >
+                <Ionicons
+                  name="menu"
+                  size={24}
+                  color={Colors[colorScheme ?? "light"].tint}
+                />
+              </TouchableOpacity>
+            </View>
+          );
+        },
       }}
     >
       {/* Changed the Tabs to Drawer Compartments*/}
@@ -98,9 +105,7 @@ export default function AuthLayout() {
           }: {
             color: string;
             focused: boolean;
-          }) => (
-            <Ionicons name={"walk"} size={24} color={color} />
-          ),
+          }) => <Ionicons name={"walk"} size={24} color={color} />,
         }}
       />
     </Drawer>

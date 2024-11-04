@@ -13,54 +13,38 @@ import {
   Keyboard,
   Dimensions,
   Image,
-  Modal,
 } from "react-native";
 import auth from "@react-native-firebase/auth";
 import { FirebaseError } from "firebase/app";
-import BoxButton from "@/components/BoxButton";
 
 export default function Index() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [errorMsg, setErrorMsg] = React.useState("");
 
-  const signUp = async () => {
-    setLoading(true);
-    try {
-      await auth().createUserWithEmailAndPassword(email, password);
-      alert("Check your email");
-    } catch (e: any) {
-      const err = e as FirebaseError;
-      alert("Registration failed: " + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const signIn = async () => {
+  const handleSignIn = async () => {
     setLoading(true);
     try {
       await auth().signInWithEmailAndPassword(email, password);
-      alert("Check your email");
-    } catch (e: any) {
-      const err = e as FirebaseError;
-      alert("Sign in failed: " + err.message);
+      setErrorMsg(""); // clear the msg
+    } catch (error: any) {
+      console.log(error);
+      if (error.code === "auth/invalid-email") {
+        setErrorMsg("Invalid email form.");
+      } else if (error.code === "auth/invalid-credential") {
+        setErrorMsg("Incorrect email or password.");
+      } else if (error.code === "auth/email-already-in-use") {
+        setErrorMsg("This account is already in use.");
+      } else if (error.code === "auth/network-request-failed") {
+        setErrorMsg("Please check internet connection.");
+      } else {
+        setErrorMsg("Unknown error occurred. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
   };
-
-    const handleAnonymousSignIn = async () => {
-        setLoading(true);
-      try {
-        const userCredential = await auth().signInAnonymously();
-        return userCredential.user;
-      } catch (error) {
-        alert("Authentication failed")
-      } finally {
-          setLoading(false);
-      }
-    };
 
   return (
     <KeyboardAvoidingView
@@ -76,36 +60,35 @@ export default function Index() {
           <Text style={styles.title}>Welcome to iHear</Text>
           <TextInput
             placeholder="Email"
-            style={styles.input}
+            style={[styles.input, loading && styles.greyedOut]}
             value={email}
             onChangeText={setEmail}
+            editable={!loading}
             keyboardType="email-address"
             autoCapitalize="none"
           />
           <TextInput
             placeholder="Password"
-            style={styles.input}
+            style={[styles.input, loading && styles.greyedOut]}
             value={password}
             onChangeText={setPassword}
+            editable={!loading}
             secureTextEntry
           />
+          {/* Conditionally render the error message */}
+          {errorMsg ? <Text style={styles.errorMsg}>{errorMsg}</Text> : null}
           <View style={styles.buttonContainer}>
-            <BoxButton
-              text="Sign In"
-              textColor="white"
-              textSize={22}
-              boxColor="#078a48"
-              onPress={signIn}
-            />
-            <BoxButton
-              text="Sign Up"
-              textColor="white"
-              textSize={22}
-              boxColor="#0cb9f7"
-              onPress={signUp}
-            />
-            <TouchableOpacity style={styles.button} onPress={handleAnonymousSignIn}>
-                  <Text style={styles.buttonText}>Anonymous</Text>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleSignIn}
+              disabled={loading}
+            >
+              {/* Conditionally render the loading-wheel or button */}
+              {loading ? (
+                <ActivityIndicator size="large" />
+              ) : (
+                <Text style={styles.buttonText}>Sign In</Text>
+              )}
             </TouchableOpacity>
           </View>
         </View>
@@ -113,9 +96,6 @@ export default function Index() {
     </KeyboardAvoidingView>
   );
 }
-
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -125,6 +105,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    alignContent: "center",
     padding: "5%",
     backgroundColor: "#FFF5E1",
   },
@@ -150,6 +131,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#FFFFFF",
   },
+  // Grey-out text input while loading
+  greyedOut: {
+    backgroundColor: "#d3d3d3",
+    color: "#a9a9a9",
+  },
   buttonContainer: {
     width: "90%",
     borderRadius: 10,
@@ -160,16 +146,22 @@ const styles = StyleSheet.create({
     margin: "5%",
   },
   button: {
-      backgroundColor: '#2196F3',
-      padding: 8,
-      borderRadius: 5,
-      alignItems: 'center',
-      justifyContent: 'center',
-      margin: "1%",
-    },
-    buttonText: {
-      color: '#FFFFFF',
-      fontSize: 22,
-      textAlign: 'center',
-    },
+    backgroundColor: "#078a48",
+    padding: 8,
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    margin: "1%",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 22,
+    textAlign: "center",
+  },
+  errorMsg: {
+    color: "red",
+    textAlign: "center",
+    marginBottom: 10,
+    fontSize: 20,
+  },
 });
