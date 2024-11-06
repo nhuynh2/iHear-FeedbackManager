@@ -63,7 +63,7 @@ export default function AuthLayout() {
           }: {
             color: string;
             focused: boolean;
-          }) => <Ionicons name={"warning"} size={24} color={color} />,
+          }) => <Ionicons name={"paper-plane"} size={24} color={color} />,
         }}
       />
 
