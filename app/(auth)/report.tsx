@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,32 +8,86 @@ import {
   StyleSheet,
   TouchableOpacity,
   Button,
-  Modal,
   FlatList,
-  ScrollView,
+  Keyboard,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { launchImageLibrary, launchCamera } from "react-native-image-picker";
+import {
+  launchImageLibrary,
+  launchCamera,
+  ImageLibraryOptions,
+  CameraOptions,
+  MediaType,
+  Asset,
+} from "react-native-image-picker";
 import ImageResizer from "react-native-image-resizer";
 import firebaseConfig from "../../firebase-config";
 import { initializeApp } from "firebase/app";
 import { collection, addDoc, getFirestore } from "firebase/firestore";
+import SearchSelect from "@/components/SearchSelect";
+import BoxButton from "@/components/BoxButton";
+import { useIsFocused } from "@react-navigation/native";
 
 const FIREBASE_CONFIG = initializeApp(firebaseConfig);
 const FIRESTORE = getFirestore(FIREBASE_CONFIG);
 const OBJ_TYPE = "tickets";
-const ID_LENGTH = 10;
+const FONT_SIZE = 18;
+const MAX_IMAGES = 5;
 
-// Mock data for campus areas and buildings
-const campusAreas = {
-  "Residential": ["Clement", "Fred Brown", "Reese", "Massey"],
-  "Parking": ["G10", "11th Street", "White Ave"],
-  "The Hill": ["Ayres", "Perkins", "SERF"],
-  "Recreation/Sports": ["Neyland Stadium","TRECS", "Thompson-Bowling"],
-  "Other": ["Hodges Library", "Student Union"]
-};
+const TITLE_DEFAULT = "Enter Title...";
+const CATEGORY_DEFAULT = "Select Category";
+const LOCATION_DEFAULT = "Select Location";
+const PRIORITY_DEFAULT = "Select Priority";
+const DETAIL_DEFAULT = "Enter Detail...";
+const UID_DEFAULT = "phoang5";
 
-const campusAreaNames = Object.keys(campusAreas); // Extract area names
+interface Ticket {
+  title: string;
+  category: string;
+  location: string;
+  priority: string;
+  detail: string;
+  images: (string | null)[];
+  status: string;
+  user_id: string;
+  staff_ids: string[];
+  manager_ids: string;
+}
+
+const categoryList = [
+  "Plumbing",
+  "Electrical",
+  "HVAC",
+  "Paint",
+  "Flooring",
+  "Appliance",
+  "Landscaping",
+  "Security",
+  "Windows/Doors",
+  "Safety",
+  "Exterior",
+  "Parking Lot/Garage",
+  "Other (Specify in Detail)",
+];
+
+const locationList = [
+  "Min H. Kao: MKB-Outside",
+  "Min H. Kao: MKB-622",
+  "Min H. Kao: MKB-524",
+  "Min H. Kao: MKB-419",
+  "Dougherty Engineering: DOU-Outside",
+  "Dougherty Engineering: DOU-416",
+  "Zeanah Engineering: ZEC-Outside",
+  "Zeanah Engineering: ZEC-271",
+  "Zeanah Engineering: ZEC-373",
+  "Strong Hall: STR-Outside",
+  "Strong Hall: STR-102",
+  "Strong Hall: STR-203",
+  "Strong Hall: Other",
+  "Other (Specify in Detail)",
+];
+
+const priorityList = ["High", "Normal", "Low"];
 
 const postData = async (objType: string, obj: object) => {
   try {
@@ -46,58 +100,111 @@ const postData = async (objType: string, obj: object) => {
   }
 };
 
-const genID = () => {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-  for (let i = 0; i < ID_LENGTH; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    result += characters[randomIndex];
-  }
-  return result;
-};
-
 const ReportScreen = () => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [images, setImages] = useState<(string | null)[]>([null, null, null]);
+  // Ticket properties
+  const [title, setTitle] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
+  const [priority, setPriority] = useState<string>("");
+  const [detail, setDetail] = useState<string>("");
+  const [images, setImages] = useState<(string | null)[]>([null]);
+  const [clearSelections, setClearSelections] = useState(false);
+  const [clearSelect, setClearSelect] = useState(0);
 
-  // Area and building state and modal visibility
-  const [area, setArea] = useState("Select Area");
-  const [building, setBuilding] = useState("Select Building");
-  const [isAreaModalVisible, setIsAreaModalVisible] = useState(false);
-  const [isBuildingModalVisible, setIsBuildingModalVisible] = useState(false);
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    handleClear();
+  }, [isFocused]);
 
-  // Category state and modal visibility
-  const [category, setCategory] = useState("Select Category");
-  const [isCategoryModalVisible, setIsCategoryModalVisible] = useState(false);
+  // Ticket validation
+  // -1: Not input
+  // 0: Invalid
+  // 1: Valid
+  const [valid, setValid] = useState({
+    title: -1,
+    category: -1,
+    location: -1,
+    priority: -1,
+    detail: -1,
+    images: -1,
+  });
 
-  // Emergence rating state
-  const [emergenceRating, setEmergenceRating] = useState(0); // 1 to 5 rating
+  const handleTitle = (value: string) => {
+    setTitle(value);
+    if (typeof value === "string" && value.trim().length > 0) {
+      setValid({ ...valid, title: 1 });
+    } else {
+      setValid({ ...valid, title: 0 });
+    }
+  };
 
-  const categoryItems = [
-    "Plumbing",
-    "Electrical",
-    "HVAC",
-    "Paint",
-    "Flooring",
-    "Appliance",
-    "Landscaping",
-    "Security",
-    "Windows/Doors",
-    "Safety",
-    "Exterior",
-    "Parking Lot/Garage",
-    "Other",
-  ];
+  const handleTitleBlur = () => {
+    setTitle(title);
+    if (typeof title === "string" && title.trim().length > 0) {
+      setValid({ ...valid, title: 1 });
+    } else {
+      setValid({ ...valid, title: 0 });
+    }
+    if (Keyboard.isVisible()) Keyboard.dismiss();
+  };
 
-  const handleChoosePhoto = (index: number) => {
+  const handleCategory = (value: string) => {
+    setCategory(value);
+    if (categoryList.includes(category)) {
+      setValid({ ...valid, category: 1 });
+    } else {
+      setValid({ ...valid, category: 0 });
+    }
+  };
+
+  const handleLocation = (value: string) => {
+    setLocation(value);
+    if (locationList.includes(location)) {
+      setValid({ ...valid, location: 1 });
+    } else setValid({ ...valid, location: 0 });
+  };
+
+  const handlePriority = (value: string) => {
+    setPriority(value);
+    if (priorityList.includes(priority)) {
+      setValid({ ...valid, priority: 1 });
+    } else setValid({ ...valid, priority: 0 });
+  };
+
+  const handleDetail = (value: string) => {
+    setDetail(value);
+    if (typeof value === "string" && value.trim().length > 0) {
+      setValid({ ...valid, detail: 1 });
+    } else {
+      setValid({ ...valid, detail: 0 });
+    }
+  };
+
+  const handleDetailBlur = () => {
+    setDetail(detail);
+    if (typeof detail === "string" && detail.trim().length > 0) {
+      setValid({ ...valid, detail: 1 });
+    } else {
+      setValid({ ...valid, detail: 0 });
+    }
+    if (Keyboard.isVisible()) Keyboard.dismiss();
+  };
+
+  const handleChooseImages = (index: number) => {
+    if (images.filter((img) => img !== null).length >= MAX_IMAGES) {
+      Alert.alert(
+        "Limit Reached",
+        `You can only select up to ${MAX_IMAGES} images.`
+      );
+      return;
+    }
+
     Alert.alert(
-      "Upload Photo",
-      "Choose a photo source",
+      "Upload Images",
+      "Choose the source",
       [
         {
-          text: "Take Photo",
+          text: "Take Image",
           onPress: () => openCamera(index),
         },
         {
@@ -114,17 +221,13 @@ const ReportScreen = () => {
   };
 
   const openCamera = async (index: number) => {
-    const options = {
+    const options: CameraOptions = {
       mediaType: "photo",
-      quality: 1,
+      quality: 0.8,
     };
 
     launchCamera(options, async (response) => {
-      if (response.didCancel) {
-        console.log("User cancelled image picker");
-      } else if (response.errorCode) {
-        console.log("Image Picker Error: ", response.errorMessage);
-      } else if (response.assets && response.assets[0].uri) {
+      if (response.assets && response.assets[0].uri) {
         const uri = response.assets[0].uri;
         const resizedImage = await ImageResizer.createResizedImage(
           uri,
@@ -134,397 +237,314 @@ const ReportScreen = () => {
           80
         );
 
-        const newImages = [...images];
-        newImages[index] = resizedImage.uri;
-        setImages(newImages);
+        setImages((prevImages) => {
+          const newImages = [...prevImages];
+          newImages[index] = resizedImage.uri;
+
+          if (newImages.length < MAX_IMAGES) {
+            newImages.push(null); // Add new placeholder if limit is not reached
+          }
+          return newImages;
+        });
       }
     });
   };
 
   const openLibrary = async (index: number) => {
-    const options = {
+    const options: ImageLibraryOptions = {
       mediaType: "photo",
+      selectionLimit: MAX_IMAGES - images.filter((img) => img !== null).length,
       quality: 1,
     };
 
     launchImageLibrary(options, async (response) => {
-      if (response.didCancel) {
-        console.log("User cancelled image picker");
-      } else if (response.errorCode) {
-        console.log("Image Picker Error: ", response.errorMessage);
-      } else if (response.assets && response.assets[0].uri) {
-        const uri = response.assets[0].uri;
-        const resizedImage = await ImageResizer.createResizedImage(
-          uri,
-          800,
-          600,
-          "JPEG",
-          80
+      if (response.assets) {
+        const resizedUris = await Promise.all(
+          response.assets.map(async (asset: Asset) => {
+            if (asset.uri) {
+              const resizedImage = await ImageResizer.createResizedImage(
+                asset.uri,
+                800,
+                600,
+                "JPEG",
+                80
+              );
+              return resizedImage.uri;
+            }
+          })
         );
 
-        const newImages = [...images];
-        newImages[index] = resizedImage.uri;
-        setImages(newImages);
+        setImages((prevImages) => {
+          const newImages = [...prevImages];
+          resizedUris.forEach((uri, i) => {
+            if (uri) {
+              newImages[index + i] = uri;
+            }
+          });
+
+          // Add a new placeholder if we haven't reached the limit yet
+          if (newImages.filter((img) => img !== null).length < MAX_IMAGES) {
+            newImages.push(null);
+          }
+          return newImages.slice(0, MAX_IMAGES); // Ensure we don't exceed MAX_IMAGES
+        });
       }
     });
   };
 
-  const handleSubmit = () => {
-    // Validate fields
-    if (!title) {
-      Alert.alert("Error", "Please enter a title.");
-      return;
+  const imageItem = ({
+    item,
+    index,
+  }: {
+    item: string | null;
+    index: number;
+  }) => (
+    <TouchableOpacity
+      onPress={() => handleChooseImages(index)}
+      style={styles.imageBox}
+    >
+      {item ? (
+        <Image source={{ uri: item }} style={styles.image} />
+      ) : (
+        <Text style={styles.imageText}>Add Image</Text>
+      )}
+    </TouchableOpacity>
+  );
+
+  const handleValidation = () => {
+    if (valid.title !== 1) {
+      alert("Invalid title");
+      return false;
     }
 
-    if (category === "Select Category") {
-      Alert.alert("Error", "Please select a category.");
-      return;
+    if (valid.category !== 1) {
+      alert("Invalid category");
+      return false;
     }
 
-    if (area === "Select Area") {
-      Alert.alert("Error", "Please select an area.");
-      return;
+    if (valid.location !== 1) {
+      alert("Invalid location");
+      return false;
     }
 
-    if (building === "Select Building") {
-      Alert.alert("Error", "Please select a building.");
-      return;
+    if (valid.priority !== 1) {
+      alert("Invalid priority");
+      return false;
     }
 
-    if (!description) {
-      Alert.alert("Error", "Please enter a description.");
-      return;
+    if (valid.detail !== 1) {
+      alert("Invalid detail");
+      return false;
     }
 
-    if (emergenceRating === 0) {
-      Alert.alert("Error", "Please select an emergence level.");
-      return;
-    }
-
-    // Check if there is at least one photo uploaded
-    const hasPhoto = images.some((image) => image !== null);
-    if (!hasPhoto) {
-      Alert.alert("Error", "Please upload at least one photo.");
-      return;
-    }
-
-    // Create an object with the input data
-    const ticket = {
-      ID: genID(),
-      title: title,
-      description: description,
-      category: category,
-      area: area,
-      building: building,
-      emergenceRating: emergenceRating,
-      image: images.filter((img) => img !== null),
-    };
-
-    postData(OBJ_TYPE, ticket);
-
-    setTitle("");
-    setCategory("Select Category");
-    setArea("Select Area");
-    setBuilding("Select Building");
-    setDescription("");
-    setEmergenceRating(0);
-    setImages([null, null, null]);
-
-    Alert.alert("Success", "Report has been saved!");
+    return true;
   };
 
-  const renderCategoryItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.modalItem}
-      onPress={() => {
-        setCategory(item);
-        setIsCategoryModalVisible(false);
-      }}
-    >
-      <Text>{item}</Text>
-    </TouchableOpacity>
-  );
+  const handleClear = () => {
+    setTitle("");
+    setClearSelect(clearSelect + 1);
+    setDetail("");
+    setImages([null]);
+    setValid({
+      title: -1,
+      category: -1,
+      location: -1,
+      priority: -1,
+      detail: -1,
+      images: -1,
+    });
+  };
 
-  const renderAreaItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.modalItem}
-      onPress={() => {
-        setArea(item);
-        setBuilding("Select Building"); // Reset building when area changes
-        setIsAreaModalVisible(false);
-      }}
-    >
-      <Text>{item}</Text>
-    </TouchableOpacity>
-  );
+  const handleSubmit = async () => {
+    if (Keyboard.isVisible()) Keyboard.dismiss();
+    if (!handleValidation()) return;
 
-  const renderBuildingItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.modalItem}
-      onPress={() => {
-        setBuilding(item);
-        setIsBuildingModalVisible(false);
-      }}
-    >
-      <Text>{item}</Text>
-    </TouchableOpacity>
-  );
+    const ticket: Ticket = {
+      title: title,
+      category: category,
+      location: location,
+      priority: priority,
+      detail: detail,
+      images: images,
+      status: "open",
+      user_id: "",
+      staff_ids: [""],
+      manager_ids: "",
+    };
 
-  // Function to render 1-5 bubble rating system
-  const renderBubbles = () => {
-    let bubbles = [];
-    for (let i = 1; i <= 5; i++) {
-      bubbles.push(
-        <TouchableOpacity
-          key={i}
-          style={[
-            styles.bubble,
-            emergenceRating === i && styles.selectedBubble, // Highlight selected bubble
-          ]}
-          onPress={() => setEmergenceRating(i)}
-        >
-          <Text style={styles.bubbleText}>{i}</Text>
-        </TouchableOpacity>
-      );
-    }
-    return bubbles;
+    if (!(await postData(OBJ_TYPE, ticket))) return;
+    Alert.alert("Success", "Report has been saved!");
+    handleClear();
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.header}>REPORT</Text>
+    <View style={styles.container} key={clearSelect}>
+      {/* Ticket title */}
+      <Text style={styles.titleField}>{"Title: "}</Text>
+      <TextInput
+        placeholder={TITLE_DEFAULT}
+        value={title}
+        onChangeText={handleTitle}
+        onBlur={handleTitleBlur}
+        style={[
+          styles.titleValue,
+          { borderColor: valid.title === 0 ? "red" : "black" },
+        ]}
+      />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Title"
-          value={title}
-          onChangeText={setTitle}
+      {/* Ticket Category */}
+      <Text style={styles.selectField}>{"Category: "}</Text>
+      <SearchSelect
+        placeholder={CATEGORY_DEFAULT}
+        hasOtherVal={true}
+        itemList={categoryList}
+        onSelect={handleCategory}
+        boxStyle={[
+          styles.selectBox,
+          { borderColor: valid.category === 0 ? "red" : "black" },
+        ]}
+        textStyle={styles.selectText}
+      />
+
+      {/* Ticket Location */}
+      <Text style={styles.selectField}>{"Location: "}</Text>
+      <SearchSelect
+        placeholder={LOCATION_DEFAULT}
+        hasOtherVal={true}
+        itemList={locationList}
+        onSelect={handleLocation}
+        boxStyle={[
+          styles.selectBox,
+          { borderColor: valid.location === 0 ? "red" : "black" },
+        ]}
+        textStyle={styles.selectText}
+      />
+
+      {/* Ticket Priority */}
+      <Text style={styles.selectField}>{"Priority: "}</Text>
+      <SearchSelect
+        placeholder={PRIORITY_DEFAULT}
+        hasOtherVal={false}
+        itemList={priorityList}
+        onSelect={handlePriority}
+        boxStyle={[
+          styles.selectBox,
+          { borderColor: valid.priority === 0 ? "red" : "black" },
+        ]}
+        textStyle={styles.selectText}
+      />
+
+      {/* Ticket Detail */}
+      <Text style={styles.detailField}>{"Detail: "}</Text>
+      <TextInput
+        placeholder={DETAIL_DEFAULT}
+        value={detail}
+        onChangeText={handleDetail}
+        onBlur={handleDetailBlur}
+        multiline={true}
+        style={[
+          styles.detailValue,
+          { borderColor: valid.detail !== 0 ? "black" : "red" },
+        ]}
+      />
+
+      {/* Ticket Images */}
+      <View style={styles.imageContainer}>
+        <FlatList
+          data={images}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={imageItem}
+          horizontal
         />
+      </View>
 
-        {/* Category Dropdown */}
-        <TouchableOpacity
-          style={styles.dropdownButton}
-          onPress={() => setIsCategoryModalVisible(true)}
-        >
-          <Text>{category}</Text>
-        </TouchableOpacity>
-
-        {/* Category Modal */}
-        <Modal
-          visible={isCategoryModalVisible}
-          transparent={true}
-          animationType="slide"
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <FlatList
-                data={categoryItems}
-                renderItem={renderCategoryItem}
-                keyExtractor={(item) => item}
-              />
-              <Button
-                title="Close"
-                onPress={() => setIsCategoryModalVisible(false)}
-              />
-            </View>
-          </View>
-        </Modal>
-
-        {/* Area Dropdown */}
-        <TouchableOpacity
-          style={styles.dropdownButton}
-          onPress={() => setIsAreaModalVisible(true)}
-        >
-          <Text>{area}</Text>
-        </TouchableOpacity>
-
-        <Modal
-          visible={isAreaModalVisible}
-          transparent={true}
-          animationType="slide"
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <FlatList
-                data={campusAreaNames}
-                renderItem={renderAreaItem}
-                keyExtractor={(item) => item}
-              />
-              <Button
-                title="Close"
-                onPress={() => setIsAreaModalVisible(false)}
-              />
-            </View>
-          </View>
-        </Modal>
-
-        {/* Building Dropdown */}
-        <TouchableOpacity
-          style={styles.dropdownButton}
-          onPress={() => {
-            if (area !== "Select Area") {
-              setIsBuildingModalVisible(true);
-            } else {
-              Alert.alert("Select Area", "Please select an area first.");
-            }
-          }}
-        >
-          <Text>{building}</Text>
-        </TouchableOpacity>
-
-        <Modal
-          visible={isBuildingModalVisible}
-          transparent={true}
-          animationType="slide"
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <FlatList
-                data={campusAreas[area] || []} // Filter buildings by selected area
-                renderItem={renderBuildingItem}
-                keyExtractor={(item) => item}
-              />
-              <Button
-                title="Close"
-                onPress={() => setIsBuildingModalVisible(false)}
-              />
-            </View>
-          </View>
-        </Modal>
-
-        <TextInput
-          style={styles.textArea}
-          placeholder="Description"
-          value={description}
-          onChangeText={setDescription}
-          multiline={true}
-        />
-
-        {/* Emergence Rating */}
-        <Text style={styles.emergenceLabel}>Emergence Level:</Text>
-        <View style={styles.bubbleContainer}>{renderBubbles()}</View>
-
-        <View style={styles.photoContainer}>
-          {images.map((image, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.photoBox}
-              onPress={() => handleChoosePhoto(index)}
-            >
-              {image ? (
-                <Image source={{ uri: image }} style={styles.photo} />
-              ) : (
-                <Text>Photo {index + 1}</Text>
-              )}
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        <Button title="Submit" onPress={handleSubmit} />
-      </ScrollView>
-    </SafeAreaView>
+      {/* Submit Button */}
+      <BoxButton
+        title="Submit"
+        onPress={handleSubmit}
+        boxStyle={styles.buttonBox}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
   container: {
-    marginLeft: 20,
-    marginRight: 20,
-    backgroundColor: "#fff",
+    marginLeft: 10,
+    marginRight: 10,
+    justifyContent: "center",
   },
-  emergenceLabel: {
-    padding: 10,
-  },
-  header: {
-    fontSize: 30,
+  titleField: {
+    marginTop: 8,
     fontWeight: "bold",
-    textAlign: "center",
-    color: "red",
-    marginBottom: 20,
+    fontSize: FONT_SIZE,
   },
-  input: {
+  titleValue: {
     borderWidth: 1,
-    borderColor: "#ccc",
     padding: 10,
     borderRadius: 5,
-    marginBottom: 15,
+    marginTop: 8,
+    fontWeight: "normal",
+    fontSize: FONT_SIZE,
   },
-  dropdownButton: {
+  selectField: {
+    marginTop: 8,
+    fontWeight: "bold",
+    fontSize: FONT_SIZE,
+  },
+  selectBox: {
     borderWidth: 1,
-    borderColor: "#ccc",
     padding: 10,
     borderRadius: 5,
-    marginBottom: 15,
-    justifyContent: "center",
+    marginTop: 8,
   },
-  textArea: {
+  selectText: {
+    fontSize: FONT_SIZE,
+  },
+  detailField: {
+    marginTop: 8,
+    fontWeight: "bold",
+    fontSize: FONT_SIZE,
+  },
+  detailValue: {
     borderWidth: 1,
-    borderColor: "#ccc",
     padding: 10,
     borderRadius: 5,
     height: 100,
-    marginBottom: 15,
+    marginTop: 8,
+    fontSize: FONT_SIZE - 2,
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    width: "80%",
-    alignItems: "center",
-  },
-  modalItem: {
+  imageContainer: {
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    width: "100%",
-    alignItems: "center",
-  },
-  bubbleContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginBottom: 15,
-  },
-  bubble: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#ccc",
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 8,
   },
-  selectedBubble: {
-    backgroundColor: "#FFD700", // Highlight selected bubble with gold color
-  },
-  bubbleText: {
-    fontSize: 18,
-    color: "#fff", // Text color inside the bubble
-  },
-  photoContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
-  },
-  photoBox: {
-    width: 100,
-    height: 100,
+  imageBox: {
+    width: 125,
+    height: 125,
+    marginRight: 10,
     borderWidth: 1,
     borderColor: "#ccc",
+    borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#f0f0f0",
   },
-  photo: {
+  image: {
     width: "100%",
     height: "100%",
+    borderRadius: 8,
+  },
+  imageText: {
+    fontSize: 16,
+    color: "#999",
+  },
+  buttonBox: {
+    width: "100%",
+    backgroundColor: "#006646",
+    alignSelf: "center",
+    marginTop: 8,
   },
 });
 
