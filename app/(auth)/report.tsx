@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -26,6 +26,7 @@ import { initializeApp } from "firebase/app";
 import { collection, addDoc, getFirestore } from "firebase/firestore";
 import SearchSelect from "@/components/SearchSelect";
 import BoxButton from "@/components/BoxButton";
+import { useIsFocused } from "@react-navigation/native";
 
 const FIREBASE_CONFIG = initializeApp(firebaseConfig);
 const FIRESTORE = getFirestore(FIREBASE_CONFIG);
@@ -108,6 +109,12 @@ const ReportScreen = () => {
   const [detail, setDetail] = useState<string>("");
   const [images, setImages] = useState<(string | null)[]>([null]);
   const [clearSelections, setClearSelections] = useState(false);
+  const [clearSelect, setClearSelect] = useState(0);
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    handleClear();
+  }, [isFocused]);
 
   // Ticket validation
   // -1: Not input
@@ -285,7 +292,7 @@ const ReportScreen = () => {
     });
   };
 
-  const renderItem = ({
+  const imageItem = ({
     item,
     index,
   }: {
@@ -304,7 +311,7 @@ const ReportScreen = () => {
     </TouchableOpacity>
   );
 
-  const inputValidating = () => {
+  const handleValidation = () => {
     if (valid.title !== 1) {
       alert("Invalid title");
       return false;
@@ -330,19 +337,27 @@ const ReportScreen = () => {
       return false;
     }
 
-    // Check if there is at least one image uploaded
-    const hasImages = images.some((image) => image !== null);
-    if (!hasImages) {
-      alert("Please upload at least one image");
-      return false;
-    }
-
     return true;
+  };
+
+  const handleClear = () => {
+    setTitle("");
+    setClearSelect(clearSelect + 1);
+    setDetail("");
+    setImages([null]);
+    setValid({
+      title: -1,
+      category: -1,
+      location: -1,
+      priority: -1,
+      detail: -1,
+      images: -1,
+    });
   };
 
   const handleSubmit = async () => {
     if (Keyboard.isVisible()) Keyboard.dismiss();
-    if (!inputValidating()) return;
+    if (!handleValidation()) return;
 
     const ticket: Ticket = {
       title: title,
@@ -359,23 +374,11 @@ const ReportScreen = () => {
 
     if (!(await postData(OBJ_TYPE, ticket))) return;
     Alert.alert("Success", "Report has been saved!");
-    setTitle("");
-    setClearSelections(true);
-    setDetail("");
-    setImages([null]);
-    if (Keyboard.isVisible()) Keyboard.dismiss();
-    setValid({
-      title: -1,
-      category: -1,
-      location: -1,
-      priority: -1,
-      detail: -1,
-      images: -1,
-    });
+    handleClear();
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} key={clearSelect}>
       {/* Ticket title */}
       <Text style={styles.titleField}>{"Title: "}</Text>
       <TextInput
@@ -393,7 +396,6 @@ const ReportScreen = () => {
       <Text style={styles.selectField}>{"Category: "}</Text>
       <SearchSelect
         placeholder={CATEGORY_DEFAULT}
-        clear={clearSelections}
         hasOtherVal={true}
         itemList={categoryList}
         onSelect={handleCategory}
@@ -408,7 +410,6 @@ const ReportScreen = () => {
       <Text style={styles.selectField}>{"Location: "}</Text>
       <SearchSelect
         placeholder={LOCATION_DEFAULT}
-        clear={clearSelections}
         hasOtherVal={true}
         itemList={locationList}
         onSelect={handleLocation}
@@ -423,7 +424,6 @@ const ReportScreen = () => {
       <Text style={styles.selectField}>{"Priority: "}</Text>
       <SearchSelect
         placeholder={PRIORITY_DEFAULT}
-        clear={clearSelections}
         hasOtherVal={false}
         itemList={priorityList}
         onSelect={handlePriority}
@@ -453,11 +453,12 @@ const ReportScreen = () => {
         <FlatList
           data={images}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={renderItem}
+          renderItem={imageItem}
           horizontal
         />
       </View>
 
+      {/* Submit Button */}
       <BoxButton
         title="Submit"
         onPress={handleSubmit}

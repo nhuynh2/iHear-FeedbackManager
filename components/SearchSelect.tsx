@@ -15,24 +15,15 @@ import { Ionicons } from "@expo/vector-icons";
 interface ItemProps {
   placeholder: string;
   hasOtherVal: boolean;
-  clear: boolean;
   itemList: string[];
   onSelect: (value: string) => void;
   boxStyle?: object;
   textStyle?: object;
 }
 
-export default function SearchSelect({
-  placeholder,
-  hasOtherVal,
-  clear,
-  itemList,
-  onSelect,
-  boxStyle,
-  textStyle,
-}: ItemProps) {
+export default function SearchSelect(props: ItemProps) {
   const [inputValue, setInputValue] = useState(""); // Input of user
-  const [filteredItems, setFilteredItems] = useState<typeof itemList>([]); // filterd items
+  const [filteredItems, setFilteredItems] = useState<typeof props.itemList>([]); // filterd items
   const [showDropdown, setShowDropdown] = useState(false); // options list
   const [isFocused, setIsFocused] = useState(false); // Track if TextInput is focused
 
@@ -40,14 +31,14 @@ export default function SearchSelect({
 
   const filter = () => {
     if (!isFocused) return;
-    if (!inputValue || inputValue.trim() === "" || !hasOtherVal) {
-      setFilteredItems(itemList);
+    if (!inputValue || inputValue.trim() === "" || !props.hasOtherVal) {
+      setFilteredItems(props.itemList);
     } else {
-      const filtered = itemList.filter((item) =>
+      const filtered = props.itemList.filter((item) =>
         item.toLowerCase().includes(inputValue.toLowerCase())
       );
       if (filtered.length === 0) {
-        setFilteredItems([itemList[itemList.length - 1]]);
+        setFilteredItems([props.itemList[props.itemList.length - 1]]);
       } else {
         setFilteredItems(filtered);
       }
@@ -59,26 +50,17 @@ export default function SearchSelect({
     filter();
   }, [inputValue, isFocused]);
 
-  useEffect(() => {
-    setShowDropdown(false);
-    setIsFocused(false);
-    setInputValue("");
-    onSelect("");
-    inputRef.current?.blur();
-    if (Keyboard.isVisible()) Keyboard.dismiss();
-  }, [clear]);
-
   const clearText = () => {
     setShowDropdown(false);
     setInputValue("");
-    onSelect("");
+    props.onSelect("");
   };
 
   const closeMenu = () => {
     setShowDropdown(false);
     setIsFocused(false);
     setInputValue(inputValue);
-    onSelect(inputValue);
+    props.onSelect(inputValue);
     inputRef.current?.blur();
     if (Keyboard.isVisible()) Keyboard.dismiss();
   };
@@ -92,32 +74,32 @@ export default function SearchSelect({
     setIsFocused(false);
     setShowDropdown(false); // Show dropdown if focused
     setInputValue(inputValue);
-    onSelect(inputValue);
+    props.onSelect(inputValue);
     if (Keyboard.isVisible()) Keyboard.dismiss();
   };
 
   const handleChangeText = (value: string) => {
     setInputValue(value);
-    onSelect(value);
+    props.onSelect(value);
   };
 
   const handleSelect = (value: string) => {
     setIsFocused(false);
     setShowDropdown(false);
     setInputValue(value);
-    onSelect(value);
+    props.onSelect(value);
     inputRef.current?.blur();
     if (Keyboard.isVisible()) Keyboard.dismiss();
   };
 
   return (
     <View>
-      <View style={[styles.inputContainer, boxStyle]}>
+      <View style={[styles.inputContainer, props.boxStyle]}>
         {/* Text Input */}
         <TextInput
           ref={inputRef}
-          style={[styles.input, textStyle]}
-          placeholder={placeholder}
+          style={[styles.input, props.textStyle]}
+          placeholder={props.placeholder}
           value={inputValue}
           onChangeText={handleChangeText}
           onFocus={() => handleFocus()} // ToggleFocus on
