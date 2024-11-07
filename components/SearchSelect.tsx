@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   TextInput,
@@ -14,27 +14,33 @@ import { Ionicons } from "@expo/vector-icons";
 // Parameters to pass from parent component
 interface ItemProps {
   placeholder: string;
-  allowDefault: boolean;
+  hasOtherVal: boolean;
+  clear: boolean;
   itemList: string[];
   onSelect: (value: string) => void;
-  customStyle: object;
+  boxStyle?: object;
+  textStyle?: object;
 }
 
 export default function SearchSelect({
   placeholder,
-  allowDefault,
+  hasOtherVal,
+  clear,
   itemList,
   onSelect,
-  customStyle,
+  boxStyle,
+  textStyle,
 }: ItemProps) {
   const [inputValue, setInputValue] = useState(""); // Input of user
   const [filteredItems, setFilteredItems] = useState<typeof itemList>([]); // filterd items
   const [showDropdown, setShowDropdown] = useState(false); // options list
   const [isFocused, setIsFocused] = useState(false); // Track if TextInput is focused
 
+  const inputRef = useRef<TextInput>(null);
+
   const filter = () => {
     if (!isFocused) return;
-    if (!inputValue || inputValue.trim() === "" || !allowDefault) {
+    if (!inputValue || inputValue.trim() === "" || !hasOtherVal) {
       setFilteredItems(itemList);
     } else {
       const filtered = itemList.filter((item) =>
@@ -53,6 +59,15 @@ export default function SearchSelect({
     filter();
   }, [inputValue, isFocused]);
 
+  useEffect(() => {
+    setShowDropdown(false);
+    setIsFocused(false);
+    setInputValue("");
+    onSelect("");
+    inputRef.current?.blur();
+    if (Keyboard.isVisible()) Keyboard.dismiss();
+  }, [clear]);
+
   const clearText = () => {
     setShowDropdown(false);
     setInputValue("");
@@ -64,6 +79,7 @@ export default function SearchSelect({
     setIsFocused(false);
     setInputValue(inputValue);
     onSelect(inputValue);
+    inputRef.current?.blur();
     if (Keyboard.isVisible()) Keyboard.dismiss();
   };
 
@@ -90,72 +106,70 @@ export default function SearchSelect({
     setShowDropdown(false);
     setInputValue(value);
     onSelect(value);
+    inputRef.current?.blur();
     if (Keyboard.isVisible()) Keyboard.dismiss();
   };
 
   return (
-    <TouchableWithoutFeedback onPress={handleBlur}>
-      <>
-        <View style={styles.container}>
-          {/* Text Input */}
-          <TextInput
-            style={[
-              customStyle,
-              {
-                flex: 1,
-              },
-            ]}
-            placeholder={placeholder}
-            value={inputValue}
-            onChangeText={handleChangeText}
-            onFocus={() => handleFocus()} // ToggleFocus on
-            onBlur={() => handleBlur()} // ToggleFocus off
-          />
-          {/* Show Clear button when there is input */}
-          {isFocused && (
-            <>
-              {!!inputValue && (
-                <TouchableOpacity
-                  onPress={clearText}
-                  style={styles.clearButton}
-                >
-                  <Ionicons name="close-circle" size={30} color="grey" />
-                </TouchableOpacity>
-              )}
-              {/* Show Colapse button when onFocus */}
-              <TouchableOpacity onPress={closeMenu} style={styles.clearButton}>
-                <Ionicons name="chevron-up-sharp" size={30} color="grey" />
+    <View>
+      <View style={[styles.inputContainer, boxStyle]}>
+        {/* Text Input */}
+        <TextInput
+          ref={inputRef}
+          style={[styles.input, textStyle]}
+          placeholder={placeholder}
+          value={inputValue}
+          onChangeText={handleChangeText}
+          onFocus={() => handleFocus()} // ToggleFocus on
+          onBlur={() => handleBlur()} // ToggleFocus off
+        />
+        {/* Show Clear button when there is input */}
+        {isFocused && (
+          <View style={styles.buttonContainer}>
+            {!!inputValue && (
+              <TouchableOpacity onPress={clearText}>
+                <Ionicons name="close-circle" size={30} color="grey" />
               </TouchableOpacity>
-            </>
-          )}
-        </View>
-
-        {showDropdown && (
-          <View style={[styles.dropdown]}>
-            <FlatList
-              initialNumToRender={8}
-              data={filteredItems}
-              keyExtractor={(item) => item}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.dropdownItem}
-                  onPress={() => handleSelect(item)}
-                >
-                  <Text>{item}</Text>
-                </TouchableOpacity>
-              )}
-            />
+            )}
+            {/* Show Colapse button when onFocus */}
+            <TouchableOpacity onPress={closeMenu}>
+              <Ionicons name="chevron-up-sharp" size={30} color="grey" />
+            </TouchableOpacity>
           </View>
         )}
-      </>
-    </TouchableWithoutFeedback>
+      </View>
+
+      {showDropdown && (
+        <View style={[styles.dropdown]}>
+          <FlatList
+            initialNumToRender={5}
+            data={filteredItems}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.dropdownItem}
+                onPress={() => handleSelect(item)}
+              >
+                <Text>{item}</Text>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  inputContainer: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  input: {
+    flex: 1,
+  },
+  buttonContainer: {
+    flexDirection: "row",
   },
   dropdown: {
     opacity: 0.75,
@@ -165,15 +179,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 15,
     maxHeight: 200, // Limit height for the dropdown
-    zIndex: 2, // Ensure the dropdown appears above other elements
+    //zIndex: 2, // Ensure the dropdown appears above other elements
   },
   dropdownItem: {
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "gray",
-  },
-  clearButton: {
-    marginLeft: 6,
-    marginBottom: 12,
   },
 });

@@ -9,15 +9,16 @@ import {
   TouchableOpacity,
   Button,
   FlatList,
-  ScrollView,
   Keyboard,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   launchImageLibrary,
   launchCamera,
+  ImageLibraryOptions,
   CameraOptions,
   MediaType,
+  Asset,
 } from "react-native-image-picker";
 import ImageResizer from "react-native-image-resizer";
 import firebaseConfig from "../../firebase-config";
@@ -29,6 +30,8 @@ import BoxButton from "@/components/BoxButton";
 const FIREBASE_CONFIG = initializeApp(firebaseConfig);
 const FIRESTORE = getFirestore(FIREBASE_CONFIG);
 const OBJ_TYPE = "tickets";
+const FONT_SIZE = 18;
+const MAX_IMAGES = 5;
 
 const TITLE_DEFAULT = "Enter Title...";
 const CATEGORY_DEFAULT = "Select Category";
@@ -37,18 +40,18 @@ const PRIORITY_DEFAULT = "Select Priority";
 const DETAIL_DEFAULT = "Enter Detail...";
 const UID_DEFAULT = "phoang5";
 
-const ticket = {
-  title: "",
-  category: "",
-  location: "",
-  priority: "",
-  detail: "",
-  image: [""],
-  status: "open",
-  user_id: "",
-  staff_ids: [""],
-  manager_ids: "",
-};
+interface Ticket {
+  title: string;
+  category: string;
+  location: string;
+  priority: string;
+  detail: string;
+  images: (string | null)[];
+  status: string;
+  user_id: string;
+  staff_ids: string[];
+  manager_ids: string;
+}
 
 const categoryList = [
   "Plumbing",
@@ -88,22 +91,23 @@ const priorityList = ["High", "Normal", "Low"];
 const postData = async (objType: string, obj: object) => {
   try {
     const docRef = await addDoc(collection(FIRESTORE, objType), obj);
-    //console.log("Document uploaded with ID: ", docRef.id);
+    console.log("Document uploaded with ID: ", docRef.id);
     return true;
   } catch (error) {
-    //console.error("Error uploading document: ", error);
+    console.error("Error uploading document: ", error);
     return false;
   }
 };
 
 const ReportScreen = () => {
   // Ticket properties
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
-  const [location, setLocation] = useState("");
-  const [priority, setPriority] = useState("");
-  const [detail, setDetail] = useState("");
-  const [images, setImages] = useState([""]);
+  const [title, setTitle] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
+  const [priority, setPriority] = useState<string>("");
+  const [detail, setDetail] = useState<string>("");
+  const [images, setImages] = useState<(string | null)[]>([null]);
+  const [clearSelections, setClearSelections] = useState(false);
 
   // Ticket validation
   // -1: Not input
@@ -170,7 +174,7 @@ const ReportScreen = () => {
   };
 
   const handleDetailBlur = () => {
-    setTitle(detail);
+    setDetail(detail);
     if (typeof detail === "string" && detail.trim().length > 0) {
       setValid({ ...valid, detail: 1 });
     } else {
@@ -178,6 +182,127 @@ const ReportScreen = () => {
     }
     if (Keyboard.isVisible()) Keyboard.dismiss();
   };
+
+  const handleChooseImages = (index: number) => {
+    if (images.filter((img) => img !== null).length >= MAX_IMAGES) {
+      Alert.alert(
+        "Limit Reached",
+        `You can only select up to ${MAX_IMAGES} images.`
+      );
+      return;
+    }
+
+    Alert.alert(
+      "Upload Images",
+      "Choose the source",
+      [
+        {
+          text: "Take Image",
+          onPress: () => openCamera(index),
+        },
+        {
+          text: "Choose from Library",
+          onPress: () => openLibrary(index),
+        },
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  const openCamera = async (index: number) => {
+    const options: CameraOptions = {
+      mediaType: "photo",
+      quality: 0.8,
+    };
+
+    launchCamera(options, async (response) => {
+      if (response.assets && response.assets[0].uri) {
+        const uri = response.assets[0].uri;
+        const resizedImage = await ImageResizer.createResizedImage(
+          uri,
+          800,
+          600,
+          "JPEG",
+          80
+        );
+
+        setImages((prevImages) => {
+          const newImages = [...prevImages];
+          newImages[index] = resizedImage.uri;
+
+          if (newImages.length < MAX_IMAGES) {
+            newImages.push(null); // Add new placeholder if limit is not reached
+          }
+          return newImages;
+        });
+      }
+    });
+  };
+
+  const openLibrary = async (index: number) => {
+    const options: ImageLibraryOptions = {
+      mediaType: "photo",
+      selectionLimit: MAX_IMAGES - images.filter((img) => img !== null).length,
+      quality: 1,
+    };
+
+    launchImageLibrary(options, async (response) => {
+      if (response.assets) {
+        const resizedUris = await Promise.all(
+          response.assets.map(async (asset: Asset) => {
+            if (asset.uri) {
+              const resizedImage = await ImageResizer.createResizedImage(
+                asset.uri,
+                800,
+                600,
+                "JPEG",
+                80
+              );
+              return resizedImage.uri;
+            }
+          })
+        );
+
+        setImages((prevImages) => {
+          const newImages = [...prevImages];
+          resizedUris.forEach((uri, i) => {
+            if (uri) {
+              newImages[index + i] = uri;
+            }
+          });
+
+          // Add a new placeholder if we haven't reached the limit yet
+          if (newImages.filter((img) => img !== null).length < MAX_IMAGES) {
+            newImages.push(null);
+          }
+          return newImages.slice(0, MAX_IMAGES); // Ensure we don't exceed MAX_IMAGES
+        });
+      }
+    });
+  };
+
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: string | null;
+    index: number;
+  }) => (
+    <TouchableOpacity
+      onPress={() => handleChooseImages(index)}
+      style={styles.imageBox}
+    >
+      {item ? (
+        <Image source={{ uri: item }} style={styles.image} />
+      ) : (
+        <Text style={styles.imageText}>Add Image</Text>
+      )}
+    </TouchableOpacity>
+  );
 
   const inputValidating = () => {
     if (valid.title !== 1) {
@@ -205,153 +330,112 @@ const ReportScreen = () => {
       return false;
     }
 
+    // Check if there is at least one image uploaded
+    const hasImages = images.some((image) => image !== null);
+    if (!hasImages) {
+      alert("Please upload at least one image");
+      return false;
+    }
+
     return true;
-  };
-
-  const handleChooseImages = (index: number) => {
-    Alert.alert(
-      "Upload Images",
-      "Choose a images source",
-      [
-        {
-          text: "Take Images",
-          onPress: () => openCamera(index),
-        },
-        {
-          text: "Choose from Library",
-          onPress: () => openLibrary(index),
-        },
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-      ],
-      { cancelable: true }
-    );
-  };
-
-  const openCamera = async (index: number) => {
-    const options: CameraOptions = {
-      mediaType: "photo", // Use a specific value instead of string
-      quality: 0.8,
-    };
-
-    launchCamera(options, async (response) => {
-      if (response.didCancel) {
-        console.log("User cancelled image picker");
-      } else if (response.errorCode) {
-        console.log("Image Picker Error: ", response.errorMessage);
-      } else if (response.assets && response.assets[0].uri) {
-        const uri = response.assets[0].uri;
-        const resizedImage = await ImageResizer.createResizedImage(
-          uri,
-          800,
-          600,
-          "JPEG",
-          80
-        );
-
-        const newImages = [...images];
-        newImages[index] = resizedImage.uri;
-        setImages(newImages);
-      }
-    });
-  };
-
-  const openLibrary = async (index: number) => {
-    const options: CameraOptions = {
-      mediaType: "photo",
-      quality: 1,
-    };
-
-    launchImageLibrary(options, async (response) => {
-      if (response.didCancel) {
-        console.log("User cancelled image picker");
-      } else if (response.errorCode) {
-        console.log("Image Picker Error: ", response.errorMessage);
-      } else if (response.assets && response.assets[0].uri) {
-        const uri = response.assets[0].uri;
-        const resizedImage = await ImageResizer.createResizedImage(
-          uri,
-          800,
-          600,
-          "JPEG",
-          80
-        );
-
-        const newImages = [...images];
-        newImages[index] = resizedImage.uri;
-        setImages(newImages);
-      }
-    });
   };
 
   const handleSubmit = async () => {
     if (Keyboard.isVisible()) Keyboard.dismiss();
     if (!inputValidating()) return;
 
-    // Check if there is at least one images uploaded
-    const hasImages = images.some((image) => image !== null);
-    if (!hasImages) {
-      Alert.alert("Error", "Please upload at least one images.");
-      return;
-    }
+    const ticket: Ticket = {
+      title: title,
+      category: category,
+      location: location,
+      priority: priority,
+      detail: detail,
+      images: images,
+      status: "open",
+      user_id: "",
+      staff_ids: [""],
+      manager_ids: "",
+    };
 
-    //await postData(OBJ_TYPE, ticket);
-
+    if (!(await postData(OBJ_TYPE, ticket))) return;
     Alert.alert("Success", "Report has been saved!");
+    setTitle("");
+    setClearSelections(true);
+    setDetail("");
+    setImages([null]);
+    if (Keyboard.isVisible()) Keyboard.dismiss();
+    setValid({
+      title: -1,
+      category: -1,
+      location: -1,
+      priority: -1,
+      detail: -1,
+      images: -1,
+    });
   };
+
   return (
     <View style={styles.container}>
       {/* Ticket title */}
+      <Text style={styles.titleField}>{"Title: "}</Text>
       <TextInput
         placeholder={TITLE_DEFAULT}
         value={title}
         onChangeText={handleTitle}
         onBlur={handleTitleBlur}
         style={[
-          styles.ticketTitle,
+          styles.titleValue,
           { borderColor: valid.title === 0 ? "red" : "black" },
         ]}
       />
 
       {/* Ticket Category */}
+      <Text style={styles.selectField}>{"Category: "}</Text>
       <SearchSelect
         placeholder={CATEGORY_DEFAULT}
-        allowDefault={true}
+        clear={clearSelections}
+        hasOtherVal={true}
         itemList={categoryList}
         onSelect={handleCategory}
-        customStyle={[
-          styles.ticketSelectText,
+        boxStyle={[
+          styles.selectBox,
           { borderColor: valid.category === 0 ? "red" : "black" },
         ]}
+        textStyle={styles.selectText}
       />
 
       {/* Ticket Location */}
+      <Text style={styles.selectField}>{"Location: "}</Text>
       <SearchSelect
         placeholder={LOCATION_DEFAULT}
-        allowDefault={true}
+        clear={clearSelections}
+        hasOtherVal={true}
         itemList={locationList}
         onSelect={handleLocation}
-        customStyle={[
-          styles.ticketSelectText,
+        boxStyle={[
+          styles.selectBox,
           { borderColor: valid.location === 0 ? "red" : "black" },
         ]}
+        textStyle={styles.selectText}
       />
 
       {/* Ticket Priority */}
+      <Text style={styles.selectField}>{"Priority: "}</Text>
       <SearchSelect
         placeholder={PRIORITY_DEFAULT}
-        allowDefault={false}
+        clear={clearSelections}
+        hasOtherVal={false}
         itemList={priorityList}
         onSelect={handlePriority}
-        customStyle={[
-          styles.ticketSelectText,
+        boxStyle={[
+          styles.selectBox,
           { borderColor: valid.priority === 0 ? "red" : "black" },
         ]}
+        textStyle={styles.selectText}
       />
 
       {/* Ticket Detail */}
+      <Text style={styles.detailField}>{"Detail: "}</Text>
       <TextInput
         placeholder={DETAIL_DEFAULT}
         value={detail}
@@ -359,26 +443,19 @@ const ReportScreen = () => {
         onBlur={handleDetailBlur}
         multiline={true}
         style={[
-          styles.ticketDetail,
+          styles.detailValue,
           { borderColor: valid.detail !== 0 ? "black" : "red" },
         ]}
       />
 
       {/* Ticket Images */}
-      <View style={styles.imagesContainer}>
-        {images.map((image, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.imagesBox}
-            onPress={() => handleChooseImages(index)}
-          >
-            {image ? (
-              <Image source={{ uri: image }} style={styles.images} />
-            ) : (
-              <Text>Images {index + 1}</Text>
-            )}
-          </TouchableOpacity>
-        ))}
+      <View style={styles.imageContainer}>
+        <FlatList
+          data={images}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={renderItem}
+          horizontal
+        />
       </View>
 
       <BoxButton
@@ -392,55 +469,81 @@ const ReportScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginLeft: 15,
-    marginRight: 15,
+    marginLeft: 10,
+    marginRight: 10,
     justifyContent: "center",
   },
-  ticketTitle: {
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-    fontSize: 22,
+  titleField: {
+    marginTop: 8,
     fontWeight: "bold",
+    fontSize: FONT_SIZE,
   },
-  ticketSelectText: {
+  titleValue: {
     borderWidth: 1,
     padding: 10,
     borderRadius: 5,
-    marginBottom: 10,
-    fontSize: 18,
+    marginTop: 8,
+    fontWeight: "normal",
+    fontSize: FONT_SIZE,
   },
-  ticketDetail: {
+  selectField: {
+    marginTop: 8,
+    fontWeight: "bold",
+    fontSize: FONT_SIZE,
+  },
+  selectBox: {
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 8,
+  },
+  selectText: {
+    fontSize: FONT_SIZE,
+  },
+  detailField: {
+    marginTop: 8,
+    fontWeight: "bold",
+    fontSize: FONT_SIZE,
+  },
+  detailValue: {
     borderWidth: 1,
     padding: 10,
     borderRadius: 5,
     height: 100,
-    marginBottom: 10,
-    fontSize: 18,
+    marginTop: 8,
+    fontSize: FONT_SIZE - 2,
   },
-  imagesContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 5,
-  },
-  imagesBox: {
-    width: 100,
-    height: 100,
-    borderWidth: 1,
-    borderColor: "#ccc",
+  imageContainer: {
+    padding: 10,
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 8,
   },
-  images: {
+  imageBox: {
+    width: 125,
+    height: 125,
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
+  },
+  image: {
     width: "100%",
     height: "100%",
+    borderRadius: 8,
+  },
+  imageText: {
+    fontSize: 16,
+    color: "#999",
   },
   buttonBox: {
-    width: "80%",
+    width: "100%",
     backgroundColor: "#006646",
     alignSelf: "center",
+    marginTop: 8,
   },
 });
 
