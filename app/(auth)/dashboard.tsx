@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   FlatList,
@@ -11,64 +11,101 @@ import {
   Alert,
 } from "react-native";
 
-import data from "../../assets/data/tickets.json";
+import { firestore } from "../../firebase-config";
+import { collection, getDocs } from "firebase/firestore";
 
 const HEIGHT = Dimensions.get("screen").height;
 const WIDTH = Dimensions.get("screen").width;
+const EMPTY_IMAGE =
+  "https://webcolours.ca/wp-content/uploads/2020/10/webcolours-unknown.png";
+
+interface Ticket {
+  title: string;
+  category: string;
+  location: string;
+  priority: string;
+  detail: string;
+  images: string[];
+  status: string;
+  user_id: string;
+  staff_ids: string[];
+  manager_ids: string;
+}
+
+// Extend Ticket to include the Firestore-generated ID
+interface TicketWithID extends Ticket {
+  id: string;
+}
 
 const onPressHandle = () => {
   Alert.alert("Clicked!");
 };
 
-type ItemProps = {
-  image: string;
-  problem: string;
-  detail: string;
-  location: string;
-  status: string;
-};
-
-const Item = ({ image, problem, detail, location, status }: ItemProps) => (
+const renderItem = ({ item }: { item: TicketWithID }) => (
   <TouchableOpacity
     style={styles.ticketView}
     delayPressIn={50}
     activeOpacity={0.4}
     onPress={onPressHandle}
   >
-    <Image style={styles.image} source={{ uri: image }}></Image>
+    <Image
+      style={styles.images}
+      source={
+        !!item.images
+          ? { uri: item.images[0] }
+          : {
+              uri: EMPTY_IMAGE,
+            }
+      }
+    ></Image>
     <View style={styles.textView}>
       <View style={styles.veriTxtView}>
-        <Text style={styles.problem}>{problem}</Text>
-        <Text style={styles.detail}>{detail}</Text>
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.detail}>{item.detail}</Text>
       </View>
       <View style={styles.horiTxtView}>
-        <Text style={styles.location}>{location}</Text>
-        <Text style={styles.status}>{status}</Text>
+        <Text style={styles.location}>{item.location}</Text>
+        <Text style={styles.status}>{item.status}</Text>
       </View>
     </View>
   </TouchableOpacity>
 );
 
 export default function Dashboard() {
+  const [tickets, setTickets] = useState<TicketWithID[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchTickets() {
+      try {
+        const querySnapshot = await getDocs(collection(firestore, "tickets"));
+
+        const docs = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as TicketWithID[];
+
+        setTickets(docs);
+      } catch (error) {
+        console.error("Error fetching documents:", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching
+      }
+    }
+
+    fetchTickets();
+  }, []);
+
   return (
-    <View style={styles.screenView}>
-      <Text style={styles.title}>{"DASHBOARD"}</Text>
+    <View style={styles.container}>
       <Text style={styles.search}>{"Search"}</Text>
       <Text style={styles.sort}>{"Sort by: Location | Type | Newest\n"}</Text>
       <FlatList
         scrollEnabled={true}
         scrollToOverflowEnabled={true}
         removeClippedSubviews={true}
-        data={data}
-        renderItem={({ item }) => (
-          <Item
-            image={item.image}
-            problem={item.problem}
-            detail={item.detail}
-            location={item.location}
-            status={item.status}
-          />
-        )}
+        data={tickets}
+        renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />
     </View>
@@ -76,7 +113,7 @@ export default function Dashboard() {
 }
 
 const styles = StyleSheet.create({
-  screenView: {
+  container: {
     flex: 1,
     flexDirection: "column",
     alignSelf: "center",
@@ -90,8 +127,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "orange",
   },
-  image: {
-    height: "94%",
+  images: {
+    height: "92%",
     width: "31%",
     marginTop: "1%",
     marginRight: "1%",
@@ -110,25 +147,19 @@ const styles = StyleSheet.create({
     marginBottom: "1%",
     flexDirection: "column",
   },
-  title: {
-    color: "green",
-    fontSize: 30,
-    fontWeight: "bold",
-    alignSelf: "center",
-    marginBottom: 20,
-    marginTop: 20, 
-  },
   search: {
     color: "red",
     fontSize: 17,
     alignSelf: "flex-end",
+    marginTop: 10,
   },
   sort: {
     color: "blue",
     fontSize: 17,
     alignSelf: "flex-end",
+    marginTop: 5,
   },
-  problem: {
+  title: {
     color: "purple",
     fontSize: 16,
     fontWeight: "bold",
