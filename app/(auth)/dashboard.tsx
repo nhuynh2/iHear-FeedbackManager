@@ -14,7 +14,18 @@ import {
 import { firestore } from "../../firebase-config";
 import { collection, getDocs } from "firebase/firestore";
 
+import AddTicketButton from "../../components/AddTicketButton.tsx";
+        
+import { useRouter } from 'expo-router';
+import { ROUTES } from "../../components/navigation/routes";
 import { useIsFocused } from "@react-navigation/native";
+        
+import Animated, {
+    useAnimatedRef,
+    useAnimatedStyle,
+    useScrollViewOffset,
+    withTiming,
+    } from 'react-native-reanimated';
 
 const HEIGHT = Dimensions.get("screen").height;
 const WIDTH = Dimensions.get("screen").width;
@@ -83,8 +94,16 @@ export default function Dashboard() {
     getData();
   };
 
+  const router = useRouter(); // Move useRouter hook here
+    const scrollRef = useAnimatedRef<Animated.ScrollView>();
+    const scrollHandler = useScrollViewOffset(scrollRef);
+    const buttonStyle = useAnimatedStyle(() => {
+        return {
+            opacity: scrollHandler.value < 60 ? withTiming(1) : withTiming(0),
+            }
+        });
   const onPressHandle = () => {
-    alert("Clicked!");
+      router.push(ROUTES.TICKET_DETAILS); // Navigate to the Ticket Details page
   };
 
   return (
@@ -95,6 +114,7 @@ export default function Dashboard() {
         <ActivityIndicator size="large" />
       ) : (
         <FlatList
+          ref={scrollRef}
           scrollEnabled={true}
           scrollToOverflowEnabled={true}
           removeClippedSubviews={true}
@@ -134,10 +154,13 @@ export default function Dashboard() {
           refreshing={loading} // Controls the loading indicator for pull-to-refresh
           onRefresh={handleRefresh} // Pull-to-refresh handler
         />
+        <Animated.View style ={[buttonStyle, { position: 'absolute', right: 10, bottom: 10 } ]}>
+          <AddTicketButton />
+        </Animated.View>
       )}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
