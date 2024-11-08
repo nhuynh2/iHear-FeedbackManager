@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
-  SafeAreaView,
   FlatList,
   View,
   Image,
@@ -9,11 +8,18 @@ import {
   Dimensions,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from "react-native";
-import data from "../../assets/data/tickets.json";
+
+import { firestore } from "../../firebase-config";
+import { collection, getDocs } from "firebase/firestore";
+
 import AddTicketButton from "../../components/AddTicketButton.tsx";
+        
 import { useRouter } from 'expo-router';
 import { ROUTES } from "../../components/navigation/routes";
+import { useIsFocused } from "@react-navigation/native";
+        
 import Animated, {
     useAnimatedRef,
     useAnimatedStyle,
@@ -23,8 +29,71 @@ import Animated, {
 
 const HEIGHT = Dimensions.get("screen").height;
 const WIDTH = Dimensions.get("screen").width;
+const EMPTY_IMAGE =
+  "https://webcolours.ca/wp-content/uploads/2020/10/webcolours-unknown.png";
 
-const Dashboard = () => {
+interface Ticket {
+  title: string;
+  category: string;
+  location: string;
+  priority: string;
+  detail: string;
+  images: string[];
+  status: string;
+  user_id: string;
+  staff_ids: string[];
+  manager_ids: string;
+}
+
+// Extend Ticket to include the Firestore-generated ID
+interface TicketWithID extends Ticket {
+  id: string;
+}
+
+const splitString = (str: string, delimiter: string) => {
+  const index = str.indexOf(delimiter);
+  if (index === -1) return str;
+  return str.substring(index + 2);
+};
+
+const shortenString = (str: string, length: number) => {
+  if (str.length <= length) return str;
+  return str.slice(0, length) + "...";
+};
+
+export default function Dashboard() {
+  const [tickets, setTickets] = useState<TicketWithID[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const getData = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(firestore, "tickets"));
+
+      const docs = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as TicketWithID[];
+
+      setTickets(docs);
+    } catch (error) {
+      Alert.alert("Error", "Could not fetch data. Please contact Admin!");
+    } finally {
+      setLoading(false); // Set loading to false after fetching
+    }
+  };
+
+  // Refresh when this page is focus
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    setLoading(true);
+    getData();
+  }, [isFocused]);
+
+  // Refresh when the list is pull-and-drop
+  const handleRefresh = () => {
+    getData();
+  };
+
   const router = useRouter(); // Move useRouter hook here
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
     const scrollHandler = useScrollViewOffset(scrollRef);
@@ -33,70 +102,68 @@ const Dashboard = () => {
             opacity: scrollHandler.value < 60 ? withTiming(1) : withTiming(0),
             }
         });
-  const onPressHandle = (status) => {
+  const onPressHandle = () => {
       router.push(ROUTES.TICKET_DETAILS); // Navigate to the Ticket Details page
   };
 
-  type ItemProps = {
-    image: string;
-    problem: string;
-    detail: string;
-    location: string;
-    status: string;
-  };
-
-  const Item = ({ image, problem, detail, location, status }: ItemProps) => (
-    <TouchableOpacity
-      style={styles.ticketView}
-      delayPressIn={50}
-      activeOpacity={0.4}
-      onPress={() => onPressHandle(status)} // Use the onPressHandle function here
-    >
-      <Image style={styles.image} source={{ uri: image }} />
-      <View style={styles.textView}>
-        <View style={styles.veriTxtView}>
-          <Text style={styles.problem}>{problem}</Text>
-          <Text style={styles.detail}>{detail}</Text>
-        </View>
-        <View style={styles.horiTxtView}>
-          <Text style={styles.location}>{location}</Text>
-          <Text style={styles.status}>{status}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-
   return (
-    <View style={styles.screenView}>
-      <Text style={styles.title}>{"DASHBOARD"}</Text>
+    <View style={styles.container}>
       <Text style={styles.search}>{"Search"}</Text>
       <Text style={styles.sort}>{"Sort by: Location | Type | Newest\n"}</Text>
-      <FlatList
-        ref={scrollRef}
-        scrollEnabled={true}
-        scrollToOverflowEnabled={true}
-        removeClippedSubviews={true}
-        data={data}
-        renderItem={({ item }) => (
-          <Item
-            image={item.image}
-            problem={item.problem}
-            detail={item.detail}
-            location={item.location}
-            status={item.status}
-          />
-        )}
-        keyExtractor={(item) => item.id}
-      />
-      <Animated.View style ={[buttonStyle, { position: 'absolute', right: 10, bottom: 10 } ]}>
+      {loading ? (
+        <ActivityIndicator size="large" />
+      ) : (
+        <FlatList
+          ref={scrollRef}
+          scrollEnabled={true}
+          scrollToOverflowEnabled={true}
+          removeClippedSubviews={true}
+          data={tickets}
+          renderItem={({ item }: { item: TicketWithID }) => (
+            <TouchableOpacity
+              style={styles.ticketView}
+              delayPressIn={50}
+              activeOpacity={0.4}
+              onPress={onPressHandle}
+            >
+              <Image
+                style={styles.images}
+                source={
+                  !!item.images ? { uri: item.images[0] } : { uri: EMPTY_IMAGE }
+                }
+              ></Image>
+              <View style={styles.textView}>
+                <View style={styles.veriTxtView}>
+                  <Text style={styles.title}>
+                    {shortenString(item.title, 15)}
+                  </Text>
+                  <Text style={styles.detail}>
+                    {shortenString(item.detail, 50)}
+                  </Text>
+                </View>
+                <View style={styles.horiTxtView}>
+                  <Text style={styles.location}>
+                    {splitString(item.location, ":")}
+                  </Text>
+                  <Text style={styles.status}>{item.status}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item.id}
+          refreshing={loading} // Controls the loading indicator for pull-to-refresh
+          onRefresh={handleRefresh} // Pull-to-refresh handler
+        />
+        <Animated.View style ={[buttonStyle, { position: 'absolute', right: 10, bottom: 10 } ]}>
           <AddTicketButton />
-      </Animated.View>
+        </Animated.View>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  screenView: {
+  container: {
     flex: 1,
     flexDirection: "column",
     alignSelf: "center",
@@ -110,8 +177,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "orange",
   },
-  image: {
-    height: "94%",
+  images: {
+    height: "92%",
     width: "31%",
     marginTop: "1%",
     marginRight: "1%",
@@ -130,25 +197,19 @@ const styles = StyleSheet.create({
     marginBottom: "1%",
     flexDirection: "column",
   },
-  title: {
-    color: "green",
-    fontSize: 30,
-    fontWeight: "bold",
-    alignSelf: "center",
-    marginBottom: 20,
-    marginTop: 20, 
-  },
   search: {
     color: "red",
     fontSize: 17,
     alignSelf: "flex-end",
+    marginTop: 10,
   },
   sort: {
     color: "blue",
     fontSize: 17,
     alignSelf: "flex-end",
+    marginTop: 5,
   },
-  problem: {
+  title: {
     color: "purple",
     fontSize: 16,
     fontWeight: "bold",
@@ -182,5 +243,3 @@ const styles = StyleSheet.create({
     marginRight: "1%",
   },
 });
-
-export default Dashboard;
