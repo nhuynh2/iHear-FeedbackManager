@@ -1,7 +1,12 @@
 import { Platform } from "react-native";
-import { useEffect, useState } from "react";
+
 import iosData from "./GoogleService-Info.json";
 import androidData from "./google-services.json";
+
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+//import { getAuth } from "firebase/auth";
+import { getStorage } from "firebase/storage";
 
 let firebaseConfig = {
   apiKey: "apiKey",
@@ -15,7 +20,7 @@ let firebaseConfig = {
 if (Platform.OS == "ios") {
   firebaseConfig = {
     apiKey: iosData.API_KEY,
-    authDomain: "YOUR_AUTH_DOMAIN",
+    authDomain: `${iosData.PROJECT_ID}.firebaseapp.com`,
     projectId: iosData.PROJECT_ID,
     storageBucket: iosData.STORAGE_BUCKET,
     messagingSenderId: iosData.GCM_SENDER_ID,
@@ -24,7 +29,7 @@ if (Platform.OS == "ios") {
 } else if (Platform.OS == "android") {
   firebaseConfig = {
     apiKey: androidData.client[0].api_key[0].current_key,
-    authDomain: "YOUR_AUTH_DOMAIN",
+    authDomain: `${androidData.project_info.project_id}.firebaseapp.com`,
     projectId: androidData.project_info.project_id,
     storageBucket: androidData.project_info.storage_bucket,
     messagingSenderId: androidData.project_info.project_number,
@@ -32,4 +37,13 @@ if (Platform.OS == "ios") {
   };
 }
 
-export default firebaseConfig;
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+// Initialize services
+export const firestore = getFirestore(app);
+//export const auth = getAuth(app);
+export const storage = getStorage(app);
+
+// Optionally export the app itself
+export default app;
