@@ -39,6 +39,17 @@ interface TicketWithID extends Ticket {
   id: string;
 }
 
+const splitString = (str: string, delimiter: string) => {
+  const index = str.indexOf(delimiter);
+  if (index === -1) return str;
+  return str.substring(index + 2);
+};
+
+const shortenString = (str: string, length: number) => {
+  if (str.length <= length) return str;
+  return str.slice(0, length) + "...";
+};
+
 export default function Dashboard() {
   const [tickets, setTickets] = useState<TicketWithID[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,14 +68,6 @@ export default function Dashboard() {
       Alert.alert("Error", "Could not fetch data. Please contact Admin!");
     } finally {
       setLoading(false); // Set loading to false after fetching
-    }
-  };
-
-  const truncateString = (str: string) => {
-    if (str.length > 50) {
-      return str.slice(0, 50) + "...";
-    } else {
-      return str;
     }
   };
 
@@ -111,13 +114,17 @@ export default function Dashboard() {
               ></Image>
               <View style={styles.textView}>
                 <View style={styles.veriTxtView}>
-                  <Text style={styles.title}>{item.title}</Text>
+                  <Text style={styles.title}>
+                    {shortenString(item.title, 15)}
+                  </Text>
                   <Text style={styles.detail}>
-                    {truncateString(item.detail)}
+                    {shortenString(item.detail, 50)}
                   </Text>
                 </View>
                 <View style={styles.horiTxtView}>
-                  <Text style={styles.location}>{item.location}</Text>
+                  <Text style={styles.location}>
+                    {splitString(item.location, ":")}
+                  </Text>
                   <Text style={styles.status}>{item.status}</Text>
                 </View>
               </View>
