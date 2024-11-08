@@ -21,14 +21,15 @@ import {
   Asset,
 } from "react-native-image-picker";
 import ImageResizer from "react-native-image-resizer";
-
-import { firestore } from "../../firebase-config";
-import { collection, addDoc } from "firebase/firestore";
-
+import firebaseConfig from "../../firebase-config";
+import { initializeApp } from "firebase/app";
+import { collection, addDoc, getFirestore } from "firebase/firestore";
 import SearchSelect from "@/components/SearchSelect";
 import BoxButton from "@/components/BoxButton";
 import { useIsFocused } from "@react-navigation/native";
 
+const FIREBASE_CONFIG = initializeApp(firebaseConfig);
+const FIRESTORE = getFirestore(FIREBASE_CONFIG);
 const OBJ_TYPE = "tickets";
 const FONT_SIZE = 18;
 const MAX_IMAGES = 5;
@@ -90,7 +91,7 @@ const priorityList = ["High", "Normal", "Low"];
 
 const postData = async (objType: string, obj: object) => {
   try {
-    const docRef = await addDoc(collection(firestore, objType), obj);
+    const docRef = await addDoc(collection(FIRESTORE, objType), obj);
     console.log("Document uploaded with ID: ", docRef.id);
     return true;
   } catch (error) {
