@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  SafeAreaView,
   FlatList,
   View,
   Image,
@@ -9,10 +8,13 @@ import {
   Dimensions,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 
 import { firestore } from "../../firebase-config";
 import { collection, getDocs } from "firebase/firestore";
+
+import { useIsFocused } from "@react-navigation/native";
 
 const HEIGHT = Dimensions.get("screen").height;
 const WIDTH = Dimensions.get("screen").width;
@@ -37,77 +39,95 @@ interface TicketWithID extends Ticket {
   id: string;
 }
 
-const onPressHandle = () => {
-  Alert.alert("Clicked!");
-};
-
-const renderItem = ({ item }: { item: TicketWithID }) => (
-  <TouchableOpacity
-    style={styles.ticketView}
-    delayPressIn={50}
-    activeOpacity={0.4}
-    onPress={onPressHandle}
-  >
-    <Image
-      style={styles.images}
-      source={
-        !!item.images
-          ? { uri: item.images[0] }
-          : {
-              uri: EMPTY_IMAGE,
-            }
-      }
-    ></Image>
-    <View style={styles.textView}>
-      <View style={styles.veriTxtView}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.detail}>{item.detail}</Text>
-      </View>
-      <View style={styles.horiTxtView}>
-        <Text style={styles.location}>{item.location}</Text>
-        <Text style={styles.status}>{item.status}</Text>
-      </View>
-    </View>
-  </TouchableOpacity>
-);
-
 export default function Dashboard() {
   const [tickets, setTickets] = useState<TicketWithID[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchTickets() {
-      try {
-        const querySnapshot = await getDocs(collection(firestore, "tickets"));
+  const getData = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(firestore, "tickets"));
 
-        const docs = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as TicketWithID[];
+      const docs = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as TicketWithID[];
 
-        setTickets(docs);
-      } catch (error) {
-        console.error("Error fetching documents:", error);
-      } finally {
-        setLoading(false); // Set loading to false after fetching
-      }
+      setTickets(docs);
+    } catch (error) {
+      Alert.alert("Error", "Could not fetch data. Please contact Admin!");
+    } finally {
+      setLoading(false); // Set loading to false after fetching
     }
+  };
 
-    fetchTickets();
-  }, []);
+  const truncateString = (str: string) => {
+    if (str.length > 50) {
+      return str.slice(0, 50) + "...";
+    } else {
+      return str;
+    }
+  };
+
+  // Refresh when this page is focus
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    setLoading(true);
+    getData();
+  }, [isFocused]);
+
+  // Refresh when the list is pull-and-drop
+  const handleRefresh = () => {
+    getData();
+  };
+
+  const onPressHandle = () => {
+    alert("Clicked!");
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.search}>{"Search"}</Text>
       <Text style={styles.sort}>{"Sort by: Location | Type | Newest\n"}</Text>
-      <FlatList
-        scrollEnabled={true}
-        scrollToOverflowEnabled={true}
-        removeClippedSubviews={true}
-        data={tickets}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-      />
+      {loading ? (
+        <ActivityIndicator size="large" />
+      ) : (
+        <FlatList
+          scrollEnabled={true}
+          scrollToOverflowEnabled={true}
+          removeClippedSubviews={true}
+          data={tickets}
+          renderItem={({ item }: { item: TicketWithID }) => (
+            <TouchableOpacity
+              style={styles.ticketView}
+              delayPressIn={50}
+              activeOpacity={0.4}
+              onPress={onPressHandle}
+            >
+              <Image
+                style={styles.images}
+                source={
+                  !!item.images ? { uri: item.images[0] } : { uri: EMPTY_IMAGE }
+                }
+              ></Image>
+              <View style={styles.textView}>
+                <View style={styles.veriTxtView}>
+                  <Text style={styles.title}>{item.title}</Text>
+                  <Text style={styles.detail}>
+                    {truncateString(item.detail)}
+                  </Text>
+                </View>
+                <View style={styles.horiTxtView}>
+                  <Text style={styles.location}>{item.location}</Text>
+                  <Text style={styles.status}>{item.status}</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item.id}
+          refreshing={loading} // Controls the loading indicator for pull-to-refresh
+          onRefresh={handleRefresh} // Pull-to-refresh handler
+        />
+      )}
     </View>
   );
 }
