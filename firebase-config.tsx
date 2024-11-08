@@ -20,7 +20,7 @@ let firebaseConfig = {
 if (Platform.OS == "ios") {
   firebaseConfig = {
     apiKey: iosData.API_KEY,
-    authDomain: "YOUR_AUTH_DOMAIN",
+    authDomain: `${iosData.PROJECT_ID}.firebaseapp.com`,
     projectId: iosData.PROJECT_ID,
     storageBucket: iosData.STORAGE_BUCKET,
     messagingSenderId: iosData.GCM_SENDER_ID,
