@@ -10,69 +10,52 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+
 import data from "../../assets/data/tickets.json";
-import AddTicketButton from "../../components/AddTicketButton.tsx";
-import { useRouter } from 'expo-router';
-import { ROUTES } from "../../components/navigation/routes";
-import Animated, {
-    useAnimatedRef,
-    useAnimatedStyle,
-    useScrollViewOffset,
-    withTiming,
-    } from 'react-native-reanimated';
 
 const HEIGHT = Dimensions.get("screen").height;
 const WIDTH = Dimensions.get("screen").width;
 
-const Dashboard = () => {
-  const router = useRouter(); // Move useRouter hook here
-    const scrollRef = useAnimatedRef<Animated.ScrollView>();
-    const scrollHandler = useScrollViewOffset(scrollRef);
-    const buttonStyle = useAnimatedStyle(() => {
-        return {
-            opacity: scrollHandler.value < 60 ? withTiming(1) : withTiming(0),
-            }
-        });
-  const onPressHandle = (status) => {
-      router.push(ROUTES.TICKET_DETAILS); // Navigate to the Ticket Details page
-  };
+const onPressHandle = () => {
+  Alert.alert("Clicked!");
+};
 
-  type ItemProps = {
-    image: string;
-    problem: string;
-    detail: string;
-    location: string;
-    status: string;
-  };
+type ItemProps = {
+  image: string;
+  problem: string;
+  detail: string;
+  location: string;
+  status: string;
+};
 
-  const Item = ({ image, problem, detail, location, status }: ItemProps) => (
-    <TouchableOpacity
-      style={styles.ticketView}
-      delayPressIn={50}
-      activeOpacity={0.4}
-      onPress={() => onPressHandle(status)} // Use the onPressHandle function here
-    >
-      <Image style={styles.image} source={{ uri: image }} />
-      <View style={styles.textView}>
-        <View style={styles.veriTxtView}>
-          <Text style={styles.problem}>{problem}</Text>
-          <Text style={styles.detail}>{detail}</Text>
-        </View>
-        <View style={styles.horiTxtView}>
-          <Text style={styles.location}>{location}</Text>
-          <Text style={styles.status}>{status}</Text>
-        </View>
+const Item = ({ image, problem, detail, location, status }: ItemProps) => (
+  <TouchableOpacity
+    style={styles.ticketView}
+    delayPressIn={50}
+    activeOpacity={0.4}
+    onPress={onPressHandle}
+  >
+    <Image style={styles.image} source={{ uri: image }}></Image>
+    <View style={styles.textView}>
+      <View style={styles.veriTxtView}>
+        <Text style={styles.problem}>{problem}</Text>
+        <Text style={styles.detail}>{detail}</Text>
       </View>
-    </TouchableOpacity>
-  );
+      <View style={styles.horiTxtView}>
+        <Text style={styles.location}>{location}</Text>
+        <Text style={styles.status}>{status}</Text>
+      </View>
+    </View>
+  </TouchableOpacity>
+);
 
+export default function Dashboard() {
   return (
     <View style={styles.screenView}>
       <Text style={styles.title}>{"DASHBOARD"}</Text>
       <Text style={styles.search}>{"Search"}</Text>
       <Text style={styles.sort}>{"Sort by: Location | Type | Newest\n"}</Text>
       <FlatList
-        ref={scrollRef}
         scrollEnabled={true}
         scrollToOverflowEnabled={true}
         removeClippedSubviews={true}
@@ -88,12 +71,9 @@ const Dashboard = () => {
         )}
         keyExtractor={(item) => item.id}
       />
-      <Animated.View style ={[buttonStyle, { position: 'absolute', right: 10, bottom: 10 } ]}>
-          <AddTicketButton />
-      </Animated.View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   screenView: {
@@ -182,5 +162,3 @@ const styles = StyleSheet.create({
     marginRight: "1%",
   },
 });
-
-export default Dashboard;
