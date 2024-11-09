@@ -1,21 +1,25 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import React from "react";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import data from "../../assets/data/profilepage.json";
 
-const ProfilePage: React.FC = () => {
-  const staticAvatarUri = "https://www.w3schools.com/w3images/avatar2.png";
+const staticAvatarUri = "https://www.w3schools.com/w3images/avatar2.png";
 
+export default function ProfilePage() {
   return (
     <View style={styles.viewContainer}>
       <View style={styles.profilePage}>
         {/* Avatar Section */}
-        <View style={styles.avatarSection}>
-          <Image
-            source={{ uri: staticAvatarUri }}
-            style={styles.avatarImage}
-          />
-        </View>
+        <TouchableOpacity style={styles.avatarSection} onPress={() => {}}>
+          <Image source={{ uri: staticAvatarUri }} style={styles.avatarImage} />
+        </TouchableOpacity>
 
         {/* Info Section */}
         <View style={styles.infoSection}>
@@ -27,8 +31,17 @@ const ProfilePage: React.FC = () => {
                 value={data.profile.netID}
                 editable={false}
               />
-              <TouchableOpacity onPress={() => { /* No action for now */ }}>
-                <Ionicons name="pencil" size={24} color="grey" style={styles.icon} />
+              <TouchableOpacity
+                onPress={() => {
+                  /* No action for now */
+                }}
+              >
+                <Ionicons
+                  name="pencil"
+                  size={27}
+                  color="grey"
+                  style={styles.icon}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -41,8 +54,17 @@ const ProfilePage: React.FC = () => {
                 value={data.profile.name}
                 editable={false}
               />
-              <TouchableOpacity onPress={() => { /* No action for now */ }}>
-                <Ionicons name="pencil" size={24} color="grey" style={styles.icon} />
+              <TouchableOpacity
+                onPress={() => {
+                  /* No action for now */
+                }}
+              >
+                <Ionicons
+                  name="pencil"
+                  size={27}
+                  color="grey"
+                  style={styles.icon}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -55,8 +77,17 @@ const ProfilePage: React.FC = () => {
                 value={data.profile.role}
                 editable={false}
               />
-              <TouchableOpacity onPress={() => { /* No action for now */ }}>
-                <Ionicons name="pencil" size={24} color="grey" style={styles.icon} />
+              <TouchableOpacity
+                onPress={() => {
+                  /* No action for now */
+                }}
+              >
+                <Ionicons
+                  name="pencil"
+                  size={27}
+                  color="grey"
+                  style={styles.icon}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -69,8 +100,17 @@ const ProfilePage: React.FC = () => {
                 value={data.profile.contact.email}
                 editable={false}
               />
-              <TouchableOpacity onPress={() => { /* No action for now */ }}>
-                <Ionicons name="pencil" size={24} color="grey" style={styles.icon} />
+              <TouchableOpacity
+                onPress={() => {
+                  /* No action for now */
+                }}
+              >
+                <Ionicons
+                  name="pencil"
+                  size={27}
+                  color="grey"
+                  style={styles.icon}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -78,13 +118,12 @@ const ProfilePage: React.FC = () => {
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   viewContainer: {
     flexGrow: 1,
     justifyContent: "flex-start",
-    paddingBottom: 20,
   },
   profilePage: {
     flex: 1,
@@ -99,8 +138,8 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   avatarImage: {
-    width: 150,
-    height: 150,
+    width: 200,
+    height: 200,
     borderRadius: 60,
   },
   infoSection: {
@@ -110,13 +149,13 @@ const styles = StyleSheet.create({
   infoRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 25,
+    marginTop: 35,
   },
   label: {
     fontWeight: "bold",
     fontSize: 18,
     color: "#333333",
-    width: 80,
+    width: "17%",
   },
   valueContainer: {
     flex: 1,
@@ -128,8 +167,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "gray",
     borderRadius: 5,
-    paddingVertical: 15,
-    paddingHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
     backgroundColor: "white",
   },
   valueText: {
@@ -140,5 +179,3 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
 });
-
-export default ProfilePage;
