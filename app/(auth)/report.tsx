@@ -11,7 +11,6 @@ import {
   FlatList,
   Keyboard,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
   launchImageLibrary,
   launchCamera,
@@ -24,11 +23,13 @@ import ImageResizer from "react-native-image-resizer";
 
 import { useIsFocused } from "@react-navigation/native";
 
-import { firestore } from "../../firebase-config";
-import { collection, addDoc, getFirestore } from "firebase/firestore";
+import initializeApp from "../../firebase-config";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import SearchSelect from "@/components/SearchSelect";
 import BoxButton from "@/components/BoxButton";
+import { FirebaseError } from "firebase/app";
 
 const OBJ_TYPE = "tickets";
 const FONT_SIZE = 18;
@@ -89,8 +90,28 @@ const locationList = [
 
 const priorityList = ["High", "Normal", "Low"];
 
+const uploadImage = async (uri: string, fileName: string) => {
+  try {
+    const response = await fetch(uri);
+    if (!response.ok) throw new Error("Failed to fetch image URI");
+    const blob = await response.blob();
+    const storage = getStorage(initializeApp);
+    const storageRef = ref(storage, `images/${fileName}`);
+    await uploadBytes(storageRef, blob);
+    return await getDownloadURL(storageRef);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error uploading image:", error.message);
+    } else {
+      console.error("Unexpected error uploading image:", error);
+    }
+    return null;
+  }
+};
+
 const postData = async (objType: string, obj: object) => {
   try {
+    const firestore = getFirestore(initializeApp);
     const docRef = await addDoc(collection(firestore, objType), obj);
     console.log("Document uploaded with ID: ", docRef.id);
     return true;
@@ -358,6 +379,16 @@ const ReportScreen = () => {
   const handleSubmit = async () => {
     if (Keyboard.isVisible()) Keyboard.dismiss();
     if (!handleValidation()) return;
+
+    // Upload images and get their URLs
+    const imageUrls = await Promise.all(
+      images
+        .filter((img) => img !== null) // Filter out placeholders
+        .map(async (imageUri, index) => {
+          const fileName = `ticket_${new Date().getTime()}_${index}.jpg`;
+          return await uploadImage(imageUri, fileName);
+        })
+    );
 
     const ticket: Ticket = {
       title: title,

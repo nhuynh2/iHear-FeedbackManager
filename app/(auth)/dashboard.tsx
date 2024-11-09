@@ -11,8 +11,8 @@ import {
   ActivityIndicator,
 } from "react-native";
 
-import { firestore } from "../../firebase-config";
-import { collection, getDocs } from "firebase/firestore";
+import initializeApp from "../../firebase-config";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 
 import { useIsFocused } from "@react-navigation/native";
 
@@ -56,6 +56,7 @@ export default function Dashboard() {
 
   const getData = async () => {
     try {
+      const firestore = getFirestore(initializeApp);
       const querySnapshot = await getDocs(collection(firestore, "tickets"));
 
       const docs = querySnapshot.docs.map((doc) => ({
