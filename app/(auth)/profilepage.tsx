@@ -1,13 +1,13 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { Ionicons } from "@expo/vector-icons";
 import data from "../../assets/data/profilepage.json";
 
 const ProfilePage: React.FC = () => {
   const staticAvatarUri = "https://www.w3schools.com/w3images/avatar2.png";
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+    <View style={styles.viewContainer}>
       <View style={styles.profilePage}>
         {/* Avatar Section */}
         <View style={styles.avatarSection}>
@@ -22,11 +22,13 @@ const ProfilePage: React.FC = () => {
           <View style={styles.infoRow}>
             <Text style={styles.label}>ID:</Text>
             <View style={styles.valueContainer}>
-              <View style={styles.valueBox}>
-                <Text style={styles.valueText}>{data.profile.netID}</Text>
-              </View>
+              <TextInput
+                style={[styles.valueBox, styles.valueText]}
+                value={data.profile.netID}
+                editable={false}
+              />
               <TouchableOpacity onPress={() => { /* No action for now */ }}>
-                <Ionicons name="pencil" size={20} color="grey" style={styles.icon} />
+                <Ionicons name="pencil" size={24} color="grey" style={styles.icon} />
               </TouchableOpacity>
             </View>
           </View>
@@ -34,11 +36,13 @@ const ProfilePage: React.FC = () => {
           <View style={styles.infoRow}>
             <Text style={styles.label}>Name:</Text>
             <View style={styles.valueContainer}>
-              <View style={styles.valueBox}>
-                <Text style={styles.valueText}>{data.profile.name}</Text>
-              </View>
+              <TextInput
+                style={[styles.valueBox, styles.valueText]}
+                value={data.profile.name}
+                editable={false}
+              />
               <TouchableOpacity onPress={() => { /* No action for now */ }}>
-                <Ionicons name="pencil" size={20} color="grey" style={styles.icon} />
+                <Ionicons name="pencil" size={24} color="grey" style={styles.icon} />
               </TouchableOpacity>
             </View>
           </View>
@@ -46,11 +50,13 @@ const ProfilePage: React.FC = () => {
           <View style={styles.infoRow}>
             <Text style={styles.label}>Role:</Text>
             <View style={styles.valueContainer}>
-              <View style={styles.valueBox}>
-                <Text style={styles.valueText}>{data.profile.role}</Text>
-              </View>
+              <TextInput
+                style={[styles.valueBox, styles.valueText]}
+                value={data.profile.role}
+                editable={false}
+              />
               <TouchableOpacity onPress={() => { /* No action for now */ }}>
-                <Ionicons name="pencil" size={20} color="grey" style={styles.icon} />
+                <Ionicons name="pencil" size={24} color="grey" style={styles.icon} />
               </TouchableOpacity>
             </View>
           </View>
@@ -58,22 +64,24 @@ const ProfilePage: React.FC = () => {
           <View style={styles.infoRow}>
             <Text style={styles.label}>Email:</Text>
             <View style={styles.valueContainer}>
-              <View style={styles.valueBox}>
-                <Text style={styles.valueText}>{data.profile.contact.email}</Text>
-              </View>
+              <TextInput
+                style={[styles.valueBox, styles.valueText]}
+                value={data.profile.contact.email}
+                editable={false}
+              />
               <TouchableOpacity onPress={() => { /* No action for now */ }}>
-                <Ionicons name="pencil" size={20} color="grey" style={styles.icon} />
+                <Ionicons name="pencil" size={24} color="grey" style={styles.icon} />
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollViewContainer: {
+  viewContainer: {
     flexGrow: 1,
     justifyContent: "flex-start",
     paddingBottom: 20,
@@ -102,11 +110,11 @@ const styles = StyleSheet.create({
   infoRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 30,
+    marginBottom: 25,
   },
   label: {
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: 18,
     color: "#333333",
     width: 80,
   },
@@ -120,7 +128,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "gray",
     borderRadius: 5,
-    paddingVertical: 20,
+    paddingVertical: 15,
     paddingHorizontal: 12,
     backgroundColor: "white",
   },
