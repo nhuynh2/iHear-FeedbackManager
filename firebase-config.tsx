@@ -4,9 +4,6 @@ import iosData from "./GoogleService-Info.json";
 import androidData from "./google-services.json";
 
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-//import { getAuth } from "firebase/auth";
-import { getStorage } from "firebase/storage";
 
 let firebaseConfig = {
   apiKey: "apiKey",
@@ -38,12 +35,4 @@ if (Platform.OS == "ios") {
 }
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
-// Initialize services
-export const firestore = getFirestore(app);
-//export const auth = getAuth(app);
-export const storage = getStorage(app);
-
-// Optionally export the app itself
-export default app;
+export default initializeApp(firebaseConfig);
