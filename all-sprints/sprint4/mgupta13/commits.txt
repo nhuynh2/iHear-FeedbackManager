@@ -1,1 +1,6 @@
+This sprint I didn't really work on any code I just made sure everything is working well and smoothly on my end, especially Android. This is important as I am the only one with an Android device so making sure the project is working smoothly and well on Android is very important. I made sure the profilepage.json and .tsx files that I worked on are all good and how I want them to look. Made sure that those pages are up and visible on the project. This sprint was more just getting ready for our presentation and me making sure everything works thus far on my end. 
+Here are the paths to the files I had worked on in the previous 2 sprints and the ones I made sure were ready this sprint:
+These past few week's have also been super busy so I didn't get as much time to focus on this class as I could/should. Still happy with how the project is going on my end/running. I may do some more work/contributions as our project/group needs after the sprint4 due date but this is what I have done so far. 
 
+ProfilePage.tsx: iHear/app/auth/profilepage.tsx
+ProfilePage.json: iHear/assets/data/profilepage.json
