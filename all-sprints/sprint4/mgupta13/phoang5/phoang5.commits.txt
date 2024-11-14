@@ -1,0 +1,794 @@
+FILE: ./firebase-config.tsx
+
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400  1) import { Platform } from "react-native";
+f42935e2 firebase-config.tsx (Phu Hoang 2024-11-08 02:43:24 -0500  2) 
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400  3) import iosData from "./GoogleService-Info.json";
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400  4) import androidData from "./google-services.json";
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400  5) 
+f42935e2 firebase-config.tsx (Phu Hoang 2024-11-08 02:43:24 -0500  6) import { initializeApp } from "firebase/app";
+f42935e2 firebase-config.tsx (Phu Hoang 2024-11-08 02:43:24 -0500  7) 
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400  8) let firebaseConfig = {
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400  9)   apiKey: "apiKey",
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 10)   authDomain: "authDomain",
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 11)   projectId: "projectId",
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 12)   storageBucket: "storageBucket",
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 13)   messagingSenderId: "messagingSenderId",
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 14)   appId: "appId",
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 15) };
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 16) 
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 17) if (Platform.OS == "ios") {
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 18)   firebaseConfig = {
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 19)     apiKey: iosData.API_KEY,
+f42935e2 firebase-config.tsx (Phu Hoang 2024-11-08 02:43:24 -0500 20)     authDomain: `${iosData.PROJECT_ID}.firebaseapp.com`,
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 21)     projectId: iosData.PROJECT_ID,
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 22)     storageBucket: iosData.STORAGE_BUCKET,
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 23)     messagingSenderId: iosData.GCM_SENDER_ID,
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 24)     appId: iosData.GOOGLE_APP_ID,
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 25)   };
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 26) } else if (Platform.OS == "android") {
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 27)   firebaseConfig = {
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 28)     apiKey: androidData.client[0].api_key[0].current_key,
+f42935e2 firebase-config.tsx (Phu Hoang 2024-11-08 02:43:24 -0500 29)     authDomain: `${androidData.project_info.project_id}.firebaseapp.com`,
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 30)     projectId: androidData.project_info.project_id,
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 31)     storageBucket: androidData.project_info.storage_bucket,
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 32)     messagingSenderId: androidData.project_info.project_number,
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 33)     appId: androidData.client[0].client_info.mobilesdk_app_id,
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 34)   };
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 35) }
+5670f868 firebase-config.ts  (Phu Hoang 2024-10-30 14:32:12 -0400 36) 
+f42935e2 firebase-config.tsx (Phu Hoang 2024-11-08 02:43:24 -0500 37) // Initialize Firebase
+86cc6611 firebase-config.tsx (Phu Hoang 2024-11-09 01:03:48 -0500 38) export default initializeApp(firebaseConfig);
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+FILE: ./app/index.tsx
+
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400   1) import React from "react";
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   2) import {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   3)   Text,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   4)   View,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   5)   StyleSheet,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   6)   KeyboardAvoidingView,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   7)   TextInput,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   8)   Button,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   9)   ActivityIndicator,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  10)   TouchableWithoutFeedback,
+9358d546 app/index.tsx                (Ngan Huynh 2024-10-31 01:42:10 -0400  11)   TouchableOpacity,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  12)   Platform,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  13)   Keyboard,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  14)   Dimensions,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  15)   Image,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  16) } from "react-native";
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  17) import auth from "@react-native-firebase/auth";
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  18) import { FirebaseError } from "firebase/app";
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  19) 
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  20) export default function Index() {
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  21)   const [email, setEmail] = React.useState("");
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  22)   const [password, setPassword] = React.useState("");
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  23)   const [loading, setLoading] = React.useState(false);
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  24)   const [errorMsg, setErrorMsg] = React.useState("");
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  25) 
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  26)   const handleSignIn = async () => {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  27)     setLoading(true);
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  28)     try {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  29)       await auth().signInWithEmailAndPassword(email, password);
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  30)       setErrorMsg(""); // clear the msg
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  31)     } catch (error: any) {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  32)       console.log(error);
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  33)       if (error.code === "auth/invalid-email") {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  34)         setErrorMsg("Invalid email form.");
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  35)       } else if (error.code === "auth/invalid-credential") {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  36)         setErrorMsg("Incorrect email or password.");
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  37)       } else if (error.code === "auth/email-already-in-use") {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  38)         setErrorMsg("This account is already in use.");
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  39)       } else if (error.code === "auth/network-request-failed") {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  40)         setErrorMsg("Please check internet connection.");
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  41)       } else {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  42)         setErrorMsg("Unknown error occurred. Please try again.");
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  43)       }
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  44)     } finally {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  45)       setLoading(false);
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  46)     }
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  47)   };
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  48) 
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  49)   return (
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  50)     <KeyboardAvoidingView
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  51)       style={styles.container}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  52)       behavior={Platform.OS === "ios" ? "padding" : "height"}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  53)     >
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  54)       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  55)         <View style={styles.inner}>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  56)           <Image
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  57)             source={require("../assets/images/icon.png")}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  58)             style={styles.img}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  59)           />
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  60)           <Text style={styles.title}>Welcome to iHear</Text>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  61)           <TextInput
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  62)             placeholder="Email"
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  63)             style={[styles.input, loading && styles.greyedOut]}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  64)             value={email}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  65)             onChangeText={setEmail}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  66)             editable={!loading}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  67)             keyboardType="email-address"
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  68)             autoCapitalize="none"
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  69)           />
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  70)           <TextInput
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  71)             placeholder="Password"
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  72)             style={[styles.input, loading && styles.greyedOut]}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  73)             value={password}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  74)             onChangeText={setPassword}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  75)             editable={!loading}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  76)             secureTextEntry
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  77)           />
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  78)           {/* Conditionally render the error message */}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  79)           {errorMsg ? <Text style={styles.errorMsg}>{errorMsg}</Text> : null}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  80)           <View style={styles.buttonContainer}>
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  81)             <TouchableOpacity
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  82)               style={styles.button}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  83)               onPress={handleSignIn}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  84)               disabled={loading}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  85)             >
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  86)               {/* Conditionally render the loading-wheel or button */}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  87)               {loading ? (
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  88)                 <ActivityIndicator size="large" />
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  89)               ) : (
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  90)                 <Text style={styles.buttonText}>Sign In</Text>
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  91)               )}
+9358d546 app/index.tsx                (Ngan Huynh 2024-10-31 01:42:10 -0400  92)             </TouchableOpacity>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  93)           </View>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  94)         </View>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  95)       </TouchableWithoutFeedback>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  96)     </KeyboardAvoidingView>
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  97)   );
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  98) }
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  99) 
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 100) const styles = StyleSheet.create({
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 101)   container: {
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 102)     flex: 1,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 103)   },
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 104)   inner: {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 105)     flex: 1,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 106)     justifyContent: "center",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 107)     alignItems: "center",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 108)     alignContent: "center",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 109)     padding: "5%",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 110)     backgroundColor: "#FFF5E1",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 111)   },
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 112)   img: {
+9358d546 app/index.tsx                (Ngan Huynh 2024-10-31 01:42:10 -0400 113)     height: 150,
+9358d546 app/index.tsx                (Ngan Huynh 2024-10-31 01:42:10 -0400 114)     width: 150,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 115)     marginTop: "1%",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 116)     marginRight: "1%",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 117)   },
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 118)   title: {
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 119)     fontSize: 35,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 120)     fontWeight: "bold",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 121)     color: "#FF8C00",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 122)     marginBottom: 40,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 123)   },
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 124)   input: {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 125)     fontSize: 20,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 126)     width: "90%",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 127)     padding: 15,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 128)     marginBottom: 20,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 129)     borderColor: "#FF8C00",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 130)     borderWidth: 1,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 131)     borderRadius: 10,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 132)     backgroundColor: "#FFFFFF",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 133)   },
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 134)   // Grey-out text input while loading
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 135)   greyedOut: {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 136)     backgroundColor: "#d3d3d3",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 137)     color: "#a9a9a9",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 138)   },
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 139)   buttonContainer: {
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 140)     width: "90%",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 141)     borderRadius: 10,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 142)     flexDirection: "row",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 143)     justifyContent: "center",
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 144)   },
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 145)   loadingIndicator: {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 146)     margin: "5%",
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 147)   },
+9358d546 app/index.tsx                (Ngan Huynh 2024-10-31 01:42:10 -0400 148)   button: {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 149)     backgroundColor: "#078a48",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 150)     padding: 8,
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 151)     borderRadius: 5,
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 152)     alignItems: "center",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 153)     justifyContent: "center",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 154)     margin: "1%",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 155)   },
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 156)   buttonText: {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 157)     color: "white",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 158)     fontSize: 22,
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 159)     textAlign: "center",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 160)   },
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 161)   errorMsg: {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 162)     color: "red",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 163)     textAlign: "center",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 164)     marginBottom: 10,
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 165)     fontSize: 20,
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 166)   },
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 167) });
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+FILE: ./app/(auth)/report.tsx
+
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400   1) import React from "react";
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   2) import {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   3)   Text,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   4)   View,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   5)   StyleSheet,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   6)   KeyboardAvoidingView,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   7)   TextInput,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   8)   Button,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   9)   ActivityIndicator,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  10)   TouchableWithoutFeedback,
+9358d546 app/index.tsx                (Ngan Huynh 2024-10-31 01:42:10 -0400  11)   TouchableOpacity,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  12)   Platform,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  13)   Keyboard,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  14)   Dimensions,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  15)   Image,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  16) } from "react-native";
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  17) import auth from "@react-native-firebase/auth";
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  18) import { FirebaseError } from "firebase/app";
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  19) 
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  20) export default function Index() {
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  21)   const [email, setEmail] = React.useState("");
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  22)   const [password, setPassword] = React.useState("");
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  23)   const [loading, setLoading] = React.useState(false);
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  24)   const [errorMsg, setErrorMsg] = React.useState("");
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  25) 
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  26)   const handleSignIn = async () => {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  27)     setLoading(true);
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  28)     try {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  29)       await auth().signInWithEmailAndPassword(email, password);
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  30)       setErrorMsg(""); // clear the msg
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  31)     } catch (error: any) {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  32)       console.log(error);
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  33)       if (error.code === "auth/invalid-email") {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  34)         setErrorMsg("Invalid email form.");
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  35)       } else if (error.code === "auth/invalid-credential") {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  36)         setErrorMsg("Incorrect email or password.");
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  37)       } else if (error.code === "auth/email-already-in-use") {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  38)         setErrorMsg("This account is already in use.");
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  39)       } else if (error.code === "auth/network-request-failed") {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  40)         setErrorMsg("Please check internet connection.");
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  41)       } else {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  42)         setErrorMsg("Unknown error occurred. Please try again.");
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  43)       }
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  44)     } finally {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  45)       setLoading(false);
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  46)     }
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  47)   };
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  48) 
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  49)   return (
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  50)     <KeyboardAvoidingView
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  51)       style={styles.container}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  52)       behavior={Platform.OS === "ios" ? "padding" : "height"}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  53)     >
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  54)       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  55)         <View style={styles.inner}>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  56)           <Image
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  57)             source={require("../assets/images/icon.png")}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  58)             style={styles.img}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  59)           />
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  60)           <Text style={styles.title}>Welcome to iHear</Text>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  61)           <TextInput
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  62)             placeholder="Email"
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  63)             style={[styles.input, loading && styles.greyedOut]}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  64)             value={email}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  65)             onChangeText={setEmail}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  66)             editable={!loading}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  67)             keyboardType="email-address"
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  68)             autoCapitalize="none"
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  69)           />
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  70)           <TextInput
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  71)             placeholder="Password"
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  72)             style={[styles.input, loading && styles.greyedOut]}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  73)             value={password}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  74)             onChangeText={setPassword}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  75)             editable={!loading}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  76)             secureTextEntry
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  77)           />
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  78)           {/* Conditionally render the error message */}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  79)           {errorMsg ? <Text style={styles.errorMsg}>{errorMsg}</Text> : null}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  80)           <View style={styles.buttonContainer}>
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  81)             <TouchableOpacity
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  82)               style={styles.button}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  83)               onPress={handleSignIn}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  84)               disabled={loading}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  85)             >
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  86)               {/* Conditionally render the loading-wheel or button */}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  87)               {loading ? (
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  88)                 <ActivityIndicator size="large" />
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  89)               ) : (
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  90)                 <Text style={styles.buttonText}>Sign In</Text>
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  91)               )}
+9358d546 app/index.tsx                (Ngan Huynh 2024-10-31 01:42:10 -0400  92)             </TouchableOpacity>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  93)           </View>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  94)         </View>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  95)       </TouchableWithoutFeedback>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  96)     </KeyboardAvoidingView>
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  97)   );
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  98) }
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  99) 
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 100) const styles = StyleSheet.create({
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 101)   container: {
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 102)     flex: 1,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 103)   },
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 104)   inner: {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 105)     flex: 1,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 106)     justifyContent: "center",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 107)     alignItems: "center",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 108)     alignContent: "center",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 109)     padding: "5%",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 110)     backgroundColor: "#FFF5E1",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 111)   },
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 112)   img: {
+9358d546 app/index.tsx                (Ngan Huynh 2024-10-31 01:42:10 -0400 113)     height: 150,
+9358d546 app/index.tsx                (Ngan Huynh 2024-10-31 01:42:10 -0400 114)     width: 150,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 115)     marginTop: "1%",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 116)     marginRight: "1%",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 117)   },
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 118)   title: {
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 119)     fontSize: 35,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 120)     fontWeight: "bold",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 121)     color: "#FF8C00",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 122)     marginBottom: 40,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 123)   },
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 124)   input: {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 125)     fontSize: 20,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 126)     width: "90%",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 127)     padding: 15,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 128)     marginBottom: 20,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 129)     borderColor: "#FF8C00",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 130)     borderWidth: 1,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 131)     borderRadius: 10,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 132)     backgroundColor: "#FFFFFF",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 133)   },
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 134)   // Grey-out text input while loading
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 135)   greyedOut: {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 136)     backgroundColor: "#d3d3d3",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 137)     color: "#a9a9a9",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 138)   },
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 139)   buttonContainer: {
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 140)     width: "90%",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 141)     borderRadius: 10,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 142)     flexDirection: "row",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 143)     justifyContent: "center",
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 144)   },
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 145)   loadingIndicator: {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 146)     margin: "5%",
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 147)   },
+9358d546 app/index.tsx                (Ngan Huynh 2024-10-31 01:42:10 -0400 148)   button: {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 149)     backgroundColor: "#078a48",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 150)     padding: 8,
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 151)     borderRadius: 5,
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 152)     alignItems: "center",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 153)     justifyContent: "center",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 154)     margin: "1%",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 155)   },
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 156)   buttonText: {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 157)     color: "white",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 158)     fontSize: 22,
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 159)     textAlign: "center",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 160)   },
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 161)   errorMsg: {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 162)     color: "red",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 163)     textAlign: "center",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 164)     marginBottom: 10,
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 165)     fontSize: 20,
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 166)   },
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 167) });
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+FILE: ./app/(auth)/dashboard.tsx
+
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400   1) import React from "react";
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   2) import {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   3)   Text,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   4)   View,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   5)   StyleSheet,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   6)   KeyboardAvoidingView,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   7)   TextInput,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   8)   Button,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400   9)   ActivityIndicator,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  10)   TouchableWithoutFeedback,
+9358d546 app/index.tsx                (Ngan Huynh 2024-10-31 01:42:10 -0400  11)   TouchableOpacity,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  12)   Platform,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  13)   Keyboard,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  14)   Dimensions,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  15)   Image,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  16) } from "react-native";
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  17) import auth from "@react-native-firebase/auth";
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  18) import { FirebaseError } from "firebase/app";
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  19) 
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  20) export default function Index() {
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  21)   const [email, setEmail] = React.useState("");
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  22)   const [password, setPassword] = React.useState("");
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  23)   const [loading, setLoading] = React.useState(false);
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  24)   const [errorMsg, setErrorMsg] = React.useState("");
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  25) 
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  26)   const handleSignIn = async () => {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  27)     setLoading(true);
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  28)     try {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  29)       await auth().signInWithEmailAndPassword(email, password);
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  30)       setErrorMsg(""); // clear the msg
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  31)     } catch (error: any) {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  32)       console.log(error);
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  33)       if (error.code === "auth/invalid-email") {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  34)         setErrorMsg("Invalid email form.");
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  35)       } else if (error.code === "auth/invalid-credential") {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  36)         setErrorMsg("Incorrect email or password.");
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  37)       } else if (error.code === "auth/email-already-in-use") {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  38)         setErrorMsg("This account is already in use.");
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  39)       } else if (error.code === "auth/network-request-failed") {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  40)         setErrorMsg("Please check internet connection.");
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  41)       } else {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  42)         setErrorMsg("Unknown error occurred. Please try again.");
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  43)       }
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  44)     } finally {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  45)       setLoading(false);
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  46)     }
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  47)   };
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  48) 
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  49)   return (
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  50)     <KeyboardAvoidingView
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  51)       style={styles.container}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  52)       behavior={Platform.OS === "ios" ? "padding" : "height"}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  53)     >
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  54)       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  55)         <View style={styles.inner}>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  56)           <Image
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  57)             source={require("../assets/images/icon.png")}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  58)             style={styles.img}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  59)           />
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  60)           <Text style={styles.title}>Welcome to iHear</Text>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  61)           <TextInput
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  62)             placeholder="Email"
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  63)             style={[styles.input, loading && styles.greyedOut]}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  64)             value={email}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  65)             onChangeText={setEmail}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  66)             editable={!loading}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  67)             keyboardType="email-address"
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  68)             autoCapitalize="none"
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  69)           />
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  70)           <TextInput
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  71)             placeholder="Password"
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  72)             style={[styles.input, loading && styles.greyedOut]}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  73)             value={password}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  74)             onChangeText={setPassword}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  75)             editable={!loading}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  76)             secureTextEntry
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  77)           />
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  78)           {/* Conditionally render the error message */}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  79)           {errorMsg ? <Text style={styles.errorMsg}>{errorMsg}</Text> : null}
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  80)           <View style={styles.buttonContainer}>
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  81)             <TouchableOpacity
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  82)               style={styles.button}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  83)               onPress={handleSignIn}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  84)               disabled={loading}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  85)             >
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  86)               {/* Conditionally render the loading-wheel or button */}
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  87)               {loading ? (
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  88)                 <ActivityIndicator size="large" />
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  89)               ) : (
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  90)                 <Text style={styles.buttonText}>Sign In</Text>
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500  91)               )}
+9358d546 app/index.tsx                (Ngan Huynh 2024-10-31 01:42:10 -0400  92)             </TouchableOpacity>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  93)           </View>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  94)         </View>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  95)       </TouchableWithoutFeedback>
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400  96)     </KeyboardAvoidingView>
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  97)   );
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  98) }
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400  99) 
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 100) const styles = StyleSheet.create({
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 101)   container: {
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 102)     flex: 1,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 103)   },
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 104)   inner: {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 105)     flex: 1,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 106)     justifyContent: "center",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 107)     alignItems: "center",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 108)     alignContent: "center",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 109)     padding: "5%",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 110)     backgroundColor: "#FFF5E1",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 111)   },
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 112)   img: {
+9358d546 app/index.tsx                (Ngan Huynh 2024-10-31 01:42:10 -0400 113)     height: 150,
+9358d546 app/index.tsx                (Ngan Huynh 2024-10-31 01:42:10 -0400 114)     width: 150,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 115)     marginTop: "1%",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 116)     marginRight: "1%",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 117)   },
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 118)   title: {
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 119)     fontSize: 35,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 120)     fontWeight: "bold",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 121)     color: "#FF8C00",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 122)     marginBottom: 40,
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 123)   },
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 124)   input: {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 125)     fontSize: 20,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 126)     width: "90%",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 127)     padding: 15,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 128)     marginBottom: 20,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 129)     borderColor: "#FF8C00",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 130)     borderWidth: 1,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 131)     borderRadius: 10,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 132)     backgroundColor: "#FFFFFF",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 133)   },
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 134)   // Grey-out text input while loading
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 135)   greyedOut: {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 136)     backgroundColor: "#d3d3d3",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 137)     color: "#a9a9a9",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 138)   },
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 139)   buttonContainer: {
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 140)     width: "90%",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 141)     borderRadius: 10,
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 142)     flexDirection: "row",
+ac2574b5 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-17 21:41:56 -0400 143)     justifyContent: "center",
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 144)   },
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 145)   loadingIndicator: {
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 146)     margin: "5%",
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 147)   },
+9358d546 app/index.tsx                (Ngan Huynh 2024-10-31 01:42:10 -0400 148)   button: {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 149)     backgroundColor: "#078a48",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 150)     padding: 8,
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 151)     borderRadius: 5,
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 152)     alignItems: "center",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 153)     justifyContent: "center",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 154)     margin: "1%",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 155)   },
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 156)   buttonText: {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 157)     color: "white",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 158)     fontSize: 22,
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 159)     textAlign: "center",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 160)   },
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 161)   errorMsg: {
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 162)     color: "red",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 163)     textAlign: "center",
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 164)     marginBottom: 10,
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 165)     fontSize: 20,
+7ba929de app/index.tsx                (Phu Hoang  2024-11-04 01:22:26 -0500 166)   },
+22020f06 projects/Ihear/app/index.tsx (Phu Hoang  2024-10-16 15:21:53 -0400 167) });
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+FILE: ./components/BoxButton.tsx
+
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500  1) // CustomButton.js
+c9406c87 projects/Ihear/components/BoxButton.tsx (Phu Hoang 2024-10-17 21:26:13 -0400  2) import React from "react";
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500  3) import { Text, TouchableOpacity, StyleSheet } from "react-native";
+c9406c87 projects/Ihear/components/BoxButton.tsx (Phu Hoang 2024-10-17 21:26:13 -0400  4) 
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500  5) // Parameters to pass from parent component
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500  6) interface ItemProps {
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500  7)   title: string;
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500  8)   boxStyle?: object;
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500  9)   textStyle?: object;
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 10)   onPress: () => void;
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 11)   disabled?: boolean;
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 12) }
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 13) 
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 14) export default function CustomButton({
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 15)   title,
+c9406c87 projects/Ihear/components/BoxButton.tsx (Phu Hoang 2024-10-17 21:26:13 -0400 16)   onPress,
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 17)   boxStyle,
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 18)   textStyle,
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 19)   disabled,
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 20) }: ItemProps) {
+c9406c87 projects/Ihear/components/BoxButton.tsx (Phu Hoang 2024-10-17 21:26:13 -0400 21)   return (
+c9406c87 projects/Ihear/components/BoxButton.tsx (Phu Hoang 2024-10-17 21:26:13 -0400 22)     <TouchableOpacity
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 23)       style={[styles.box, boxStyle]}
+c9406c87 projects/Ihear/components/BoxButton.tsx (Phu Hoang 2024-10-17 21:26:13 -0400 24)       onPress={onPress}
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 25)       activeOpacity={0.8}
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 26)       disabled={disabled}
+c9406c87 projects/Ihear/components/BoxButton.tsx (Phu Hoang 2024-10-17 21:26:13 -0400 27)     >
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 28)       <Text style={[styles.text, textStyle]}>{title}</Text>
+c9406c87 projects/Ihear/components/BoxButton.tsx (Phu Hoang 2024-10-17 21:26:13 -0400 29)     </TouchableOpacity>
+c9406c87 projects/Ihear/components/BoxButton.tsx (Phu Hoang 2024-10-17 21:26:13 -0400 30)   );
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 31) }
+c9406c87 projects/Ihear/components/BoxButton.tsx (Phu Hoang 2024-10-17 21:26:13 -0400 32) 
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 33) const styles = StyleSheet.create({
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 34)   box: {
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 35)     paddingVertical: 15,
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 36)     backgroundColor: "#4c669f", // Default button color
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 37)     borderRadius: 15,
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 38)     alignItems: "center",
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 39)     justifyContent: "center",
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 40)     shadowColor: "#000", // Shadow color
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 41)     shadowOffset: { width: 0, height: 4 }, // Shadow offset
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 42)     shadowOpacity: 0.3, // Shadow opacity
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 43)     shadowRadius: 4, // Shadow blur radius
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 44)     elevation: 5, // Android shadow
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 45)   },
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 46)   text: {
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 47)     color: "white",
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 48)     fontSize: 25,
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 49)     fontWeight: "bold",
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 50)   },
+6b522bee components/BoxButton.tsx                (Phu Hoang 2024-11-06 15:53:30 -0500 51) });
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+FILE: ./components/SearchSelect.tsx
+
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500   1) import React, { useState, useEffect, useRef } from "react";
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500   2) import {
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500   3)   View,
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500   4)   TextInput,
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500   5)   TouchableOpacity,
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500   6)   FlatList,
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500   7)   Text,
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500   8)   StyleSheet,
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500   9)   TouchableWithoutFeedback,
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  10)   Keyboard,
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  11) } from "react-native";
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  12) import { Ionicons } from "@expo/vector-icons";
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  13) 
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  14) // Parameters to pass from parent component
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  15) interface ItemProps {
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  16)   placeholder: string;
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500  17)   hasOtherVal: boolean;
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  18)   itemList: string[];
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  19)   onSelect: (value: string) => void;
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500  20)   boxStyle?: object;
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500  21)   textStyle?: object;
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  22) }
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  23) 
+83295e05 (Phu Hoang 2024-11-07 09:34:51 -0500  24) export default function SearchSelect(props: ItemProps) {
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  25)   const [inputValue, setInputValue] = useState(""); // Input of user
+83295e05 (Phu Hoang 2024-11-07 09:34:51 -0500  26)   const [filteredItems, setFilteredItems] = useState<typeof props.itemList>([]); // filterd items
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  27)   const [showDropdown, setShowDropdown] = useState(false); // options list
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  28)   const [isFocused, setIsFocused] = useState(false); // Track if TextInput is focused
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  29) 
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500  30)   const inputRef = useRef<TextInput>(null);
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500  31) 
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  32)   const filter = () => {
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  33)     if (!isFocused) return;
+83295e05 (Phu Hoang 2024-11-07 09:34:51 -0500  34)     if (!inputValue || inputValue.trim() === "" || !props.hasOtherVal) {
+83295e05 (Phu Hoang 2024-11-07 09:34:51 -0500  35)       setFilteredItems(props.itemList);
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  36)     } else {
+83295e05 (Phu Hoang 2024-11-07 09:34:51 -0500  37)       const filtered = props.itemList.filter((item) =>
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  38)         item.toLowerCase().includes(inputValue.toLowerCase())
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  39)       );
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  40)       if (filtered.length === 0) {
+83295e05 (Phu Hoang 2024-11-07 09:34:51 -0500  41)         setFilteredItems([props.itemList[props.itemList.length - 1]]);
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  42)       } else {
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  43)         setFilteredItems(filtered);
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  44)       }
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  45)     }
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  46)     setShowDropdown(true);
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  47)   };
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  48) 
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  49)   useEffect(() => {
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  50)     filter();
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  51)   }, [inputValue, isFocused]);
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  52) 
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  53)   const clearText = () => {
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  54)     setShowDropdown(false);
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  55)     setInputValue("");
+83295e05 (Phu Hoang 2024-11-07 09:34:51 -0500  56)     props.onSelect("");
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  57)   };
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  58) 
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  59)   const closeMenu = () => {
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  60)     setShowDropdown(false);
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  61)     setIsFocused(false);
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  62)     setInputValue(inputValue);
+83295e05 (Phu Hoang 2024-11-07 09:34:51 -0500  63)     props.onSelect(inputValue);
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500  64)     inputRef.current?.blur();
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  65)     if (Keyboard.isVisible()) Keyboard.dismiss();
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  66)   };
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  67) 
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  68)   const handleFocus = () => {
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  69)     setIsFocused(true);
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  70)     setShowDropdown(isFocused && (!!inputValue || inputValue.trim() === "")); // Show dropdown if focused
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  71)   };
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  72) 
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  73)   const handleBlur = () => {
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  74)     setIsFocused(false);
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  75)     setShowDropdown(false); // Show dropdown if focused
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  76)     setInputValue(inputValue);
+83295e05 (Phu Hoang 2024-11-07 09:34:51 -0500  77)     props.onSelect(inputValue);
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  78)     if (Keyboard.isVisible()) Keyboard.dismiss();
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  79)   };
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  80) 
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  81)   const handleChangeText = (value: string) => {
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  82)     setInputValue(value);
+83295e05 (Phu Hoang 2024-11-07 09:34:51 -0500  83)     props.onSelect(value);
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  84)   };
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  85) 
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  86)   const handleSelect = (value: string) => {
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  87)     setIsFocused(false);
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  88)     setShowDropdown(false);
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  89)     setInputValue(value);
+83295e05 (Phu Hoang 2024-11-07 09:34:51 -0500  90)     props.onSelect(value);
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500  91)     inputRef.current?.blur();
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  92)     if (Keyboard.isVisible()) Keyboard.dismiss();
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  93)   };
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  94) 
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500  95)   return (
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500  96)     <View>
+83295e05 (Phu Hoang 2024-11-07 09:34:51 -0500  97)       <View style={[styles.inputContainer, props.boxStyle]}>
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500  98)         {/* Text Input */}
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500  99)         <TextInput
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 100)           ref={inputRef}
+83295e05 (Phu Hoang 2024-11-07 09:34:51 -0500 101)           style={[styles.input, props.textStyle]}
+83295e05 (Phu Hoang 2024-11-07 09:34:51 -0500 102)           placeholder={props.placeholder}
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 103)           value={inputValue}
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 104)           onChangeText={handleChangeText}
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 105)           onFocus={() => handleFocus()} // ToggleFocus on
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 106)           onBlur={() => handleBlur()} // ToggleFocus off
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 107)         />
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 108)         {/* Show Clear button when there is input */}
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 109)         {isFocused && (
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 110)           <View style={styles.buttonContainer}>
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 111)             {!!inputValue && (
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 112)               <TouchableOpacity onPress={clearText}>
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 113)                 <Ionicons name="close-circle" size={30} color="grey" />
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 114)               </TouchableOpacity>
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 115)             )}
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 116)             {/* Show Colapse button when onFocus */}
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 117)             <TouchableOpacity onPress={closeMenu}>
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 118)               <Ionicons name="chevron-up-sharp" size={30} color="grey" />
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 119)             </TouchableOpacity>
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 120)           </View>
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 121)         )}
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 122)       </View>
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 123) 
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 124)       {showDropdown && (
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 125)         <View style={[styles.dropdown]}>
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 126)           <FlatList
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 127)             initialNumToRender={5}
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 128)             data={filteredItems}
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 129)             keyExtractor={(item) => item}
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 130)             renderItem={({ item }) => (
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 131)               <TouchableOpacity
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 132)                 style={styles.dropdownItem}
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 133)                 onPress={() => handleSelect(item)}
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 134)               >
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 135)                 <Text>{item}</Text>
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 136)               </TouchableOpacity>
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 137)             )}
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 138)           />
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 139)         </View>
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 140)       )}
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 141)     </View>
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 142)   );
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 143) }
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 144) 
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 145) const styles = StyleSheet.create({
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 146)   inputContainer: {
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 147)     flexDirection: "row",
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 148)     alignItems: "center",
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 149)   },
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 150)   input: {
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 151)     flex: 1,
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 152)   },
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 153)   buttonContainer: {
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 154)     flexDirection: "row",
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 155)   },
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 156)   dropdown: {
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 157)     opacity: 0.75,
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 158)     backgroundColor: "#8cb6ed",
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 159)     borderRadius: 5,
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 160)     borderColor: "blue",
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 161)     borderWidth: 1,
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 162)     marginBottom: 15,
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 163)     maxHeight: 200, // Limit height for the dropdown
+66acbd31 (Phu Hoang 2024-11-07 01:16:56 -0500 164)     //zIndex: 2, // Ensure the dropdown appears above other elements
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 165)   },
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 166)   dropdownItem: {
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 167)     padding: 10,
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 168)     borderBottomWidth: 1,
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 169)     borderBottomColor: "gray",
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 170)   },
+6b522bee (Phu Hoang 2024-11-06 15:53:30 -0500 171) });
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+FILE: ./documents/database_desgin_1.pdf
+FILE: ./documents/database_design_2.png
