@@ -1,0 +1,437 @@
+File: ./app/(auth)/dashboard.tsx
+
+890dc78c app/(auth)/dashboard.tsx                (Ngan Huynh        2024-11-04 20:04:11 -0500   1) import React, { useEffect } from "react";
+890dc78c app/(auth)/dashboard.tsx                (Ngan Huynh        2024-11-04 20:04:11 -0500  14) import firestore from '@react-native-firebase/firestore';
+890dc78c app/(auth)/dashboard.tsx                (Ngan Huynh        2024-11-04 20:04:11 -0500  57)     useEffect(() => {
+890dc78c app/(auth)/dashboard.tsx                (Ngan Huynh        2024-11-04 20:04:11 -0500  58)       // Fetch and store device token on dashboard load
+890dc78c app/(auth)/dashboard.tsx                (Ngan Huynh        2024-11-04 20:04:11 -0500  59)       getAndStoreDeviceToken();
+890dc78c app/(auth)/dashboard.tsx                (Ngan Huynh        2024-11-04 20:04:11 -0500  61)     }, []);
+890dc78c app/(auth)/dashboard.tsx                (Ngan Huynh        2024-11-04 20:04:11 -0500 128)     marginTop: 20,
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+File: ./app/(auth)/messaging.tsx
+
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500   1) // messaging.tsx
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500   2) import messaging from '@react-native-firebase/messaging';
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500   3) import firestore from '@react-native-firebase/firestore';
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500   4) import auth from '@react-native-firebase/auth';
+0a49e297 (Ngan Huynh        2024-11-01 19:42:56 -0400   7)
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500   8) // Function to request notification permission
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500   9) export async function requestNotificationPermission() {
+0a49e297 (Ngan Huynh        2024-11-01 19:42:56 -0400  10)   const authStatus = await messaging().requestPermission();
+0a49e297 (Ngan Huynh        2024-11-01 19:42:56 -0400  11)   const enabled =       
+0a49e297 (Ngan Huynh        2024-11-01 19:42:56 -0400  12)     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+0a49e297 (Ngan Huynh        2024-11-01 19:42:56 -0400  13)     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+0a49e297 (Ngan Huynh        2024-11-01 19:42:56 -0400  14)
+0a49e297 (Ngan Huynh        2024-11-01 19:42:56 -0400  15)   if (enabled) {        
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  16)     console.log('Notification permission granted.');
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  17)     return true;        
+0a49e297 (Ngan Huynh        2024-11-01 19:42:56 -0400  18)   } else {
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  19)     console.log('Notification permission denied.');
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  20)     return false;       
+0a49e297 (Ngan Huynh        2024-11-01 19:42:56 -0400  21)   }
+0a49e297 (Ngan Huynh        2024-11-01 19:42:56 -0400  22) }
+0a49e297 (Ngan Huynh        2024-11-01 19:42:56 -0400  23)
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  24) // Function to retrieve and store the device token
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  25) export async function getAndStoreDeviceToken() {
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  26)   const user = auth().currentUser;
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  27)   if (!user) return;    
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  28)
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  29)   // Request permission if not already granted
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  30)   const hasPermission = await requestNotificationPermission();
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  31)   if (!hasPermission) return;
+0a49e297 (Ngan Huynh        2024-11-01 19:42:56 -0400  32)
+0a49e297 (Ngan Huynh        2024-11-01 19:42:56 -0400  33)   try {
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  34)       // Reference to the user document in Firestore
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  35)       const userRef = firestore().collection('users').doc(user.uid);
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  36)       await userRef.set({ tokens: [] }, { merge: true });
+09ed414a (Ngan Huynh        2024-11-14 16:11:41 -0500  37)       // Register the device with FCM
+09ed414a (Ngan Huynh        2024-11-14 16:11:41 -0500  38)         await messaging().registerDeviceForRemoteMessages();
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  39)     // Retrieve the device token
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  40)     const token = await messaging().getToken();
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  41)     // Add token to the tokens array in Firestore
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  42)     await userRef.update({
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  43)       tokens: firestore.FieldValue.arrayUnion(token),
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  44)     });
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  45)
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  54)     console.log('Token stored in Firestore:', token);
+0a49e297 (Ngan Huynh        2024-11-01 19:42:56 -0400  55)   } catch (error) {     
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  56)     console.error('Error fetching or storing token:', error);
+0a49e297 (Ngan Huynh        2024-11-01 19:42:56 -0400  57)   }
+890dc78c (Ngan Huynh        2024-11-04 20:04:11 -0500  58) }
+47ef9eef (Ngan Huynh        2024-11-14 16:56:05 -0500  59)
+47ef9eef (Ngan Huynh        2024-11-14 16:56:05 -0500 120)
+47ef9eef (Ngan Huynh        2024-11-14 16:56:05 -0500 137)
+47ef9eef (Ngan Huynh        2024-11-14 16:56:05 -0500 141)   });
+47ef9eef (Ngan Huynh        2024-11-14 16:56:05 -0500 142) };
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500   5) import { useRouter } from 'expo-router';
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500   6) import { ROUTES } from '../../components/navigation/routes.tsx'; // centralized routes
+09ed414a (Ngan Huynh 2024-11-14 16:11:41 -0500  37)       // Register the device with FCM
+09ed414a (Ngan Huynh 2024-11-14 16:11:41 -0500  38)         await messaging().registerDeviceForRemoteMessages();
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  46)     // Listen for token refresh and update Firestore with new token
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  47)     messaging().onTokenRefresh(async (newToken) => {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  48)       await userRef.update({
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  49)         tokens: firestore.FieldValue.arrayUnion(newToken),
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  50)       });
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  51)       console.log('Token refreshed and updated in Firestore:', newToken);
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  52)     });
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  53)
+47ef9eef (Ngan Huynh 2024-11-14 16:56:05 -0500  59)
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  60) export const updateTicketStatus = async (ticketId, status) => {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  61)   try {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  62)     const ticketRef = firestore().collection('tickets').doc(ticketId);
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  63)     await ticketRef.update({
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  64)       status: status, // 'in-review', 'in-progress', 'resolved'
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  65)       console.log(`Ticket ${ticketId} status updated to: ${status}`);
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  66)     });
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  67)   } catch (error) {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  68)     console.error("Error updating ticket status: ", error);
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  69)   }
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  70) };
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  71)
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  72) // Listen for ticket status changes in Firestore
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  73) export const listenForTicketStatusChanges = () => {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  74)   firestore()
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  75)     .collection('tickets')
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  76)     .onSnapshot((querySnapshot) => {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  77)       querySnapshot.forEach(async (documentSnapshot) => {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  78)         const ticket = documentSnapshot.data();
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  79)         const ticketId = documentSnapshot.id;
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  80)
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  81)         // If ticket status is 'in-progress' or 'in-review', trigger notification
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  82)         if (ticket.status === 'in-progress' || ticket.status === 'in-review') {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  83)           sendNotification(ticketId, 'Good news!', 'Your ticket\'s status has been updated ????', ticket.recipients);
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  84)         }
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  85)
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  86)         // If ticket status is 'resolved', trigger a different notification
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  87)         if (ticket.status === 'resolved') {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  88)           sendNotification(ticketId, 'Issue resolved', 'Have a nice day!', ticket.recipients);
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  89)         }
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  90)       });
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  91)     });
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  92) };
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  93)
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  94) // Send message from Firebase Cloud Messaging
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  95) const sendNotification = async (ticketId, title, body, recipients) => {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  96)   try {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  97)     const message = {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  98)       notification: {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500  99)         title: title,
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 100)         body: body,
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 101)       },
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 102)       data: {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 103)         ticketId: ticketId,
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 104)         status: title.toLowerCase(),  // 'in-review', 'in-progress', 'resolved'
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 105)       },
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 106)       tokens: recipients,  // An array of FCM tokens
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 107)     };
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 108)
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 109)     // Send the message to recipients using FCM
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 110)     await messaging().sendMulticast(message);
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 111)   } catch (error) {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 112)     console.error("Error sending notification: ", error);
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 113)   }
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 114) };
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 115)
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 116) // Process the message on user's device
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 117) const handleNotification = async (remoteMessage) => {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 118)   const router = useRouter();
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 119)   console.log("Notification received:", remoteMessage);
+47ef9eef (Ngan Huynh 2024-11-14 16:56:05 -0500 120)
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 121)   if (remoteMessage?.foreground) {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 122)     console.log("Foreground Notification:", remoteMessage.notification.body);
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 123)     alert(remoteMessage.notification.body);
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 124)   } else {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 125)     console.log("Background Notification:", remoteMessage.notification.body);
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 126)     // Navigate user to the ticket details page when notification is clicked
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 127)     router.push(ROUTES.TICKET_DETAILS);
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 128)   }
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 129) };
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 130)
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 131) // Set up the handlers
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 132) export const setupNotificationListeners = () => {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 133)   // Foreground notification handler
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 134)   messaging().onMessage(async (remoteMessage) => {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 135)     await handleNotification(remoteMessage);
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 136)   });
+47ef9eef (Ngan Huynh 2024-11-14 16:56:05 -0500 137)
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 138)   // Background notification handler
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 139)   messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+1dde3548 (Ngan Huynh 2024-11-14 22:31:04 -0500 140)     await handleNotification(remoteMessage);
+47ef9eef (Ngan Huynh 2024-11-14 16:56:05 -0500 141)   });
+47ef9eef (Ngan Huynh 2024-11-14 16:56:05 -0500 142) };
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+File: ./app/(auth)/ticketdetails.tsx
+
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500   2) import { View, Text, StyleSheet, TouchableOpacity, Image, Modal, Alert } from 'react-native';
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500   3) import { Checkbox } from 'react-native-paper';
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500   4) import firestore from '@react-native-firebase/firestore';
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500   5) import auth from '@react-native-firebase/auth';
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500   8)     title: string;
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  11)     detail: string;
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  12)     priority: number;
+09ed414a app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-14 16:11:41 -0500  13)     images: string[];
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  14)     status: string;
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  23)     const [isSelected, setIsSelected] = useState(false);
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  24)     const [isSubscribed, setIsSubscribed] = useState(false);
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  25)     // Fetch tickets from Firestore
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  27)         const fetchTickets = async () => {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  28)             try {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  29)                 const ticketsSnapshot = await firestore()
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  30)                     .collection('tickets')
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  31)                     .get();
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  32)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500  33)                 const ticketsList: TicketProps[] = ticketsSnapshot.docs.map(doc => ({
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  34)                     id: doc.id, // Document ID
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500  35)                     ...doc.data(), // All data fields from the document
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  36)                 })) as TicketProps[];
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  37)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  38)                 setTickets(ticketsList);
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  39)             } catch (error) {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  40)                 console.error("Error fetching tickets: ", error);    
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  41)             }
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  42)         };
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  43)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  44)         fetchTickets();
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  72)     const handleCheckboxToggle = () => {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  73)             setIsSelected(prev => !prev);
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  74)     };
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  75)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  76)     const handleSubscribe = async () => {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  77)         try {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  78)             const user = auth().currentUser;
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  79)             if (!user) return;
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  80)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  81)             // A. Fetch the user's tokens from /users
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  82)             const userDoc = await firestore()
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  83)                 .collection('users')
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  84)                 .doc(user.uid)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  85)                 .get();
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  86)             const userData = userDoc.data();
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500  87)             const userTokens = userData.tokens || []; // Retrieve the user's tokens
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  88)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500  89)             // B. Check if the ticketID has been established in the /notifications collection
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  90)             const notificationsSnapshot = await firestore()
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  91)                 .collection('notifications')
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500  92)                 .doc(currentTicket.id) // The document ID is the ticket ID
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  93)                 .get();
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  94)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  95)             // Case 1: If not, create a new document
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  96)             if (!notificationsSnapshot.exists) {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  97)                 await firestore()
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  98)                     .collection('notifications')
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500  99)                     .doc(currentTicket.id)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 100)                     .set({
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 101)                         recipients: userTokens, // Append user's tokens
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 102)                         status: currentTicket.status // Append the current ticket status
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 103)                     });
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 104)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 105)                 Alert.alert("Subscribed successfully!");
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 106)                 setIsSubscribed(true); // Mark the ticket as subscribed
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 107)                 return;
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 108)             }
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 109)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 110)             // Case 2: If yes, check recipients[]
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 111)             const notificationData = notificationsSnapshot.data();   
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 112)             const existingRecipients = notificationData.recipients || [];
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 113)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 114)             // Case 2a: Check if user tokens are already in recipients
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 115)             const alreadySubscribed = userTokens.some(token => existingRecipients.includes(token));
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 116)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 117)             if (alreadySubscribed) {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 118)                 // Alert user they are already subscribed, providing option to unsubscribe
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 119)                 Alert.alert(
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 120)                     "Already Subscribed",
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 121)                     "You are already subscribed to this ticket. Would you like to unsubscribe?",
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 122)                     [
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 123)                         {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 124)                             text: "Cancel",
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 125)                             style: "cancel",
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 126)                             onPress: () => console.log("User chose not to unsubscribe")
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 127)                         },
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 128)                         {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 129)                             text: "Unsubscribe",
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 130)                             onPress: async () => {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 131)                                 // Case 2ab: Remove user tokens from the recipients[]
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 132)                                 const updatedRecipients = existingRecipients.filter(token => !userTokens.includes(token));
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 133)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 134)                                 // Update the notification document with new recipients
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 135)                                 await firestore()
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 136)                                     .collection('notifications')     
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 137)                                     .doc(currentTicket.id)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 138)                                     .set({
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 139)                                         recipients: updatedRecipients,
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 140)                                     });
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 141)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 142)                                 Alert.alert("Unsubscribed successfully!");
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 143)                                 setIsSubscribed(false); // Mark the ticket as unsubscribed
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 144)                             }
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 145)                         }
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 146)                     ],
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 147)                     { cancelable: false }
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 148)                 );
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 149)                 return; // Exit the function after handling unsubscribe alert
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 150)             }
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 151)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 152)             // Case 2b: If they have not been on the list, add their tokens to the list
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 153)             const updatedRecipients = [...new Set([...existingRecipients, ...userTokens])];
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 154)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 155)             // Update the notification document with the new recipients
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 156)             await firestore()
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 157)                 .collection('notifications')
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 158)                 .doc(currentTicket.id)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 159)                 .set({
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 160)                     recipients: updatedRecipients,
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 161)                 });
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 162)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 163)             Alert.alert("Subscribed successfully!");
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 164)             setIsSubscribed(true); // Mark the ticket as subscribed  
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 165)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 166)         } catch (error) {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 167)             console.error("Error handling subscription: ", error);   
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 168)             Alert.alert("Failed to subscribe. Please try again.");   
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 169)         }
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 170)     };
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 171)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 176)             {/* Ticket Fields */}
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 179)                     {/* Title */}
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 181)                         <Text style={styles.label}>Title:</Text>     
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 182)                         <Text style={styles.value}>{currentTicket.title}</Text>
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 201)                             {currentTicket.detail}
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 216)                                                 level === currentTicket.priority ? '#FFD700' : '#E0E0E0',
+09ed414a app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-14 16:11:
+41 -0500 227)                     <View style={[styles.photoContainer, { justifyContent: currentTicket.images.length === 1 ? 'center' : 'space-around' }]}>
+09ed414a app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-14 16:11:41 -0500 228)                         {currentTicket.images.map((photo, index) => (
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 255)                     {/* Checkbox Selection for Ticket with Subscribe Button */}
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 256)                     <View style={styles.subscribeContainer}>
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 257)                         <Checkbox
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 258)                             status={isSelected ? 'checked' : 'unchecked'}
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 259)                             onPress={ handleCheckboxToggle }
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 260)                             color="#007AFF"
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 261)                         />
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 263)                             onPress={handleSubscribe}
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 264)                             style={styles.subscribeButton}
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 266)                             <Text style={styles.subscribeButtonText}>Subscribe</Text>
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 268)                     </View>
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 270)                     {/* Navigation Buttons */}
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 271)                     <View style={styles.navigationContainer}>        
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 272)                         <TouchableOpacity onPress={handlePrevious} disabled={currentIndex === 0}>
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 273)                             <Text style={[styles.navText, currentIndex === 0 && styles.disabledText]}>
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 274)                                 &lt; Previous
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 275)                             </Text>
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 276)                         </TouchableOpacity>
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 277)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 278)                         <TouchableOpacity onPress={handleNext} disabled={currentIndex === tickets.length - 1}>
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:
+11 -0500 279)                             <Text style={[styles.navText, currentIndex === tickets.length - 1 && styles.disabledText]}>
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 280)                                 Next &gt;
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 281)                             </Text>
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 393)         justifyContent: 'center',
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 397)     navText: {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 398)         fontSize: 18,
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 399)         color: '#007AFF',
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 400)         fontWeight: 'bold',
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 401)         paddingHorizontal: 20,
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 402)     },
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 403)     disabledText: {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 404)         color: '#D3D3D3', // Grey color for disabled state
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 405)     },
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 406)     subscribeContainer: {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 407)         flexDirection: 'row',
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 409)         marginBottom: 20,
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 410)         marginHorizontal: 20,
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 412)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 413)     subscribeButton: {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 414)         backgroundColor: '#007AFF',
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 415)         paddingVertical: 8,
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 416)         paddingHorizontal: 16,
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 417)         borderRadius: 5,
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 418)         marginLeft: 10, // Spacing between checkbox and button       
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 420)
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 421)     subscribeButtonText: {
+890dc78c app/(auth)/ticketdetails.tsx                (Ngan Huynh  2024-11-04 20:04:11 -0500 426)
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+File: ./package.json
+
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500 20)     "@react-native-firebase/auth": "^21.3.0",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500 21)     "@react-native-firebase/firestore": "^21.3.0",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500 22)     "@react-native-firebase/messaging": "^21.3.0",
+09ed414a (Ngan Huynh 2024-11-14 16:11:41 -0500 23)     "@react-native-firebase/storage": "^21.3.0",
+e5c9587d (Ngan Huynh 2024-11-14 17:39:19 -0500 39)     "is-mergeable-object": "^1.1.1",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500 47)     "react-native-paper": "^5.12.5",
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+File: ./package-lock.json
+
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   129)         "@babel/parser": "^7.26.2",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   130)         "@babel/types": "^7.26.0",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   133)         "jsesc": "^3.0.2"
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   140)       "version": "7.25.9",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   141)       "resolved": "https://registry.npmjs.org/@babel/helper-annotate-as-pure/-/helper-annotate-as-pure-7.25.9.tgz",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   142)       "integrity": "sha512-gv7320KBUFJz1RnylIg5WWYPRXKZ884AGkYpgpWW02TH66Dl+HaC1t1CKd0z3R4b6hdYEcmrNZHUmfCP+1u3/g==",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   154)       "integrity": "sha512-C47lC7LIDCnz0h4vai/tpNOI95tCd5ZT3iBt/DBH5lXKHZsyNQv18yf1wIIg2ntiQNgmAvA+DgZ82iW8Qdym8g==",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   158)         "@babel/traverse": "^7.25.9",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   159)         "@babel/types": "^7.25.9"
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   166)       "version": "7.25.9",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   167)       "resolved": "https://registry.npmjs.org/@babel/helper-compilation-targets/-/helper-compilation-targets-7.25.9.tgz",     
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   168)       "integrity": "sha512-j9Db8Suy6yV/VHa4qzrj9yZfZxhLWQdVnRlXxmKLYlhWUVB1sB2G5sxuWYXk/whHD9iW76PmNzxZ4UCnTQTVEQ==",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   171)         "@babel/compat-data": "^7.25.9",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   172)         "@babel/helper-validator-option": "^7.25.9",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   173)         "browserslist": "^4.24.0",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   182)       "version": "7.25.9",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   183)       "resolved": "https://registry.npmjs.org/@babel/helper-create-class-features-plugin/-/helper-create-class-features-plugin-7.25.9.tgz",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   184)       "integrity": "sha512-UTZQMvt0d/rSz6KI+qdu7GQze5TIajwTS++GUozlw8VBJDEOAqSXwm1WvmYEZwqdqSGQshRocPDqrt4HBZB3fQ==",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   187)         "@babel/helper-annotate-as-pure": "^7.25.9",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   188)         "@babel/helper-member-expression-to-functions": "^7.25.9",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   189)         "@babel/helper-optimise-call-expression": "^7.25.9",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   190)         "@babel/helper-replace-supers": "^7.25.9",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   191)         "@babel/helper-skip-transparent-expression-wrappers": "^7.25.9",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   192)         "@babel/traverse": "^7.25.9",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   203)       "version": "7.25.9",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   204)       "resolved": "https://registry.npmjs.org/@babel/helper-create-regexp-features-plugin/-/helper-create-regexp-features-plugin-7.25.9.tgz",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   205)       "integrity": "sha512-ORPNZ3h6ZRkOyAa/SaHU+XsLZr0UQzRwuDQ0cczIA17nAzZ+85G5cVkOJIj7QavLZGSe8QXUmNFxSZzjcZF9bw==",
+e5c9587d (Ngan Huynh 2024-11-14 17:39:19 -0500   220)       "version": "0.6.3",
+e5c9587d (Ngan Huynh 2024-11-14 17:39:19 -0500   221)       "resolved": "https://registry.npmjs.org/@babel/helper-define-polyfill-provider/-/helper-define-polyfill-provider-0.6.3.tgz",
+e5c9587d (Ngan Huynh 2024-11-14 17:39:19 -0500   222)       "integrity": "sha512-HK7Bi+Hj6H+VTHA3ZvBis7V/6hu9QuTrnMXNybfUf2iiuU/N97I8VjB+KbhFF8Rld/Lx5MzoCwPCpPjfK+n8Cg==",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   248)       "version": "7.25.9",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   249)       "resolved": "https://registry.npmjs.org/@babel/helper-member-expression-to-functions/-/helper-member-expression-to-functions-7.25.9.tgz",
+b0b72036 (Ngan Huynh 2024-11-04 16:01:45 -0500   250)       "integrity": "sha512-wbfdZ9w5vk0C0oyHqAJbc62+vet5prjj01jjJ8sKn3j9h3MQQlflEdXYvuqRWjHnM12coDEqiC1IRCi0U/EKwQ==",
