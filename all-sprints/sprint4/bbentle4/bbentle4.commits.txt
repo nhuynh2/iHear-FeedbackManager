@@ -1,0 +1,172 @@
+ISSUE 98 - app/(auth)/report.tsx
+
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400   2) import {
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400   3)   View,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400   4)   Text,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400   5)   TextInput,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400   6)   Alert,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400   7)   Image,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400   8)   StyleSheet,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400   9)   TouchableOpacity,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400  10)   Button,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400  11)   FlatList,
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500  13)   ScrollView,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400  14) } from "react-native";
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400  23) import ImageResizer from "react-native-image-resizer";
+70e887a8 app/(auth)/report.tsx                (bbentley4 2024-10-31 04:07:19 -0400  58) 
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 113) // -----------------------------------------------------------
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 114) // SIMULATED FAILURE TO UPLOAD FUNCTION - TESTING PURPOSES ONLY
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 115) // -----------------------------------------------------------
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 116) // const uploadImage = async (uri: string, fileName: string) => {
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 117) //   try {
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 118) //     // Simulate a failure if the fileName includes "fail_test" for testing purposes
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 119) //     if (fileName.includes("fail_test")) {
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 120) //       throw new Error("Simulated upload failure");
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 121) //     }
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 122) 
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 123) //     const response = await fetch(uri);
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 124) //     if (!response.ok) throw new Error("Failed to fetch image URI");
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 125) //     const blob = await response.blob();
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 126) //     const storage = getStorage(initializeApp);
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 127) //     const storageRef = ref(storage, `images/${fileName}`);
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 128) //     await uploadBytes(storageRef, blob);
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 129) //     return await getDownloadURL(storageRef);
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 130) //   } catch (error) {
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 131) //     console.error("Error uploading image:", error);
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 132) //     return null; // Return null on failure
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 133) //   }
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 134) // };
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 135) 
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 136) 
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 149) const ReportScreen = () => {
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 248)     Alert.alert(
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 251)       [
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 252)         {
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 254)           onPress: () => openCamera(index),
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 255)         },
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 256)         {
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 257)           text: "Choose from Library",
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 258)           onPress: () => openLibrary(index),
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 259)         },
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 260)         {
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 261)           text: "Cancel",
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 262)           style: "cancel",
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 263)         },
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 264)       ],
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 265)       { cancelable: true }
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 266)     );
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 267)   };
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 268) 
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 269)   const openCamera = async (index: number) => {
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 273)     };
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 274) 
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 275)     launchCamera(options, async (response) => {
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 277)         const uri = response.assets[0].uri;
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 278)         const resizedImage = await ImageResizer.createResizedImage(
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 279)           uri,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 280)           800,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 281)           600,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 282)           "JPEG",
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 283)           80
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 284)         );
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 285) 
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 295)       }
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 296)     });
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 297)   };
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 298) 
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 299)   const openLibrary = async (index: number) => {
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 301)       mediaType: "photo",
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 303)       quality: 1,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 304)     };
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 305) 
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 306)     launchImageLibrary(options, async (response) => {
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 321)         );
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 322) 
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 337)       }
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 338)     });
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 339)   };
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 340) 
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 355)         <Text style={styles.imageText}>Add Image(s)</Text>
+f1f22bfc projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 22:13:12 -0400 380) 
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 408)     try {
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 409)       // Upload images and get their URLs
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 410)       const imageUrls = await Promise.all(
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 411)         images
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 412)           .filter((img) => img !== null) // Filter out placeholders
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 413)           .map(async (imageUri, index) => {
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 414)             const fileName = `ticket_${new Date().getTime()}_${index}.jpg`;
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 415)             //const fileName = `fail_test_${index}.jpg`; // This will simulate an error
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 416)             const url = uploadImage(imageUri!, fileName);
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 417)             return await url;
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 418)           })
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 419)       );
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 421)       // Check if any image upload failed
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 422)       if (imageUrls.includes(null)) {
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 423)         throw new Error("One or more images failed to upload.");
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 424)       }
+f1f22bfc projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 22:13:12 -0400 425) 
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 426)       const ticket: Ticket = {
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 427)         title: title,
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 428)         category: category,
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 429)         location: location,
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 430)         priority: priority,
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 431)         detail: detail,
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 432)         images: images,
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 433)         status: "open",
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 434)         user_id: "",
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 435)         staff_ids: [""],
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 436)         manager_ids: "",
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 437)       };
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 438) 
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 439)       if (!(await postData(OBJ_TYPE, ticket))) return;
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 440)       Alert.alert("Success", "Report has been saved!");
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 441)       handleClear();
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 442)     } catch (Error) {
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 443)       Alert.alert("Error", "Failed to upload images. Please try again.");
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 444)       console.error("Error duing submission:", Error);
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 445)     }
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 446)   };
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 448)   return (
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 449)     <ScrollView contentContainerStyle={styles.container} key={clearSelect}>
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 522)           scrollEnabled={true}
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 523)           scrollToOverflowEnabled={true}
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 524)           removeClippedSubviews={true}
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 530)       </View> 
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 538)     </ScrollView>
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 539)   );
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 540) };
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 541) 
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 542) const styles = StyleSheet.create({
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 543)   container: {
+233f7bfc projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 18:54:16 -0400 547)   },
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 554)     borderWidth: 1,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 555)     padding: 10,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 556)     borderRadius: 5,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 565)   },
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 567)     borderWidth: 1,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 568)     padding: 10,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 569)     borderRadius: 5,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 579)   },
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 581)     borderWidth: 1,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 582)     padding: 10,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 583)     borderRadius: 5,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 584)     height: 100,
+233f7bfc projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 18:54:16 -0400 587)   },
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 593)   },
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 598)     borderWidth: 1,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 599)     borderColor: "#ccc",
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 601)     justifyContent: "center",
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 602)     alignItems: "center",
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 604)   },
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 606)     width: "100%",
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 607)     height: "100%",
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 613)   },
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 619)     marginBottom: 12,
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 620)   },
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 621)   imageAndButtonContainer: {
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 622)     flexDirection: "row",
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 623)     alignItems: "center",
+2106fd53 app/(auth)/report.tsx                (bbentley4 2024-11-15 02:00:14 -0500 624)     marginTop: 15,
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 626) });
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 627) 
+2b1a5e1b projects/Ihear/app/(auth)/report.tsx (bbentley4 2024-10-16 16:25:35 -0400 628) export default ReportScreen;
