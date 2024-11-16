@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,16 +8,62 @@ import {
   TextInput,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import data from "../../assets/data/profilepage.json";
+import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
 
 const staticAvatarUri = "https://www.w3schools.com/w3images/avatar2.png";
 
 export default function ProfilePage() {
+  const [profileData, setProfileData] = useState({
+    id: "",
+    name: "",
+    role: "",
+    email: "",
+  });
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const email = "pmarino@gmail.com"; // Updated to match your Firestore data
+        const db = getFirestore();
+
+        // First, search in the 'staffs' collection (updated from 'staff')
+        let found = await searchCollection(db, "staffs", email);
+        if (!found) {
+          // If not found, search in the 'users' collection
+          await searchCollection(db, "users", email);
+        }
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+      }
+    };
+
+    const searchCollection = async (db, collectionName, email) => {
+      const ref = collection(db, collectionName);
+      const q = query(ref, where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        querySnapshot.forEach((doc) => {
+          setProfileData({
+            id: doc.id,
+            name: doc.data().name || '',
+            role: doc.data().role || 'Not Set', // Added fallback for missing role
+            email: doc.data().email || '',
+          });
+        });
+        return true;
+      }
+      return false;
+    };
+
+    fetchProfileData();
+  }, []);
+
   return (
     <View style={styles.viewContainer}>
       <View style={styles.profilePage}>
         {/* Avatar Section */}
-        <TouchableOpacity style={styles.avatarSection} onPress={() => {}}>
+        <TouchableOpacity style={styles.avatarSection} onPress={() => { }}>
           <Image source={{ uri: staticAvatarUri }} style={styles.avatarImage} />
         </TouchableOpacity>
 
@@ -28,7 +74,7 @@ export default function ProfilePage() {
             <View style={styles.valueContainer}>
               <TextInput
                 style={[styles.valueBox, styles.valueText]}
-                value={data.profile.netID}
+                value={profileData.id}
                 editable={false}
               />
               <TouchableOpacity
@@ -51,7 +97,7 @@ export default function ProfilePage() {
             <View style={styles.valueContainer}>
               <TextInput
                 style={[styles.valueBox, styles.valueText]}
-                value={data.profile.name}
+                value={profileData.name}
                 editable={false}
               />
               <TouchableOpacity
@@ -74,7 +120,7 @@ export default function ProfilePage() {
             <View style={styles.valueContainer}>
               <TextInput
                 style={[styles.valueBox, styles.valueText]}
-                value={data.profile.role}
+                value={profileData.role}
                 editable={false}
               />
               <TouchableOpacity
@@ -97,7 +143,7 @@ export default function ProfilePage() {
             <View style={styles.valueContainer}>
               <TextInput
                 style={[styles.valueBox, styles.valueText]}
-                value={data.profile.contact.email}
+                value={profileData.email}
                 editable={false}
               />
               <TouchableOpacity
