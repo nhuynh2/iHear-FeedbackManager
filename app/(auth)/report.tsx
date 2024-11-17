@@ -107,10 +107,7 @@ const uploadTicket = async (data: Ticket, collectionName: string) => {
         const storageRef = ref(getStorage(), url);
         await deleteObject(storageRef);
       } catch (rollbackError) {
-        console.error(
-          "Failed to delete uploaded image during rollback:",
-          rollbackError
-        );
+        Alert.alert("Error", `Rollback failed: ${rollbackError}`);
       }
     }
 
