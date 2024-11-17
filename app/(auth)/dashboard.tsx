@@ -29,9 +29,6 @@ interface Ticket {
   detail: string;
   images: string[];
   status: string;
-  user_id: string;
-  staff_ids: string[];
-  manager_ids: string;
 }
 
 // Extend Ticket to include the Firestore-generated ID
