@@ -14,6 +14,8 @@ import {
   Dimensions,
   Image,
 } from "react-native";
+
+import BoxButton from "@/components/BoxButton";
 import auth from "@react-native-firebase/auth";
 import { FirebaseError } from "firebase/app";
 
@@ -77,20 +79,18 @@ export default function Index() {
           />
           {/* Conditionally render the error message */}
           {errorMsg ? <Text style={styles.errorMsg}>{errorMsg}</Text> : null}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.button}
+
+          {/* Conditionally render the loading-wheel or button */}
+          {loading ? (
+            <ActivityIndicator size="large" />
+          ) : (
+            <BoxButton
+              title="Sign-In"
               onPress={handleSignIn}
-              disabled={loading}
-            >
-              {/* Conditionally render the loading-wheel or button */}
-              {loading ? (
-                <ActivityIndicator size="large" />
-              ) : (
-                <Text style={styles.buttonText}>Sign In</Text>
-              )}
-            </TouchableOpacity>
-          </View>
+              boxStyle={[styles.buttonBox, loading && styles.greyedOut]}
+              textStyle={[styles.buttonText, loading && styles.greyedOut]}
+            />
+          )}
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: 20,
-    width: "90%",
+    width: "95%",
     padding: 15,
     marginBottom: 20,
     borderColor: "#FF8C00",
@@ -136,27 +136,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#d3d3d3",
     color: "#a9a9a9",
   },
-  buttonContainer: {
-    width: "90%",
-    borderRadius: 10,
-    flexDirection: "row",
-    justifyContent: "center",
+  buttonBox: {
+    marginTop: "5%",
+    width: "95%",
+    borderRadius: 20,
+    backgroundColor: "orange",
+  },
+  buttonText: {
+    color: "black",
+    fontSize: 25,
+    textAlign: "center",
   },
   loadingIndicator: {
     margin: "5%",
-  },
-  button: {
-    backgroundColor: "#078a48",
-    padding: 8,
-    borderRadius: 5,
-    alignItems: "center",
-    justifyContent: "center",
-    margin: "1%",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 22,
-    textAlign: "center",
   },
   errorMsg: {
     color: "red",

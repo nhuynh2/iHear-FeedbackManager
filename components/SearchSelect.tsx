@@ -19,6 +19,7 @@ interface ItemProps {
   onSelect: (value: string) => void;
   boxStyle?: object;
   textStyle?: object;
+  editable?: boolean;
 }
 
 export default function SearchSelect(props: ItemProps) {
@@ -104,6 +105,7 @@ export default function SearchSelect(props: ItemProps) {
           onChangeText={handleChangeText}
           onFocus={() => handleFocus()} // ToggleFocus on
           onBlur={() => handleBlur()} // ToggleFocus off
+          editable={props.editable}
         />
         {/* Show Clear button when there is input */}
         {isFocused && (

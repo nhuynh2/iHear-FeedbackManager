@@ -10,6 +10,7 @@ import {
   Button,
   FlatList,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
 import {
   launchImageLibrary,
@@ -24,14 +25,23 @@ import ImageResizer from "react-native-image-resizer";
 import { useIsFocused } from "@react-navigation/native";
 
 import initializeApp from "../../firebase-config";
+import { FirebaseError } from "firebase/app";
 import { getFirestore, collection, addDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 
 import SearchSelect from "@/components/SearchSelect";
 import BoxButton from "@/components/BoxButton";
-import { FirebaseError } from "firebase/app";
 
-const OBJ_TYPE = "tickets";
+import categoryList from "../../assets/data/categoryList.json";
+import locationList from "../../assets/data/locationList.json";
+import priorityList from "../../assets/data/priorityList.json";
+
 const FONT_SIZE = 18;
 const MAX_IMAGES = 5;
 
@@ -50,76 +60,7 @@ interface Ticket {
   detail: string;
   images: (string | null)[];
   status: string;
-  user_id: string;
-  staff_ids: string[];
-  manager_ids: string;
 }
-
-const categoryList = [
-  "Plumbing",
-  "Electrical",
-  "HVAC",
-  "Paint",
-  "Flooring",
-  "Appliance",
-  "Landscaping",
-  "Security",
-  "Windows/Doors",
-  "Safety",
-  "Exterior",
-  "Parking Lot/Garage",
-  "Other (Specify in Detail)",
-];
-
-const locationList = [
-  "Min H. Kao: MKB-Outside",
-  "Min H. Kao: MKB-622",
-  "Min H. Kao: MKB-524",
-  "Min H. Kao: MKB-419",
-  "Dougherty Engineering: DOU-Outside",
-  "Dougherty Engineering: DOU-416",
-  "Zeanah Engineering: ZEC-Outside",
-  "Zeanah Engineering: ZEC-271",
-  "Zeanah Engineering: ZEC-373",
-  "Strong Hall: STR-Outside",
-  "Strong Hall: STR-102",
-  "Strong Hall: STR-203",
-  "Strong Hall: Other",
-  "Other (Specify in Detail)",
-];
-
-const priorityList = ["High", "Normal", "Low"];
-
-const uploadImage = async (uri: string, fileName: string) => {
-  try {
-    const response = await fetch(uri);
-    if (!response.ok) throw new Error("Failed to fetch image URI");
-    const blob = await response.blob();
-    const storage = getStorage(initializeApp);
-    const storageRef = ref(storage, `images/${fileName}`);
-    await uploadBytes(storageRef, blob);
-    return await getDownloadURL(storageRef);
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error("Error uploading image:", error.message);
-    } else {
-      console.error("Unexpected error uploading image:", error);
-    }
-    return null;
-  }
-};
-
-const postData = async (objType: string, obj: object) => {
-  try {
-    const firestore = getFirestore(initializeApp);
-    const docRef = await addDoc(collection(firestore, objType), obj);
-    console.log("Document uploaded with ID: ", docRef.id);
-    return true;
-  } catch (error) {
-    console.error("Error uploading document: ", error);
-    return false;
-  }
-};
 
 const ReportScreen = () => {
   // Ticket properties
@@ -131,6 +72,7 @@ const ReportScreen = () => {
   const [images, setImages] = useState<(string | null)[]>([null]);
   const [clearSelections, setClearSelections] = useState(false);
   const [clearSelect, setClearSelect] = useState(0);
+  const [loading, setLoading] = React.useState(false);
 
   const isFocused = useIsFocused();
   useEffect(() => {
@@ -376,19 +318,70 @@ const ReportScreen = () => {
     });
   };
 
+  const uploadTicket = async (data: Ticket, collectionName: string) => {
+    setLoading(true);
+    const uploadedUrls: string[] = []; // To track successfully uploaded images
+
+    try {
+      // Extract the images array from the data object
+      const { images } = data;
+
+      // Initialize Firebase services
+      const storage = getStorage();
+      const firestore = getFirestore();
+
+      // Upload each image sequentially
+      for (const [index, imageUri] of images.entries()) {
+        if (!imageUri) continue; // Skip null entries in the images array
+
+        const fileName = `ticket_${Date.now()}_${index}.jpg`;
+
+        // Fetch the image and convert it to a blob
+        const response = await fetch(imageUri);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch image at index ${index}`);
+        }
+        const blob = await response.blob();
+
+        // Upload to Firebase Storage
+        const storageRef = ref(storage, `images/${fileName}`);
+        await uploadBytes(storageRef, blob);
+        const downloadURL = await getDownloadURL(storageRef);
+
+        // Push the URL of the successfully uploaded image
+        uploadedUrls.push(downloadURL);
+      }
+
+      // All images uploaded successfully, update the data object
+      const ticketData = { ...data, images: uploadedUrls };
+      await addDoc(collection(firestore, collectionName), ticketData);
+
+      // Show success alert
+      Alert.alert("Success", "Ticket submitted successfully!");
+      handleClear();
+    } catch (error) {
+      // Handle errors and rollback
+      for (const url of uploadedUrls) {
+        try {
+          const storageRef = ref(getStorage(), url);
+          await deleteObject(storageRef);
+        } catch (rollbackError) {
+          Alert.alert("Error", `Rollback failed: ${rollbackError}`);
+        }
+      }
+
+      // Display a single alert for the original error
+      const errorMessage =
+        error instanceof Error ? error.message : "An unexpected error occurred";
+      Alert.alert("Error", errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async () => {
     if (Keyboard.isVisible()) Keyboard.dismiss();
     if (!handleValidation()) return;
-
-    // Upload images and get their URLs
-    const imageUrls = await Promise.all(
-      images
-        .filter((img) => img !== null) // Filter out placeholders
-        .map(async (imageUri, index) => {
-          const fileName = `ticket_${new Date().getTime()}_${index}.jpg`;
-          return await uploadImage(imageUri, fileName);
-        })
-    );
 
     const ticket: Ticket = {
       title: title,
@@ -398,14 +391,9 @@ const ReportScreen = () => {
       detail: detail,
       images: images,
       status: "open",
-      user_id: "",
-      staff_ids: [""],
-      manager_ids: "",
     };
 
-    if (!(await postData(OBJ_TYPE, ticket))) return;
-    Alert.alert("Success", "Report has been saved!");
-    handleClear();
+    await uploadTicket(ticket, "tickets");
   };
 
   return (
@@ -417,9 +405,11 @@ const ReportScreen = () => {
         value={title}
         onChangeText={handleTitle}
         onBlur={handleTitleBlur}
+        editable={!loading}
         style={[
           styles.titleValue,
           { borderColor: valid.title === 0 ? "red" : "black" },
+          loading && styles.greyedOut,
         ]}
       />
 
@@ -430,9 +420,11 @@ const ReportScreen = () => {
         hasOtherVal={true}
         itemList={categoryList}
         onSelect={handleCategory}
+        editable={!loading}
         boxStyle={[
           styles.selectBox,
           { borderColor: valid.category === 0 ? "red" : "black" },
+          loading && styles.greyedOut,
         ]}
         textStyle={styles.selectText}
       />
@@ -444,9 +436,11 @@ const ReportScreen = () => {
         hasOtherVal={true}
         itemList={locationList}
         onSelect={handleLocation}
+        editable={!loading}
         boxStyle={[
           styles.selectBox,
           { borderColor: valid.location === 0 ? "red" : "black" },
+          loading && styles.greyedOut,
         ]}
         textStyle={styles.selectText}
       />
@@ -458,9 +452,11 @@ const ReportScreen = () => {
         hasOtherVal={false}
         itemList={priorityList}
         onSelect={handlePriority}
+        editable={!loading}
         boxStyle={[
           styles.selectBox,
           { borderColor: valid.priority === 0 ? "red" : "black" },
+          loading && styles.greyedOut,
         ]}
         textStyle={styles.selectText}
       />
@@ -472,10 +468,12 @@ const ReportScreen = () => {
         value={detail}
         onChangeText={handleDetail}
         onBlur={handleDetailBlur}
+        editable={!loading}
         multiline={true}
         style={[
           styles.detailValue,
           { borderColor: valid.detail !== 0 ? "black" : "red" },
+          loading && styles.greyedOut,
         ]}
       />
 
@@ -490,11 +488,17 @@ const ReportScreen = () => {
       </View>
 
       {/* Submit Button */}
-      <BoxButton
-        title="Submit"
-        onPress={handleSubmit}
-        boxStyle={styles.buttonBox}
-      />
+
+      {/* Conditionally render the loading-wheel or button */}
+      {loading ? (
+        <ActivityIndicator size="large" />
+      ) : (
+        <BoxButton
+          title="Submit"
+          onPress={handleSubmit}
+          boxStyle={[styles.buttonBox, loading && styles.greyedOut]}
+        />
+      )}
     </View>
   );
 };
@@ -576,6 +580,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#006646",
     alignSelf: "center",
     marginTop: 8,
+  },
+  greyedOut: {
+    backgroundColor: "#d3d3d3",
+    color: "#a9a9a9",
   },
 });
 
