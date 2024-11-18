@@ -10,6 +10,7 @@ import {
   Button,
   FlatList,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
 import {
   launchImageLibrary,
@@ -61,63 +62,6 @@ interface Ticket {
   status: string;
 }
 
-const uploadTicket = async (data: Ticket, collectionName: string) => {
-  const uploadedUrls: string[] = []; // To track successfully uploaded images
-
-  try {
-    // Extract the images array from the data object
-    const { images } = data;
-
-    // Initialize Firebase services
-    const storage = getStorage();
-    const firestore = getFirestore();
-
-    // Upload each image sequentially
-    for (const [index, imageUri] of images.entries()) {
-      if (!imageUri) continue; // Skip null entries in the images array
-
-      const fileName = `ticket_${Date.now()}_${index}.jpg`;
-
-      // Fetch the image and convert it to a blob
-      const response = await fetch(imageUri);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch image at index ${index}`);
-      }
-      const blob = await response.blob();
-
-      // Upload to Firebase Storage
-      const storageRef = ref(storage, `images/${fileName}`);
-      await uploadBytes(storageRef, blob);
-      const downloadURL = await getDownloadURL(storageRef);
-
-      // Push the URL of the successfully uploaded image
-      uploadedUrls.push(downloadURL);
-    }
-
-    // All images uploaded successfully, update the data object
-    const ticketData = { ...data, images: uploadedUrls };
-    await addDoc(collection(firestore, collectionName), ticketData);
-
-    // Show success alert
-    Alert.alert("Success", "Ticket submitted successfully!");
-  } catch (error) {
-    // Handle errors and rollback
-    for (const url of uploadedUrls) {
-      try {
-        const storageRef = ref(getStorage(), url);
-        await deleteObject(storageRef);
-      } catch (rollbackError) {
-        Alert.alert("Error", `Rollback failed: ${rollbackError}`);
-      }
-    }
-
-    // Display a single alert for the original error
-    const errorMessage =
-      error instanceof Error ? error.message : "An unexpected error occurred";
-    Alert.alert("Error", errorMessage);
-  }
-};
-
 const ReportScreen = () => {
   // Ticket properties
   const [title, setTitle] = useState<string>("");
@@ -128,6 +72,7 @@ const ReportScreen = () => {
   const [images, setImages] = useState<(string | null)[]>([null]);
   const [clearSelections, setClearSelections] = useState(false);
   const [clearSelect, setClearSelect] = useState(0);
+  const [loading, setLoading] = React.useState(false);
 
   const isFocused = useIsFocused();
   useEffect(() => {
@@ -373,6 +318,67 @@ const ReportScreen = () => {
     });
   };
 
+  const uploadTicket = async (data: Ticket, collectionName: string) => {
+    setLoading(true);
+    const uploadedUrls: string[] = []; // To track successfully uploaded images
+
+    try {
+      // Extract the images array from the data object
+      const { images } = data;
+
+      // Initialize Firebase services
+      const storage = getStorage();
+      const firestore = getFirestore();
+
+      // Upload each image sequentially
+      for (const [index, imageUri] of images.entries()) {
+        if (!imageUri) continue; // Skip null entries in the images array
+
+        const fileName = `ticket_${Date.now()}_${index}.jpg`;
+
+        // Fetch the image and convert it to a blob
+        const response = await fetch(imageUri);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch image at index ${index}`);
+        }
+        const blob = await response.blob();
+
+        // Upload to Firebase Storage
+        const storageRef = ref(storage, `images/${fileName}`);
+        await uploadBytes(storageRef, blob);
+        const downloadURL = await getDownloadURL(storageRef);
+
+        // Push the URL of the successfully uploaded image
+        uploadedUrls.push(downloadURL);
+      }
+
+      // All images uploaded successfully, update the data object
+      const ticketData = { ...data, images: uploadedUrls };
+      await addDoc(collection(firestore, collectionName), ticketData);
+
+      // Show success alert
+      Alert.alert("Success", "Ticket submitted successfully!");
+      handleClear();
+    } catch (error) {
+      // Handle errors and rollback
+      for (const url of uploadedUrls) {
+        try {
+          const storageRef = ref(getStorage(), url);
+          await deleteObject(storageRef);
+        } catch (rollbackError) {
+          Alert.alert("Error", `Rollback failed: ${rollbackError}`);
+        }
+      }
+
+      // Display a single alert for the original error
+      const errorMessage =
+        error instanceof Error ? error.message : "An unexpected error occurred";
+      Alert.alert("Error", errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async () => {
     if (Keyboard.isVisible()) Keyboard.dismiss();
     if (!handleValidation()) return;
@@ -399,9 +405,11 @@ const ReportScreen = () => {
         value={title}
         onChangeText={handleTitle}
         onBlur={handleTitleBlur}
+        editable={!loading}
         style={[
           styles.titleValue,
           { borderColor: valid.title === 0 ? "red" : "black" },
+          loading && styles.greyedOut,
         ]}
       />
 
@@ -412,9 +420,11 @@ const ReportScreen = () => {
         hasOtherVal={true}
         itemList={categoryList}
         onSelect={handleCategory}
+        editable={!loading}
         boxStyle={[
           styles.selectBox,
           { borderColor: valid.category === 0 ? "red" : "black" },
+          loading && styles.greyedOut,
         ]}
         textStyle={styles.selectText}
       />
@@ -426,9 +436,11 @@ const ReportScreen = () => {
         hasOtherVal={true}
         itemList={locationList}
         onSelect={handleLocation}
+        editable={!loading}
         boxStyle={[
           styles.selectBox,
           { borderColor: valid.location === 0 ? "red" : "black" },
+          loading && styles.greyedOut,
         ]}
         textStyle={styles.selectText}
       />
@@ -440,9 +452,11 @@ const ReportScreen = () => {
         hasOtherVal={false}
         itemList={priorityList}
         onSelect={handlePriority}
+        editable={!loading}
         boxStyle={[
           styles.selectBox,
           { borderColor: valid.priority === 0 ? "red" : "black" },
+          loading && styles.greyedOut,
         ]}
         textStyle={styles.selectText}
       />
@@ -454,10 +468,12 @@ const ReportScreen = () => {
         value={detail}
         onChangeText={handleDetail}
         onBlur={handleDetailBlur}
+        editable={!loading}
         multiline={true}
         style={[
           styles.detailValue,
           { borderColor: valid.detail !== 0 ? "black" : "red" },
+          loading && styles.greyedOut,
         ]}
       />
 
@@ -472,11 +488,17 @@ const ReportScreen = () => {
       </View>
 
       {/* Submit Button */}
-      <BoxButton
-        title="Submit"
-        onPress={handleSubmit}
-        boxStyle={styles.buttonBox}
-      />
+
+      {/* Conditionally render the loading-wheel or button */}
+      {loading ? (
+        <ActivityIndicator size="large" />
+      ) : (
+        <BoxButton
+          title="Submit"
+          onPress={handleSubmit}
+          boxStyle={[styles.buttonBox, loading && styles.greyedOut]}
+        />
+      )}
     </View>
   );
 };
@@ -558,6 +580,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#006646",
     alignSelf: "center",
     marginTop: 8,
+  },
+  greyedOut: {
+    backgroundColor: "#d3d3d3",
+    color: "#a9a9a9",
   },
 });
 
