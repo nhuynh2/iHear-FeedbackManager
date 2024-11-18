@@ -40,7 +40,7 @@ export default function ProfilePage() {
       }
     };
 
-    const searchCollection = async (db, collectionName, email) => {
+    const searchCollection = async (db: Firestore, collectionName: string, email: string) => {
       const ref = collection(db, collectionName);
       const q = query(ref, where("email", "==", email));
       const querySnapshot = await getDocs(q);
@@ -50,7 +50,7 @@ export default function ProfilePage() {
           setProfileData({
             id: doc.id,
             name: doc.data().name || '',
-            role: doc.data().role || 'Not Set', // Added fallback for missing role
+            role: collectionName === "staffs" ? "Staff" : "User",
             email: doc.data().email || '',
           });
         });
