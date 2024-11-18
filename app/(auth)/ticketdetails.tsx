@@ -35,7 +35,7 @@ const TicketDetailScreen = () => {
     const [isSelected, setIsSelected] = useState(false);
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [loading, setLoading] = useState(true);
-
+    const [loadingImage, setLoadingImage] = useState(true);
     // Fetch tickets from Firestore
     useEffect(() => {
         const fetchTickets = async () => {
@@ -275,9 +275,17 @@ const TicketDetailScreen = () => {
 
                             {/* Photo Section */}
                             <View style={[styles.photoContainer, { justifyContent: currentTicket.images.length === 1 ? 'center' : 'space-around' }]}>
+                                {/* Show ActivityIndicator if the image is still loading */}
+                                {loadingImage && (
+                                    <ActivityIndicator size="large" color="#007AFF" />
+                                )}
                                 {currentTicket.images.map((photo, index) => (
                                     <TouchableOpacity key={index} onPress={() => openModal(photo)}>
-                                        <Image source={{ uri: photo }} style={styles.photo} />
+                                        <Image source={{ uri: photo }}
+                                               style={styles.photo}
+                                               onLoadStart={() => setLoadingImage(true)}
+                                               onLoadEnd={() => setLoadingImage(false)}
+                                        />
                                     </TouchableOpacity>
                                 ))}
                             </View>
