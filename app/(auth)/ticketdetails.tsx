@@ -304,17 +304,17 @@ const TicketDetailScreen = () => {
 
                     {/* Navigation Buttons */}
                     <View style={styles.navigationContainer}>
-                        <TouchableOpacity onPress={handlePrevious} disabled={currentIndex === 0}>
-                            <Text style={[styles.navText, currentIndex === 0 && styles.disabledText]}>
-                                &lt; Previous
-                            </Text>
-                        </TouchableOpacity>
+                        {currentIndex > 0 && (
+                                <TouchableOpacity onPress={handlePrevious}>
+                                    <Text style={styles.navText}>&lt; Previous</Text>
+                                </TouchableOpacity>
+                        )}
 
-                        <TouchableOpacity onPress={handleNext} disabled={currentIndex === tickets.length - 1}>
-                            <Text style={[styles.navText, currentIndex === tickets.length - 1 && styles.disabledText]}>
-                                Next &gt;
-                            </Text>
-                        </TouchableOpacity>
+                        {currentIndex < tickets.length - 1 && (
+                            <TouchableOpacity onPress={handleNext}>
+                                <Text style={styles.navText}>Next &gt;</Text>
+                            </TouchableOpacity>
+                        )}
                     </View>
                 </>
             )}
