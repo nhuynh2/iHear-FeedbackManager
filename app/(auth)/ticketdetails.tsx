@@ -9,6 +9,7 @@ import { View,
          ActivityIndicator,
          Picker } from 'react-native';
 import { Checkbox } from 'react-native-paper';
+import { MaterialIcons } from '@expo/vector-icons';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { updateTicketStatus,
@@ -277,17 +278,32 @@ const TicketDetailScreen = () => {
                             <View style={[styles.photoContainer, { justifyContent: currentTicket.images.length === 1 ? 'center' : 'space-around' }]}>
                                 {/* Show ActivityIndicator if the image is still loading */}
                                 {loadingImage && (
-                                    <ActivityIndicator size="large" color="#007AFF" />
+                                    <ActivityIndicator size="large"
+                                                       color="#007AFF"
+                                                       style={styles.loadingIndicator}
+                                    />
                                 )}
-                                {currentTicket.images.map((photo, index) => (
-                                    <TouchableOpacity key={index} onPress={() => openModal(photo)}>
-                                        <Image source={{ uri: photo }}
-                                               style={styles.photo}
-                                               onLoadStart={() => setLoadingImage(true)}
-                                               onLoadEnd={() => setLoadingImage(false)}
-                                        />
-                                    </TouchableOpacity>
-                                ))}
+
+                                {/* Check if there are images to render */}
+                                {currentTicket.images && currentTicket.images.length > 0 ? (
+                                    currentTicket.images.filter(photo => photo && typeof photo === 'string' && photo.trim() !== '')
+                                    .map((photo, index) => (
+                                        <TouchableOpacity key={index} onPress={() => openModal(photo)}>
+                                            <Image
+                                                source={{ uri: photo }} // Use a placeholder if photo is invalid
+                                                style={styles.photo}
+                                                onLoadStart={() => setLoadingImage(true)}
+                                                onLoadEnd={() => setLoadingImage(false)}
+                                            />
+                                        </TouchableOpacity>
+                                    ))
+                                ) : (
+                                    // Placeholder if no images exist or if the entry is null
+                                    <View style={styles.noImageContainer}>
+                                        <MaterialIcons name="image" size={99} color="#ccc" />
+                                        <Text style={styles.noImageText}>No Image Available</Text>
+                                    </View>
+                                )}
                             </View>
 
 
@@ -418,6 +434,19 @@ const styles = StyleSheet.create({
         width: 125,
         height: 125,
         borderRadius: 5,
+    },
+    noImageContainer: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 5,
+        marginHorizontal: 50,
+    },
+    noImageText: {
+        fontSize: 14,
+        textAlign: 'center',
+        color: '#888',
+        fontWeight: '500',
     },
     modalBackground: {
         flex: 1,
