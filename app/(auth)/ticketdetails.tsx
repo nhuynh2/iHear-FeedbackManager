@@ -3,6 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Modal, Alert } from 'r
 import { Checkbox } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import { updateTicketStatus,
+         listenForTicketStatusChanges,
+         setupNotificationListeners } from '../messaging.tsx';
+
 type TicketProps = {
     id: string;
     title: string;
@@ -43,6 +47,37 @@ const TicketDetailScreen = () => {
 
         fetchTickets();
     }, []);
+
+    if (tickets.length === 0) {
+            <View style={styles.centeredContainer}>
+                <Text style={styles.centeredText}>No tickets available.</Text>
+            </View>
+        }
+
+    const [isStaff, setIsStaff] = useState(false);
+
+    useEffect(() => {
+        const checkStaffStatus = async () => {
+            try {
+                const user = auth().currentUser;
+                if (!user) return;
+
+                // Query the staffs collection for the current user's UID
+                const staffDoc = await firestore().collection('staffs').doc(user.uid).get();
+                setIsStaff(staffDoc.exists);
+            } catch (error) {
+                console.error("Error checking staff status:", error);
+            }
+        };
+
+        checkStaffStatus();
+    }, []);
+
+    const [currentStatus, setCurrentStatus] = useState('');
+    const [loading, setLoading] = useState(true);
+    const StatusOptions = ['in-review', 'in-progress', 'resolved'];
+
+
 
     const currentTicket = tickets[currentIndex];
 
@@ -422,6 +457,17 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
+    },
+
+    centeredContainer: {
+        flex: 1, // Take up the entire screen
+        justifyContent: 'center', // Vertically center
+        alignItems: 'center', // Horizontally center
+        backgroundColor: 'white', // Optional: set background color to make the center noticeable
+    },
+    centeredText: {
+        fontSize: 18, // Optional: adjust font size
+        textAlign: 'center', // Ensure the text is aligned properly
     },
 
 });
