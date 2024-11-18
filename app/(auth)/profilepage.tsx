@@ -9,13 +9,20 @@ import {
 } from "react-native";
 import auth from "@react-native-firebase/auth";
 import { Ionicons } from "@expo/vector-icons";
-import { getFirestore, Firestore, collection, query, where, getDocs } from "firebase/firestore";
+import {
+  getFirestore,
+  Firestore,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 
 const staticAvatarUri = "https://www.w3schools.com/w3images/avatar2.png";
 
 export default function ProfilePage() {
   const [profileData, setProfileData] = useState({
-    id: "",
+    avatar: "",
     name: "",
     role: "",
     email: "",
@@ -40,7 +47,11 @@ export default function ProfilePage() {
       }
     };
 
-    const searchCollection = async (db: Firestore, collectionName: string, email: string) => {
+    const searchCollection = async (
+      db: Firestore,
+      collectionName: string,
+      email: string
+    ) => {
       const ref = collection(db, collectionName);
       const q = query(ref, where("email", "==", email));
       const querySnapshot = await getDocs(q);
@@ -48,10 +59,10 @@ export default function ProfilePage() {
       if (!querySnapshot.empty) {
         querySnapshot.forEach((doc) => {
           setProfileData({
-            id: doc.id,
-            name: doc.data().name || '',
+            avatar: doc.data().avatar,
+            name: doc.data().name || "",
             role: collectionName === "staffs" ? "Staff" : "User",
-            email: doc.data().email || '',
+            email: doc.data().email || "",
           });
         });
         return true;
@@ -66,37 +77,19 @@ export default function ProfilePage() {
     <View style={styles.viewContainer}>
       <View style={styles.profilePage}>
         {/* Avatar Section */}
-        <TouchableOpacity style={styles.avatarSection} onPress={() => { }}>
-          <Image source={{ uri: staticAvatarUri }} style={styles.avatarImage} />
+        <TouchableOpacity style={styles.avatarSection} onPress={() => {}}>
+          <Image
+            source={{
+              uri: profileData.avatar ? profileData.avatar : staticAvatarUri,
+            }}
+            style={styles.avatarImage}
+          />
         </TouchableOpacity>
 
         {/* Info Section */}
         <View style={styles.infoSection}>
           <View style={styles.infoRow}>
-            <Text style={styles.label}>ID:</Text>
-            <View style={styles.valueContainer}>
-              <TextInput
-                style={[styles.valueBox, styles.valueText]}
-                value={profileData.id}
-                editable={false}
-              />
-              <TouchableOpacity
-                onPress={() => {
-                  /* No action for now */
-                }}
-              >
-                <Ionicons
-                  name="pencil"
-                  size={27}
-                  color="grey"
-                  style={styles.icon}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Text style={styles.label}>Name:</Text>
+            <Text style={styles.label}>Name</Text>
             <View style={styles.valueContainer}>
               <TextInput
                 style={[styles.valueBox, styles.valueText]}
@@ -119,7 +112,7 @@ export default function ProfilePage() {
           </View>
 
           <View style={styles.infoRow}>
-            <Text style={styles.label}>Role:</Text>
+            <Text style={styles.label}>Role</Text>
             <View style={styles.valueContainer}>
               <TextInput
                 style={[styles.valueBox, styles.valueText]}
@@ -142,7 +135,7 @@ export default function ProfilePage() {
           </View>
 
           <View style={styles.infoRow}>
-            <Text style={styles.label}>Email:</Text>
+            <Text style={styles.label}>Email</Text>
             <View style={styles.valueContainer}>
               <TextInput
                 style={[styles.valueBox, styles.valueText]}
