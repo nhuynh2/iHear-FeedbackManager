@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Modal, Alert } from 'react-native';
+import { View,
+         Text,
+         StyleSheet,
+         TouchableOpacity,
+         Image,
+         Modal,
+         Alert,
+         ActivityIndicator,
+         Picker } from 'react-native';
 import { Checkbox } from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
@@ -26,10 +34,13 @@ const TicketDetailScreen = () => {
     const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
     const [isSelected, setIsSelected] = useState(false);
     const [isSubscribed, setIsSubscribed] = useState(false);
+    const [loading, setLoading] = useState(true);
+
     // Fetch tickets from Firestore
     useEffect(() => {
         const fetchTickets = async () => {
             try {
+                setLoading(true);
                 const ticketsSnapshot = await firestore()
                     .collection('tickets')
                     .get();
@@ -40,6 +51,7 @@ const TicketDetailScreen = () => {
                 })) as TicketProps[];
 
                 setTickets(ticketsList);
+                setLoading(false);
             } catch (error) {
                 console.error("Error fetching tickets: ", error);
             }
@@ -74,7 +86,6 @@ const TicketDetailScreen = () => {
     }, []);
 
     const [currentStatus, setCurrentStatus] = useState('');
-    const [loading, setLoading] = useState(true);
     const StatusOptions = ['in-review', 'in-progress', 'resolved'];
 
 
@@ -207,115 +218,121 @@ const TicketDetailScreen = () => {
     return (
 
         <View style={styles.container}>
-            <Text style={styles.title}>TICKET DETAIL</Text>
-            {/* Ticket Fields */}
-            {currentTicket && (
+            {loading ? (
+                <ActivityIndicator size="large" color="#007AFF" style={styles.loadingIndicator} />
+            ) : (
                 <>
-                    {/* Title */}
-                    <View style={styles.detailContainer}>
-                        <Text style={styles.label}>Title:</Text>
-                        <Text style={styles.value}>{currentTicket.title}</Text>
-                    </View>
+                    <Text style={styles.title}>TICKET DETAIL</Text>
+                    {/* Ticket Fields */}
+                    {currentTicket && (
+                        <>
+                            {/* Title */}
+                            <View style={styles.detailContainer}>
+                                <Text style={styles.label}>Title:</Text>
+                                <Text style={styles.value}>{currentTicket.title}</Text>
+                            </View>
 
-                    {/* Category */}
-                    <View style={styles.detailContainer}>
-                        <Text style={styles.label}>Category:</Text>
-                        <Text style={styles.value}>{currentTicket.category}</Text>
-                    </View>
+                            {/* Category */}
+                            <View style={styles.detailContainer}>
+                                <Text style={styles.label}>Category:</Text>
+                                <Text style={styles.value}>{currentTicket.category}</Text>
+                            </View>
 
-                    {/* Location */}
-                    <View style={styles.detailContainer}>
-                        <Text style={styles.label}>Location:</Text>
-                        <Text style={styles.value}>{currentTicket.location}</Text>
-                    </View>
+                            {/* Location */}
+                            <View style={styles.detailContainer}>
+                                <Text style={styles.label}>Location:</Text>
+                                <Text style={styles.value}>{currentTicket.location}</Text>
+                            </View>
 
-                    {/* Description */}
-                    <View style={styles.detailContainer}>
-                        <Text style={styles.label}>Description:</Text>
-                        <Text style={[styles.value, styles.description]}>
-                            {currentTicket.detail}
-                        </Text>
-                    </View>
+                            {/* Description */}
+                            <View style={styles.detailContainer}>
+                                <Text style={styles.label}>Description:</Text>
+                                <Text style={[styles.value, styles.description]}>
+                                    {currentTicket.detail}
+                                </Text>
+                            </View>
 
-                    {/* Urgency Level - SET TO HIDDEN FOR NOW */}
-                    <View style={[styles.emergencyContainer, styles.hidden]}>
-                        <Text style={styles.label}>Emergency Level:</Text>
-                        <View style={styles.urgencyContainer}>
-                            {[1, 2, 3, 4, 5].map((level) => (
-                                <View
-                                    key={level}
-                                    style={[
-                                        styles.urgencyCircle,
-                                        {
-                                            backgroundColor:
-                                                level === currentTicket.priority ? '#FFD700' : '#E0E0E0',
-                                        },
-                                    ]}
-                                >
-                                    <Text style={styles.urgencyText}>{level}</Text>
+                            {/* Urgency Level - SET TO HIDDEN FOR NOW */}
+                            <View style={[styles.emergencyContainer, styles.hidden]}>
+                                <Text style={styles.label}>Emergency Level:</Text>
+                                <View style={styles.urgencyContainer}>
+                                    {[1, 2, 3, 4, 5].map((level) => (
+                                        <View
+                                            key={level}
+                                            style={[
+                                                styles.urgencyCircle,
+                                                {
+                                                    backgroundColor:
+                                                        level === currentTicket.priority ? '#FFD700' : '#E0E0E0',
+                                                },
+                                            ]}
+                                        >
+                                            <Text style={styles.urgencyText}>{level}</Text>
+                                        </View>
+                                    ))}
                                 </View>
-                            ))}
-                        </View>
-                    </View>
+                            </View>
 
-                    {/* Photo Section */}
-                    <View style={[styles.photoContainer, { justifyContent: currentTicket.images.length === 1 ? 'center' : 'space-around' }]}>
-                        {currentTicket.images.map((photo, index) => (
-                            <TouchableOpacity key={index} onPress={() => openModal(photo)}>
-                                <Image source={{ uri: photo }} style={styles.photo} />
-                            </TouchableOpacity>
-                        ))}
-                    </View>
+                            {/* Photo Section */}
+                            <View style={[styles.photoContainer, { justifyContent: currentTicket.images.length === 1 ? 'center' : 'space-around' }]}>
+                                {currentTicket.images.map((photo, index) => (
+                                    <TouchableOpacity key={index} onPress={() => openModal(photo)}>
+                                        <Image source={{ uri: photo }} style={styles.photo} />
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
 
 
-                    {/* Modal for Enlarged Photo */}
-                    <Modal
-                        visible={isModalVisible}
-                        transparent={true}
-                        animationType="fade"
-                        onRequestClose={closeModal}
-                    >
-                        <View style={styles.modalBackground}>
-                            <View style={styles.modalContainer}>
-                                {selectedPhoto && (
-                                    <Image source={{ uri: selectedPhoto }} style={styles.enlargedPhoto} />
-                                )}
-                                <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-                                    <Text style={styles.closeButtonText}>Close</Text>
+                            {/* Modal for Enlarged Photo */}
+                            <Modal
+                                visible={isModalVisible}
+                                transparent={true}
+                                animationType="fade"
+                                onRequestClose={closeModal}
+                            >
+                                <View style={styles.modalBackground}>
+                                    <View style={styles.modalContainer}>
+                                        {selectedPhoto && (
+                                            <Image source={{ uri: selectedPhoto }} style={styles.enlargedPhoto} />
+                                        )}
+                                        <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+                                            <Text style={styles.closeButtonText}>Close</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </Modal>
+
+                            {/* Checkbox Selection for Ticket with Subscribe Button */}
+                            <View style={styles.subscribeContainer}>
+                                <Checkbox
+                                    status={isSelected ? 'checked' : 'unchecked'}
+                                    onPress={ handleCheckboxToggle }
+                                    color="#007AFF"
+                                />
+                                <TouchableOpacity
+                                    onPress={handleSubscribe}
+                                    style={styles.subscribeButton}
+                                >
+                                    <Text style={styles.subscribeButtonText}>Subscribe</Text>
                                 </TouchableOpacity>
                             </View>
-                        </View>
-                    </Modal>
 
-                    {/* Checkbox Selection for Ticket with Subscribe Button */}
-                    <View style={styles.subscribeContainer}>
-                        <Checkbox
-                            status={isSelected ? 'checked' : 'unchecked'}
-                            onPress={ handleCheckboxToggle }
-                            color="#007AFF"
-                        />
-                        <TouchableOpacity
-                            onPress={handleSubscribe}
-                            style={styles.subscribeButton}
-                        >
-                            <Text style={styles.subscribeButtonText}>Subscribe</Text>
-                        </TouchableOpacity>
-                    </View>
+                            {/* Navigation Buttons */}
+                            <View style={styles.navigationContainer}>
+                                {currentIndex > 0 && (
+                                        <TouchableOpacity onPress={handlePrevious}>
+                                            <Text style={styles.navText}>&lt; Previous</Text>
+                                        </TouchableOpacity>
+                                )}
 
-                    {/* Navigation Buttons */}
-                    <View style={styles.navigationContainer}>
-                        {currentIndex > 0 && (
-                                <TouchableOpacity onPress={handlePrevious}>
-                                    <Text style={styles.navText}>&lt; Previous</Text>
-                                </TouchableOpacity>
-                        )}
-
-                        {currentIndex < tickets.length - 1 && (
-                            <TouchableOpacity onPress={handleNext}>
-                                <Text style={styles.navText}>Next &gt;</Text>
-                            </TouchableOpacity>
-                        )}
-                    </View>
+                                {currentIndex < tickets.length - 1 && (
+                                    <TouchableOpacity onPress={handleNext}>
+                                        <Text style={styles.navText}>Next &gt;</Text>
+                                    </TouchableOpacity>
+                                )}
+                            </View>
+                        </>
+                    )}
                 </>
             )}
         </View>
