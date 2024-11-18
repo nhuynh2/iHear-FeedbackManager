@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
+import auth from "@react-native-firebase/auth";
 import { Ionicons } from "@expo/vector-icons";
-import { getFirestore, collection, query, where, getDocs } from "firebase/firestore";
+import { getFirestore, Firestore, collection, query, where, getDocs } from "firebase/firestore";
 
 const staticAvatarUri = "https://www.w3schools.com/w3images/avatar2.png";
 
@@ -23,14 +24,16 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const email = "pmarino@gmail.com"; // Updated to match your Firestore data
+        const user = auth().currentUser;
+        const email = user?.email;
         const db = getFirestore();
-
-        // First, search in the 'staffs' collection (updated from 'staff')
-        let found = await searchCollection(db, "staffs", email);
-        if (!found) {
-          // If not found, search in the 'users' collection
-          await searchCollection(db, "users", email);
+        if (typeof email === "string") {
+          // First, search in the 'staffs' collection (updated from 'staff')
+          let found = await searchCollection(db, "staffs", email);
+          if (!found) {
+            // If not found, search in the 'users' collection
+            await searchCollection(db, "users", email);
+          }
         }
       } catch (error) {
         console.error("Error fetching profile data:", error);
