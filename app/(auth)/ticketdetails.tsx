@@ -6,8 +6,8 @@ import { View,
          Image,
          Modal,
          Alert,
-         ActivityIndicator,
-         Picker } from 'react-native';
+         ActivityIndicator } from 'react-native';
+import ModalDropdown from 'react-native-modal-dropdown';
 import { Checkbox } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons';
 import firestore from '@react-native-firebase/firestore';
@@ -37,6 +37,10 @@ const TicketDetailScreen = () => {
     const [isSubscribed, setIsSubscribed] = useState(false);
     const [loading, setLoading] = useState(true);
     const [loadingImage, setLoadingImage] = useState(true);
+    // Initialize state with the current ticket status, default to "Other" if not available
+    const [currentTicketStatus, setCurrentTicketStatus] = useState<string>("");
+
+    const statusList = ["Open", "In Review", "In Progress", "Resolved", "Other"];
     // Fetch tickets from Firestore
     useEffect(() => {
         const fetchTickets = async () => {
@@ -94,16 +98,23 @@ const TicketDetailScreen = () => {
         return <Text>Loading...</Text>;
     }
 
-    // List of statuses that can be selected by the staff
-    const statusList = ["In Review", "In Progress", "Resolved"];
-
-    // Handle status change
-      const handleStatusChange = (newStatus) => {
-        console.log("Selected Ticket Status:", newStatus);
-        updateTicketStatus(ticketId, newStatus);
-      };
-
     const currentTicket = tickets[currentIndex];
+    // handleStatusChange function updates the UI and database
+     const handleStatusChange = async (newStatus: string) => {
+         // Update the UI with the new status (locally and instantaneously)
+         setCurrentTicketStatus(newStatus);
+
+         // Update the status in the database
+         try {
+           await updateTicketStatus(currentTicket.id, newStatus); // Update database call
+           console.log("Ticket status successfully updated in database.");
+         } catch (error) {
+           console.error("Error updating ticket status:", error);
+           // Revert the UI update if there was an error
+           setCurrentTicketStatus(currentTicket.status); // Revert to the previous status if the update failed
+         }
+     };
+
 
     const handleNext = () => {
         if (currentIndex < tickets.length - 1) {
@@ -265,6 +276,37 @@ const TicketDetailScreen = () => {
                                 </Text>
                             </View>
 
+                            {/* Status Selector for Staff Only */}
+                              {isStaff ? (
+                                  <View style={styles.detailContainer}>
+                                    <Text style={styles.label}>Status:</Text>
+                                    <ModalDropdown
+                                      options={statusList}
+                                      onSelect={(index, value) => handleStatusChange(value)}
+                                      style={styles.dropdown}
+                                      textStyle={styles.dropdownText}
+                                      dropdownStyle={styles.dropdownList}
+                                      showsVerticalScrollIndicator={true}
+                                      isFullWidth={true}
+                                      saveScrollPosition={true}
+                                      value={currentTicketStatus || currentTicket.status}
+                                      defaultIndex={
+                                            statusList.includes(currentTicketStatus)
+                                            ? statusList.indexOf(currentTicketStatus)
+                                            : statusList.indexOf("Other")  // Scroll to "Other" if the status is invalid
+                                      }
+                                      defaultValue={currentTicket.status}
+                                    >
+                                    </ModalDropdown>
+                                  </View>
+                                ) : (
+                                  <View style={styles.detailContainer}>
+                                    <Text style={styles.label}>Status:</Text>
+                                    <Text style={styles.value}>{currentTicketStatus || currentTicket.status}</Text>
+                                  </View>
+                                )}
+
+
                             {/* Urgency Level - SET TO HIDDEN FOR NOW */}
                             <View style={[styles.emergencyContainer, styles.hidden]}>
                                 <Text style={styles.label}>Emergency Level:</Text>
@@ -289,12 +331,12 @@ const TicketDetailScreen = () => {
                             {/* Photo Section */}
                             <View style={[styles.photoContainer, { justifyContent: currentTicket.images.length === 1 ? 'center' : 'space-around' }]}>
                                 {/* Show ActivityIndicator if the image is still loading */}
-                                {loadingImage && (
+                                {/* }{loadingImage && (
                                     <ActivityIndicator size="large"
                                                        color="#007AFF"
                                                        style={styles.loadingIndicator}
                                     />
-                                )}
+                                )} */}
 
                                 {/* Check if there are images to render */}
                                 {currentTicket.images && currentTicket.images.length > 0 ? (
@@ -340,7 +382,6 @@ const TicketDetailScreen = () => {
 
                             {/* Checkbox Selection for Ticket with Subscribe Button */}
                             {!isStaff && (
-
                                 <View style={styles.subscribeContainer}>
                                     <Checkbox
                                         status={isSelected ? 'checked' : 'unchecked'}
@@ -525,16 +566,36 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     centeredContainer: {
-        flex: 1, // Take up the entire screen
-        justifyContent: 'center', // Vertically center
-        alignItems: 'center', // Horizontally center
-        backgroundColor: 'white', // Optional: set background color to make the center noticeable
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white',
     },
     centeredText: {
-        fontSize: 18, // Optional: adjust font size
-        textAlign: 'center', // Ensure the text is aligned properly
+        fontSize: 18,
+        textAlign: 'center',
     },
-
+    dropdown: {
+      borderWidth: 1,
+      borderColor: '#ccc',
+      borderRadius: 5,
+      padding: 10,
+      marginTop: 5,
+      alignSelf: 'stretch',  // Ensures it takes full width of the parent
+    },
+    dropdownText: {
+      fontSize: 18,
+      textAlign: 'center',
+    },
+    dropdownList: {
+      width: '100%',  // Full width dropdown
+      height: 120,
+      borderRadius: 5,
+    },
+    text: {
+          fontSize: 16,
+          textAlign: 'center',
+    },
 });
 
 export default TicketDetailScreen;
