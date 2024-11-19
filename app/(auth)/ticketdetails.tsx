@@ -339,20 +339,22 @@ const TicketDetailScreen = () => {
                             </Modal>
 
                             {/* Checkbox Selection for Ticket with Subscribe Button */}
-                            <View style={styles.subscribeContainer}>
-                                <Checkbox
-                                    status={isSelected ? 'checked' : 'unchecked'}
-                                    onPress={ handleCheckboxToggle }
-                                    color="#007AFF"
-                                />
-                                <TouchableOpacity
-                                    onPress={handleSubscribe}
-                                    style={styles.subscribeButton}
-                                >
-                                    <Text style={styles.subscribeButtonText}>Subscribe</Text>
-                                </TouchableOpacity>
-                            </View>
+                            {!isStaff && (
 
+                                <View style={styles.subscribeContainer}>
+                                    <Checkbox
+                                        status={isSelected ? 'checked' : 'unchecked'}
+                                        onPress={ handleCheckboxToggle }
+                                        color="#007AFF"
+                                    />
+                                    <TouchableOpacity
+                                        onPress={handleSubscribe}
+                                        style={styles.subscribeButton}
+                                    >
+                                        <Text style={styles.subscribeButtonText}>Subscribe</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
                             {/* Navigation Buttons */}
                             <View style={styles.navigationContainer}>
                                 {currentIndex > 0 && (
@@ -510,7 +512,6 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         marginHorizontal: 20,
     },
-
     subscribeButton: {
         backgroundColor: '#007AFF',
         paddingVertical: 8,
@@ -518,13 +519,11 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginLeft: 10, // Spacing between checkbox and button
     },
-
     subscribeButtonText: {
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
     },
-
     centeredContainer: {
         flex: 1, // Take up the entire screen
         justifyContent: 'center', // Vertically center
