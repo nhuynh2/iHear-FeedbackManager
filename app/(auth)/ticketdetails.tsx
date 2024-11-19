@@ -14,7 +14,7 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { updateTicketStatus,
          listenForTicketStatusChanges,
-         setupNotificationListeners } from '../messaging.tsx';
+         setupNotificationListeners } from './messaging.tsx';
 
 type TicketProps = {
     id: string;
@@ -68,7 +68,7 @@ const TicketDetailScreen = () => {
         }
 
     const [isStaff, setIsStaff] = useState(false);
-
+    const [loadingStaff, setLoadingStaff] = useState(true);
     useEffect(() => {
         const checkStaffStatus = async () => {
             try {
@@ -78,18 +78,30 @@ const TicketDetailScreen = () => {
                 // Query the staffs collection for the current user's UID
                 const staffDoc = await firestore().collection('staffs').doc(user.uid).get();
                 setIsStaff(staffDoc.exists);
+                console.log("Is staff:", staffDoc.exists);
             } catch (error) {
                 console.error("Error checking staff status:", error);
+            } finally {
+              setLoadingStaff(false); // Stop loading once done
             }
         };
 
         checkStaffStatus();
     }, []);
 
-    const [currentStatus, setCurrentStatus] = useState('');
-    const StatusOptions = ['in-review', 'in-progress', 'resolved'];
+    // Show loading spinner while staff status is loading
+    if (loadingStaff) {
+        return <Text>Loading...</Text>;
+    }
 
+    // List of statuses that can be selected by the staff
+    const statusList = ["In Review", "In Progress", "Resolved"];
 
+    // Handle status change
+      const handleStatusChange = (newStatus) => {
+        console.log("Selected Ticket Status:", newStatus);
+        updateTicketStatus(ticketId, newStatus);
+      };
 
     const currentTicket = tickets[currentIndex];
 
