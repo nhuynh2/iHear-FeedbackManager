@@ -1,0 +1,281 @@
+DATE 11-20-2024
+I've done more commits since Sprint 4 was due on 11-14-2024
+These can be found on branch 101-ticketdetail-page-reconstruct
+
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500   1) import React, { useState, useEffect } from "react";
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500   2) import {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500   3)   View,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500   4)   Alert,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500   5)   Text,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500   6)   StyleSheet,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500   7)   TouchableOpacity,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500   8)   Image,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500   9)   Modal,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  10)   ScrollView,
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  11)   FlatList,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  12) } from "react-native";
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  14) import initializeApp from "../../firebase-config";
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  15) import { getFirestore, collection, getDocs } from "firebase/firestore";
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  16) import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  17) import { FirebaseError } from "firebase/app";
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  20)   id: string;
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  21)   title: string;
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  22)   category: string;
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  23)   location: string;
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  24)   detail: string;
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  25)   priority: number;
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  26)   images: string[];
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  29) const statusOptions = [
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  30)   "Open",
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  31)   "In Review",
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  32)   "In Progress",
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  33)   "Resolved",
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  34)   "Declined",
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  35)   "Referred",
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  36) ];
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  37) 
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  39)   const [tickets, setTickets] = useState<TicketProps[]>([]);
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  40)   const [loading, setLoading] = useState(true);
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  41)   const [currentIndex, setCurrentIndex] = useState(0);
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  42)   const [isModalVisible, setModalVisible] = useState(false);
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  43)   const [selectedimage, setSelectedimage] = useState<string | null>(null);
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  44)   const [currentStatus, setCurrentStatus] = useState("Open");
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  46)   useEffect(() => {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  47)     const fetchTickets = async () => {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  48)       try {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  49)         const firestore = getFirestore(initializeApp);
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  50)         const querySnapshot = await getDocs(collection(firestore, "tickets"));
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  52)         const docs = querySnapshot.docs.map((doc) => ({
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  53)           id: doc.id,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  54)           ...doc.data(),
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  55)         })) as TicketProps[];
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  57)         setTickets(docs);
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  58)         //console.log('Fetched Tickets:', docs); // Debugging
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  59)       } catch (error) {
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  60)         Alert.alert("Error", "Could not fetch ticket data. Please contact Admin!.");
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  61)       } finally {
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  62)         setLoading(false); // Set loading to false after fetching
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  63)       }
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  66)     fetchTickets();
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  67)   }, []);
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  69)   const currentTicket = tickets[currentIndex];
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  71)   const handleNext = () => {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  72)     if (currentIndex < tickets.length - 1) {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  73)       setCurrentIndex(currentIndex + 1);
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  74)     }
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  75)   };
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  77)   const handlePrevious = () => {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  78)     if (currentIndex > 0) {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  79)       setCurrentIndex(currentIndex - 1);
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  80)     }
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  81)   };
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  83)   /* handles clicking on images to enlarge them */
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  84)   const openModal = (image: string) => {
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  85)     setSelectedimage(image);
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  86)     setModalVisible(true);
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  87)   };
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  89)   const closeModal = () => {
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  90)     setSelectedimage(null);
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  91)     setModalVisible(false);
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500  92)   };
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  94)   const openDropdown = () => setModalVisible(true);
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  95)   const closeDropdown = () => setModalVisible(false);
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  96) 
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  97)   const handleSelect = (status: string) => {
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  98)     setCurrentStatus(status);
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500  99)     closeDropdown();
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 100)   };
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 101) 
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 102)   return (
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 103)     <ScrollView contentContainerStyle={styles.container}>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 104)       {/*Ticket Title */}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 105)       <Text style={styles.selectField}>Title:</Text>
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 106)       <Text style={styles.value}>{currentTicket?.title || "N/A"}</Text>
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 107) 
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 108)       {/* Ticket Category */}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 109)       <Text style={styles.selectField}>Category:</Text>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 110)       <Text style={styles.value}>{currentTicket?.category || "N/A"}</Text>
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 111) 
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 112)       {/* Ticket Location */}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 113)       <Text style={styles.selectField}>Location:</Text>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 114)       <Text style={styles.value}>{currentTicket?.location || "N/A"}</Text>
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 115) 
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 116)       {/* Ticket Priority */}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 117)       <Text style={styles.selectField}>Priority:</Text>
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 118)       <Text style={styles.value}>{currentTicket?.priority || "N/A"}</Text>
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 119) 
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 120)       {/* Ticket Detail */}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 121)       <Text style={styles.selectField}>Detail:</Text>
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 122)       <Text style={styles.value}>{currentTicket?.detail || "N/A"}</Text>
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 123) 
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 124)       {/* Ticket Images */}
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 125)       <Text style={styles.selectField}>Images:</Text>
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 126)       <ScrollView
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 127)         horizontal // makes scrolling of photos horizontal
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 128)         showsHorizontalScrollIndicator={false} // hides scroll bar
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 129)       >
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 130)         {currentTicket?.images && currentTicket.images.length > 0 ? (
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 131)           currentTicket.images.map((image, index) => (
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 132)             <TouchableOpacity key={index} onPress={() => openModal(image)}>
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 133)               <Image source={{ uri: image }} style={styles.image} />
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 134)             </TouchableOpacity>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 135)           ))
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 136)         ) : (
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 137)           <Text style={styles.value}>No images available</Text>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 138)         )}
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 139)       </ScrollView>
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 140) 
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 141)       {/* Modal for Enlarged image on click */}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 142)       <Modal
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 143)         visible={isModalVisible}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 144)         transparent={true}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 145)         animationType="fade"
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 146)         onRequestClose={closeModal}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 147)       >
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 148)         <View style={styles.modalBackground}>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 149)           <View style={styles.modalContainer}>
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 150)             {selectedimage && (
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 151)               <Image
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 152)                 source={{ uri: selectedimage }}
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 153)                 style={styles.enlargedimage}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 154)               />
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 156)             <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 157)               <Text style={styles.closeButtonText}>Close</Text>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 158)             </TouchableOpacity>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 159)           </View>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 161)       </Modal>
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 162) 
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 163)       {/* Navigation Buttons */}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 164)       <View style={styles.navigationContainer}>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 165)         <TouchableOpacity
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 166)           onPress={handlePrevious}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 167)           disabled={currentIndex === 0}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 168)           style={[
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 169)             styles.navButton,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 170)             currentIndex === 0 && styles.disabledButton,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 171)           ]}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 172)         >
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 173)           <Text style={styles.navButtonText}>Previous</Text>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 174)         </TouchableOpacity>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 175)         <TouchableOpacity
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 176)           onPress={handleNext}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 177)           disabled={currentIndex === tickets.length - 1}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 178)           style={[
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 179)             styles.navButton,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 180)             currentIndex === tickets.length - 1 && styles.disabledButton,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 181)           ]}
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 182)         >
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 183)           <Text style={styles.navButtonText}>Next</Text>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 184)         </TouchableOpacity>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 185)       </View>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 186)     </ScrollView>
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 187)   );
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 191)   container: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 192)     flex: 1,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 193)     padding: 15,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 194)     backgroundColor: "white",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 195)   },
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 196)   value: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 197)     fontSize: 16,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 198)     color: "black",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 199)     paddingVertical: 5,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 200)     paddingHorizontal: 10,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 201)     backgroundColor: "#F9F9F9",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 202)     borderRadius: 5,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 203)   },
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 204)   detail: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 205)     minHeight: 80,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 206)   },
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 207)   hidden: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 208)     display: "none",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 209)   },
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 210)   priorityContainer: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 211)     flexDirection: "row",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 212)     justifyContent: "space-between",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 213)     marginVertical: 20,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 214)   },
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 215)   priorityCircle: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 216)     width: 40,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 217)     height: 40,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 218)     borderRadius: 20,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 219)     justifyContent: "center",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 220)     alignItems: "center",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 221)   },
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 222)   priorityText: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 223)     fontSize: 16,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 224)     fontWeight: "bold",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 225)     color: "#000",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 226)   },
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 227)   imageContainer: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 228)     flexDirection: "row",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 229)     alignItems: "center",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 230)     marginBottom: 20,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 231)     marginHorizontal: 50,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 232)   },
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 233)   image: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 234)     width: 125,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 235)     height: 125,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 236)     borderRadius: 5,
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 237)     marginRight: 5,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 238)   },
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 239)   modalBackground: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 240)     flex: 1,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 241)     backgroundColor: "rgba(0, 0, 0, 0.8)",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 242)     justifyContent: "center",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 243)     alignItems: "center",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 244)   },
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 245)   modalContainer: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 246)     width: "80%",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 247)     backgroundColor: "white",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 248)     borderRadius: 10,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 249)     padding: 10,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 250)     alignItems: "center",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 251)   },
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 252)   enlargedimage: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 253)     width: "100%",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 254)     height: 300,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 255)     resizeMode: "contain",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 256)   },
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 257)   closeButton: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 258)     marginTop: 10,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 259)     padding: 10,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 260)     backgroundColor: "#007AFF",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 261)     borderRadius: 5,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 262)   },
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 263)   closeButtonText: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 264)     color: "white",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 265)     fontSize: 16,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 266)     fontWeight: "bold",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 267)   },
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 268)   navigationContainer: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 269)     flexDirection: "row",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 270)     justifyContent: "space-between",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 271)     alignItems: "center",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 272)     marginTop: 20,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 273)     width: "20%",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 274)     alignSelf: "center",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 275)     marginRight: 125,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 276)   },
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 277)   navButton: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 278)     width: 100,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 279)     paddingVertical: 10,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 280)     padding: 10,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 281)     backgroundColor: "#007AFF",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 282)     borderRadius: 5,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 283)     alignItems: "center",
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 284)     marginHorizontal: 5,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 285)   },
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 286)   disabledButton: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 287)     backgroundColor: "#D3D3D3",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 288)   },
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 289)   navButtonText: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 290)     color: "white",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 291)     fontSize: 16,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 292)     fontWeight: "bold",
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 293)   },
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 294)   selectField: {
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 295)     fontSize: 18,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 296)     fontWeight: "bold",
+19373311 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-20 00:46:31 -0500 297)     marginTop: 10,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 298)     marginBottom: 5,
+cf149597 app/(auth)/ticketdetails.tsx                (bbentley4   2024-11-18 17:44:18 -0500 299)   },
