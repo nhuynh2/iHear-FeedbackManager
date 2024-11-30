@@ -25,7 +25,7 @@ Have the iHear repository cloned on your local device.
 
 NOTE: I have labeled the photo files as Github seems to think the photo files are not in the main branch. You can find them in `README-photos`.
 
-1. Open XCode, select the iHear project (it should appear in the left side bar) ![Step 1](README-photos/image0.png)`image0.png`
+1. Open XCode, select the iHear project (it should appear in the left side bar) <img src="README-photos/image0.png" alt="logo" width="300"> ![Step 1](README-photos/image0.png)`image0.png`
 2. Go to XCode -> Settings -> Locations
 3. In the Command Line Tools dropdown, select the most recent version (we used XCode 16.0) ![Step3](README-photos/image1.png) `image1.png`
 4. Install Watchman with the following commands in your terminal
