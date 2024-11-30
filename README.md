@@ -1,4 +1,4 @@
-# iHear
+# iHear ![logo](assets/images/icon.png)
 
 ## Table of Contents
 1. [Overview](#overview)
