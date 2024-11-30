@@ -77,7 +77,7 @@ This is normal, as the app is downloading all the necessary dependencies.
 - If any issues persist, try deleting your instance of the iHear directory from your local machine and re-clone.
 
 ## Usage
-<iframe src="https://jam.dev/c/1adf66d7-8010-48a0-b520-e97981b2d3dd" width="640" height="360" frameborder="0" allow="fullscreen; picture-in-picture" allowfullscreen></iframe>
+[Watch this video here!](https://jam.dev/c/1adf66d7-8010-48a0-b520-e97981b2d3dd)
 
 ## License
 This software is proprietary and confidential. Redistribution, modification, or use of any part of this software without explicit written permission from the copyright holder is strictly prohibited.
