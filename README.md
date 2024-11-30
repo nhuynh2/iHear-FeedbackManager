@@ -1,4 +1,5 @@
-# iHear ![logo](assets/images/icon.png)
+# iHear 
+<img src="assets/images/icon.png" alt="logo" width="300">
 
 ## Table of Contents
 1. [Overview](#overview)
