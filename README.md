@@ -11,7 +11,8 @@
 8. [Acknowledgments](#acknowledgments)
 
 ## Overview
-Have you ever seen a problem around campus that needed to be addressed, but you didn't know who to contact? iHear has the solution! 
+Have you ever seen a problem around campus that needed to be addressed, but you didn't know who to contact? iHear has the solution! Simply submit a ticket and a staff member will be assigned the issue. You can keep track of the progress of your ticket and see when it's been assigned, when it's being worked on, and when it's completed! There's also a dashboard to view all the tickets others have submitted. 
+
 ## Features
 There is a full pdf presentation of features here 👉 [iHear Features](iHear.pdf)
 
@@ -23,7 +24,7 @@ Have the iHear repository cloned on your local device.
 
 NOTE: I have labeled the photo files as Github seems to think the photo files are not in the main branch. You can find them in `README-photos`.
 
-1. Open XCode, select the iHear project (it should appear in the left side bar) ![Step 1](README-photos/image0.png)`image 0.png`
+1. Open XCode, select the iHear project (it should appear in the left side bar) ![Step 1](README-photos/image0.png)`image0.png`
 2. Go to XCode -> Settings -> Locations
 3. In the Command Line Tools dropdown, select the most recent version (we used XCode 16.0) ![Step3](README-photos/image1.png) `image1.png`
 4. Install Watchman with the following commands in your terminal
