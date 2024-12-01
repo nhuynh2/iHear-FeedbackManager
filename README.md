@@ -86,10 +86,15 @@ This is normal, as the app is downloading all the necessary dependencies.
 ## License
 This software is proprietary and confidential. Redistribution, modification, or use of any part of this software without explicit written permission from the copyright holder is strictly prohibited.
 
-Third-party libraries used in this project are licensed under their respective open-source licenses. See [License](LICENSES.txt) and [Notices](NOTICES.txt) for details.
+Third-party libraries used in this project are licensed under their respective open-source licenses. See [License](LICENSE.txt) and [Notices](NOTICES.txt) for details.
 
 ## Acknowledgements
 - Team Leader: PhuHoang177
 - Idea by: PhuHoang177
 - Design by: PhuHoang177
 - Database by: PhuHoang177 & nhuynh2
+- Contributors:
+- - Phu Hoang - PhuHoang177
+- - Ngan Huynh - nhuynh2
+- - Brenna Bentley - bbentley4
+- - Phil Marino - pmarino92
